@@ -98,15 +98,18 @@ func dropped_card(card: GenericCard) -> void:
 					card.position = self.to_local(zone.to_global(zone.card_destination_position));
 					active_zones[zone] = card;
 				
-				var another_card when active_cards.has(another_card):
-					var new_stack = TokenStack.from_two_tokens(card, another_card);
-					new_stack.position = another_card.position;
-					active_zones[zone] = new_stack;
-					spawn_stack(new_stack, zone);
+				var another_card when card != another_card \
+					and active_cards.has(another_card) \
+					and zone.accepts_stacks:
+						var new_stack = TokenStack.from_two_tokens(card, another_card);
+						new_stack.position = another_card.position;
+						active_zones[zone] = new_stack;
+						spawn_stack(new_stack, zone);
 				
 				var stack when token_stacks.has(stack) \
-					and get_card_token_type(card) == stack.get_token_type(self):
-					stack.card_added(card, self);
+					and get_card_token_type(card) == stack.get_token_type(self) \
+					and zone.stack_limit > stack.tokens.size():
+						stack.card_added(card, self);
 				
 				_:
 					push_error("unexpected collision scenario");

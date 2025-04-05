@@ -14,6 +14,9 @@ func get_token_type(table: Table) -> Table.TokenType:
 
 
 func card_added(card: GenericCard, _table: Table):
+	if tokens.has(card):
+		return;
+	
 	tokens.push_back(card);
 	card.hide();
 	
@@ -44,6 +47,7 @@ static func from_two_tokens(token : GenericCard, another : GenericCard) -> Token
 	
 	stack.tokens.push_back(token);
 	stack.tokens.push_back(another);
+	
 	stack.card_texture = token.sprite.texture.duplicate();
 	
 	stack.label = Label.new();

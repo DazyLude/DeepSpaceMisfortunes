@@ -4,11 +4,14 @@ extends Node
 ## loads and instantiates GenericEvent scenes
 enum EventID {
 	GENERIC,
+	
+	SHIP_NAVIGATION,
 };
 
 
 var event_load_params : Dictionary[EventID, String] = {
-	EventID.GENERIC: "res://cards/generic_event.tscn"
+	EventID.GENERIC: "res://cards/generic_event.tscn",
+	EventID.SHIP_NAVIGATION: "res://cards/events/ship_navigation.tscn",
 };
 
 

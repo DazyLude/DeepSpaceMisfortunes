@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://bl4qqujrnsiwf"]
+
+[ext_resource type="Script" uid="uid://biuld8u83bgf4" path="res://cards/generic_card.gd" id="1_ntm07"]
+[ext_resource type="Texture2D" uid="uid://b3o1ns25sybgy" path="res://assets/crewmate_ph.png" id="2_d37jc"]
+[ext_resource type="Texture2D" uid="uid://36uyncikfvfg" path="res://assets/compass.png" id="2_ttq4j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dpeyf"]
+
+[node name="ShipNavigation" type="Node2D"]
+script = ExtResource("1_ntm07")
+card_texture = ExtResource("2_ttq4j")
+metadata/_custom_type_script = "uid://biuld8u83bgf4"
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="HitboxRect" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_dpeyf")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_d37jc")

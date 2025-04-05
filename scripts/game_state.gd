@@ -2,8 +2,12 @@ extends Node
 
 
 signal new_phase(round_phase);
-signal gameover;
-signal victory(score);
+
+signal new_event(GenericEvent);
+signal new_token(GenericCard);
+
+signal gameover(int);
+signal victory(int);
 
 
 enum HyperspaceDepth {
@@ -29,12 +33,11 @@ const GAMEOVER_TIME : int = 25;
 var rng := RandomNumberGenerator.new();
 
 
-var ship := ShipState.new();
-var travel_distance : float = 0.0;
-var hyper_depth : HyperspaceDepth = HyperspaceDepth.NONE;
-var current_phase : RoundPhase = RoundPhase.PREPARATION;
+var ship : ShipState;
+var travel_distance : float;
+var hyper_depth : HyperspaceDepth;
+var current_phase : RoundPhase;
 var round_n : int = 0;
-
 var score : int = 0;
 
 
@@ -44,11 +47,26 @@ var event_pools : Dictionary[HyperspaceDepth, EventPool] = {};
 func advance_phase() -> void:
 	match current_phase:
 		#TODO
+		_ when false:
+			new_event.emit();
+			new_token.emit();
+			gameover.emit(score);
+			victory.emit(score);
 		_:
 			pass;
+	
+	
+	new_phase.emit(current_phase);
 
 
-func _init() -> void:
+func new_game() -> void:
+	ship = ShipState.new();
+	travel_distance = 0.0;
+	hyper_depth = HyperspaceDepth.NONE;
+	current_phase = RoundPhase.PREPARATION;
+	round_n = 0;
+	score = 0;
+	
 	for depth in HyperspaceDepth.values():
 		event_pools[depth] = EventPool.get_placeholder_pool();
 
@@ -104,7 +122,7 @@ class ShipState extends RefCounted:
 	
 	
 	func take_damage_to_random_system(damage_type: DamageType, value: int) -> void:
-		var system : System = GameState.rng.randi_range(0, System.size() - 2);
+		var system : System = GameState.rng.randi_range(0, System.size() - 2) as System;
 		
 		match damage_type:
 			DamageType.PHYSICAL:
@@ -137,3 +155,19 @@ class ShipState extends RefCounted:
 
 class Crewmate extends RefCounted:
 	pass;
+
+
+class OtherToken extends RefCounted:
+	var token_type : Table.TokenType;
+	
+	
+	static func get_nav_token() -> OtherToken:
+		var token = new();
+		token.token_type = Table.TokenType.SHIP_NAVIGATION;
+		return token;
+	
+	
+	static func get_ingot_token() -> OtherToken:
+		var token = new();
+		token.token_type = Table.TokenType.INGOT;
+		return token;

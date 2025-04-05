@@ -1,6 +1,7 @@
 extends GenericCard
 class_name GenericEvent
 
+
 enum LimitedType {
 	NOT_LIMITED,
 	LIMITED_PER_LAYER,
@@ -10,6 +11,7 @@ enum LimitedType {
 
 @export var event_image : Texture2D = null;
 @export var event_text : String = "";
+@export var event_zones : Array[Node] = [];
 
 var is_consumed : LimitedType = LimitedType.NOT_LIMITED;
 
@@ -19,9 +21,9 @@ var is_consumed : LimitedType = LimitedType.NOT_LIMITED;
 #var card_options : Dictionary[Callable, GenericEvent] = {};
 
 
-func _action(_board: Table) -> void:
+func _can_play() -> bool:
+	return true;
+
+
+func _action() -> void:
 	push_warning("Placeholder event action played. Overload it.");
-
-
-func _ready() -> void:
-	setup_hitbox();

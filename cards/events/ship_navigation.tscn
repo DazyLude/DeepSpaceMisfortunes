@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://c6vgeinm7mt21"]
+
+[ext_resource type="Script" uid="uid://cqbb73etkiltx" path="res://cards/events/ship_navigation.gd" id="1_lnnm6"]
+[ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="2_lnnm6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lnnm6"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_n31tl"]
+size = Vector2(128, 196)
+
+[node name="ShipNavigation" type="Node2D"]
+script = ExtResource("1_lnnm6")
+metadata/_custom_type_script = "uid://6tfy5iyy3q6m"
+
+[node name="AscendInput" type="Area2D" parent="."]
+position = Vector2(0, -25)
+script = ExtResource("2_lnnm6")
+accepted_card_types = Array[int]([2])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="ZoneRect" type="CollisionShape2D" parent="AscendInput"]
+shape = SubResource("RectangleShape2D_lnnm6")
+
+[node name="StayInput" type="Area2D" parent="."]
+script = ExtResource("2_lnnm6")
+accepted_card_types = Array[int]([2])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="ZoneRect" type="CollisionShape2D" parent="StayInput"]
+shape = SubResource("RectangleShape2D_lnnm6")
+
+[node name="DescendInput" type="Area2D" parent="."]
+position = Vector2(0, 25)
+
+[node name="HitboxRect" type="CollisionShape2D" parent="DescendInput"]
+shape = SubResource("RectangleShape2D_lnnm6")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(43.5, 0)
+scale = Vector2(0.914063, 0.367347)
+texture = SubResource("PlaceholderTexture2D_n31tl")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 12.0
+offset_top = -39.0
+offset_right = 114.0
+offset_bottom = 36.0
+text = "ascend
+stay course
+descend"
+autowrap_mode = 3
+text_overrun_behavior = 3

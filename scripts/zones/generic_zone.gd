@@ -11,4 +11,8 @@ func _can_accept_card(_card: GenericCard, _table: Table) -> bool:
 
 
 func _card_accepted():
-	pass
+	pass;
+
+
+func _card_removed():
+	pass;

@@ -3,8 +3,9 @@ class_name EventPool
 
 
 ## key - event, value - weight 
-var events : Array[GlobalEventPool]
+var events : Array[GenericEvent]
 var weights : Array[float] = [];
+
 
 func add_event_with_weight(event: GenericEvent, weight: float) -> void:
 	events.push_back(event);
@@ -43,12 +44,12 @@ static func get_placeholder_pool() -> EventPool:
 	return get_pool_populated_with_weights(placeholder_weights);
 
 
-static func get_pool_populated_with_weights(weights: Dictionary[GlobalEventPool.EventID, float]) -> EventPool:
+static func get_pool_populated_with_weights(event_weights: Dictionary[GlobalEventPool.EventID, float]) -> EventPool:
 	var pool := EventPool.new();
 	
-	for event_id in weights:
+	for event_id in event_weights:
 		var event := GlobalEventPool.get_event_instance(event_id);
-		var weight := weights[event_id];
+		var weight := event_weights[event_id];
 		pool.add_event_with_weight(event, weight);
 	
 	return pool;

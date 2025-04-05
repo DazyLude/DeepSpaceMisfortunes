@@ -11,7 +11,7 @@ enum LimitedType {
 
 @export var event_image : Texture2D = null;
 @export var event_text : String = "";
-@export var event_zones : Array[Node] = [];
+@export var event_zones : Array[EventZone] = [];
 
 var is_consumed : LimitedType = LimitedType.NOT_LIMITED;
 

@@ -22,9 +22,9 @@ func _action() -> void:
 
 
 func _ready() -> void:
-	$AscendInput.card_recieved.connect(course_chosen.bind(0));
+	$AscendInput.card_recieved.connect(course_chosen.bind(2));
 	$StayInput.card_recieved.connect(course_chosen.bind(1));
-	$DescendInput.card_recieved.connect(course_chosen.bind(2));
+	$DescendInput.card_recieved.connect(course_chosen.bind(0));
 	
 	$AscendInput.card_lost.connect(course_unchosen);
 	$StayInput.card_lost.connect(course_unchosen);

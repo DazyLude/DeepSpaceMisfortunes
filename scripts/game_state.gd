@@ -4,7 +4,9 @@ extends Node
 signal new_phase(round_phase);
 
 signal new_event(GenericEvent);
-signal new_token(GenericCard);
+
+signal clear_tokens;
+signal new_token(TokenType, RefCounted);
 
 signal gameover(int);
 signal victory(int);
@@ -19,6 +21,7 @@ enum HyperspaceDepth {
 
 
 enum RoundPhase {
+	GAME_START,
 	PREPARATION,
 	EXECUTION,
 	EVENT,
@@ -40,6 +43,8 @@ var current_phase : RoundPhase;
 var round_n : int = 0;
 var score : int = 0;
 
+var active_table : Table = null;
+
 
 var event_pools : Dictionary[HyperspaceDepth, EventPool] = {};
 
@@ -52,18 +57,41 @@ func advance_phase() -> void:
 			new_token.emit();
 			gameover.emit(score);
 			victory.emit(score);
-		_:
+		
+		RoundPhase.SHIP_ACTION, RoundPhase.GAME_START:
+			current_phase = RoundPhase.PREPARATION;
+			
+			for crewmate in ship.ships_crew:
+				new_token.emit(Table.TokenType.CREWMATE, crewmate);
+			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
+			
+			new_event.emit(GlobalEventPool.get_event_instance(GlobalEventPool.EventID.SHIP_NAVIGATION));
+		
+		RoundPhase.PREPARATION when active_table.current_event._can_play():
+			current_phase = RoundPhase.EXECUTION;
+			clear_tokens.emit();
+			new_event.emit(null);
+		
+		RoundPhase.EXECUTION:
+			current_phase = RoundPhase.EVENT;
+			new_event.emit(event_pools[hyper_depth].pull_random_event());
+		
+		RoundPhase.EVENT when active_table.current_event._can_play():
+			current_phase = RoundPhase.SHIP_ACTION;
+			new_event.emit(null);
+		
+		RoundPhase.PREPARATION: # has not resolved nav 
 			pass;
-	
 	
 	new_phase.emit(current_phase);
 
 
-func new_game() -> void:
+func new_game(table: Table) -> void:
+	active_table = table;
 	ship = ShipState.new();
 	travel_distance = 0.0;
 	hyper_depth = HyperspaceDepth.NONE;
-	current_phase = RoundPhase.PREPARATION;
+	current_phase = RoundPhase.GAME_START;
 	round_n = 0;
 	score = 0;
 	
@@ -134,6 +162,13 @@ class ShipState extends RefCounted:
 	func man_system(mate: Crewmate, system: System) -> void:
 		if mate in ships_crew:
 			ships_crew[mate] = system;
+		else:
+			push_error("impostor amongus");
+	
+	
+	func stop_manning(mate: Crewmate) -> void:
+		if mate in ships_crew:
+			ships_crew[mate] = System.OTHER;
 		else:
 			push_error("impostor amongus");
 	

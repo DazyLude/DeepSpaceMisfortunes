@@ -9,6 +9,10 @@ script = ExtResource("1_qs8yt")
 [node name="Ship" parent="." instance=ExtResource("2_mpg2q")]
 position = Vector2(408, 236)
 
+[node name="Events" type="Node2D" parent="."]
+
+[node name="Tokens" type="Node2D" parent="."]
+
 [node name="Button" type="Button" parent="."]
 offset_left = 918.0
 offset_top = 484.0

@@ -13,6 +13,8 @@ enum TokenType {
 var active_cards : Dictionary[GenericCard, RefCounted] = {};
 var active_zones : Dictionary[GenericTableZone, GenericCard] = {};
 
+var current_event : GenericEvent = null;
+
 var picked_card_ref : GenericCard = null;
 var grabbed_offset := Vector2();
 
@@ -21,6 +23,8 @@ func get_card_token_type(card: GenericCard) -> TokenType:
 	match active_cards.get(card, null):
 		var crew when crew is GameState.Crewmate:
 			return TokenType.CREWMATE;
+		var other_token when other_token is GameState.OtherToken:
+			return other_token.token_type; 
 		_:
 			return TokenType.OTHER;
 
@@ -73,24 +77,59 @@ func dropped_card(card: GenericCard) -> void:
 	picked_card_ref = null;
 
 
-func spawn_token(token_type: TokenType, where: Vector2, token_data: RefCounted = null) -> void:
+func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 	var token : GenericCard;
 	var ph_token_data : RefCounted;
+	var where : Vector2;
 	
 	match token_type:
 		TokenType.CREWMATE:
 			token = load("res://cards/tokens/crewmate.tscn").instantiate();
-			ph_token_data = GameState.Crewmate.new()
+			ph_token_data = GameState.Crewmate.new();
+			where = Vector2(100, 100);
 		TokenType.INGOT:
 			token = load("res://cards/tokens/contraband.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_ingot_token();
+			where = Vector2(100, 150);
 		TokenType.SHIP_NAVIGATION:
 			token = load("res://cards/tokens/ship_navigation.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_nav_token();
+			where = Vector2(100, 200);
 	
 	token.position = where;
-	add_child(token);
+	$Tokens.add_child(token);
 	add_active_card(token, token_data if token_data != null else ph_token_data);
+
+
+func despawn_tokens() -> void:
+	for token in $Tokens.get_children():
+		$Tokens.remove_child(token);
+		token.queue_free();
+		remove_active_card(token);
+
+
+func spawn_event(event_instance: GenericEvent) -> void:
+	despawn_event();
+	
+	if event_instance == null:
+		return;
+	
+	for zone in event_instance.event_zones:
+		add_active_zone(zone);
+	
+	event_instance.position = Vector2(900, 300);
+	
+	current_event = event_instance;
+	$Events.add_child(event_instance);
+
+
+func despawn_event() -> void:
+	if current_event != null:
+		for zone in current_event.event_zones:
+			remove_active_zone(zone);
+		
+		$Events.remove_child(current_event);
+		current_event = null;
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -99,14 +138,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	GameState.new_game();
-	
-	spawn_token(TokenType.CREWMATE, Vector2(100, 100));
-	spawn_token(TokenType.INGOT, Vector2(100, 150));
-	spawn_token(TokenType.SHIP_NAVIGATION, Vector2(100, 200));
+	GameState.new_game(self);
 	
 	var ship : Ship = $Ship;
 	for zone in ship.get_active_zones():
 		add_active_zone(zone);
 	
 	$Button.pressed.connect(GameState.advance_phase);
+	
+	GameState.new_event.connect(spawn_event);
+	GameState.new_token.connect(spawn_token);
+	GameState.clear_tokens.connect(despawn_tokens);

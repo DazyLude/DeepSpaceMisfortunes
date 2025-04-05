@@ -2,6 +2,7 @@ extends Node2D
 class_name Table
 
 var active_cards : Dictionary[GenericCard, RefCounted] = {};
+var active_zones: Array[GenericTableZone] = [];
 var picked_card_ref : GenericCard = null;
 var grabbed_offset := Vector2();
 
@@ -25,7 +26,24 @@ func picked_card(card: GenericCard) -> void:
 		picked_card_ref = card;
 
 
+func collision_check(card: GenericCard, zone: GenericTableZone) -> bool:
+	return card.hitbox.overlaps_area(zone);
+
+
+func add_active_zone(zone: GenericTableZone) -> void:
+	active_zones.push_back(zone);
+
+
+func remove_active_zone(zone: GenericTableZone) -> void:
+	active_zones.erase(zone);
+
+
 func dropped_card(card: GenericCard) -> void:
+	for zone in active_zones:
+		if collision_check(card, zone) and zone._can_accept_card(card, self):
+			zone._card_accepted();
+			card.position = self.to_local(zone.to_global(zone.card_destination_position));
+	
 	picked_card_ref = null;
 
 

@@ -64,13 +64,13 @@ func picked_card(card: GenericCard) -> void:
 		var card_owner_zone := active_zones.find_key(card) as GenericTableZone;
 		if card_owner_zone != null:
 			active_zones[card_owner_zone] = null;
-			card_owner_zone._card_removed();
+			card_owner_zone._card_removed(card, self);
 
 
 func dropped_card(card: GenericCard) -> void:
 	for zone in active_zones:
 		if collision_check(card, zone) and zone._can_accept_card(card, self):
-			zone._card_accepted();
+			zone._card_accepted(card, self);
 			card.position = self.to_local(zone.to_global(zone.card_destination_position));
 			active_zones[zone] = card;
 	

@@ -15,9 +15,9 @@ func _can_accept_card(card: GenericCard, table: Table) -> bool:
 	return accepted_card_types.has(token_type);
 
 
-func _card_accepted():
-	card_recieved.emit();
+func _card_accepted(_card: GenericCard, _table: Table):
+	card_recieved.emit(_card);
 
 
-func _card_removed():
-	card_lost.emit();
+func _card_removed(_card: GenericCard, _table: Table):
+	card_lost.emit(_card);

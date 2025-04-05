@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://wvcjart1cb28" path="res://scenes/ship.gd" id="1_q631a"]
 [ext_resource type="Texture2D" uid="uid://yndfel38ox5p" path="res://icon.svg" id="2_2gnfn"]
-[ext_resource type="Script" uid="uid://cfdgiedmvlf20" path="res://scripts/zones/generic_zone.gd" id="3_4tobq"]
+[ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="3_tfsc7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tfsc7"]
 
@@ -14,26 +14,100 @@ position = Vector2(0, 5.96046e-08)
 scale = Vector2(4.54688, 1.27344)
 texture = ExtResource("2_2gnfn")
 
-[node name="CrewmateAcceptor" type="Area2D" parent="."]
-position = Vector2(-151, 0)
-script = ExtResource("3_4tobq")
+[node name="LifeSupportSlot" type="Area2D" parent="."]
+position = Vector2(-49, 28)
+script = ExtResource("3_tfsc7")
+accepted_card_types = Array[int]([0])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CrewmateAcceptor"]
-shape = SubResource("RectangleShape2D_tfsc7")
-
-[node name="Background" type="Sprite2D" parent="CrewmateAcceptor"]
+[node name="Background" type="Sprite2D" parent="LifeSupportSlot"]
 position = Vector2(0, 5.96046e-08)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_2gnfn")
 
-[node name="IngotAcceptor" type="Area2D" parent="."]
-position = Vector2(172, 0)
-script = ExtResource("3_4tobq")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="IngotAcceptor"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LifeSupportSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
 
-[node name="Background" type="Sprite2D" parent="IngotAcceptor"]
+[node name="NavigationSlot" type="Area2D" parent="."]
+position = Vector2(223, 45)
+script = ExtResource("3_tfsc7")
+accepted_card_types = Array[int]([0])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="Background" type="Sprite2D" parent="NavigationSlot"]
 position = Vector2(0, 5.96046e-08)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("2_2gnfn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NavigationSlot"]
+shape = SubResource("RectangleShape2D_tfsc7")
+
+[node name="AutopilotSlot" type="Area2D" parent="."]
+position = Vector2(222, -52)
+script = ExtResource("3_tfsc7")
+accepted_card_types = Array[int]([0])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="Background" type="Sprite2D" parent="AutopilotSlot"]
+position = Vector2(0, 5.96046e-08)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_2gnfn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AutopilotSlot"]
+shape = SubResource("RectangleShape2D_tfsc7")
+
+[node name="InnerHullSlot" type="Area2D" parent="."]
+position = Vector2(59, -21)
+script = ExtResource("3_tfsc7")
+accepted_card_types = Array[int]([0])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="Background" type="Sprite2D" parent="InnerHullSlot"]
+position = Vector2(0, 5.96046e-08)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_2gnfn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InnerHullSlot"]
+shape = SubResource("RectangleShape2D_tfsc7")
+
+[node name="OuterHullSlot" type="Area2D" parent="."]
+position = Vector2(-44, -74)
+script = ExtResource("3_tfsc7")
+accepted_card_types = Array[int]([0])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="Background" type="Sprite2D" parent="OuterHullSlot"]
+position = Vector2(0, 5.96046e-08)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_2gnfn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OuterHullSlot"]
+shape = SubResource("RectangleShape2D_tfsc7")
+
+[node name="EnginesSlot" type="Area2D" parent="."]
+position = Vector2(-235, -52)
+script = ExtResource("3_tfsc7")
+accepted_card_types = Array[int]([0])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="Background" type="Sprite2D" parent="EnginesSlot"]
+position = Vector2(0, 5.96046e-08)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_2gnfn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnginesSlot"]
+shape = SubResource("RectangleShape2D_tfsc7")
+
+[node name="HyperSlot" type="Area2D" parent="."]
+position = Vector2(-235, 51)
+script = ExtResource("3_tfsc7")
+accepted_card_types = Array[int]([0])
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="Background" type="Sprite2D" parent="HyperSlot"]
+position = Vector2(0, 5.96046e-08)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_2gnfn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HyperSlot"]
+shape = SubResource("RectangleShape2D_tfsc7")

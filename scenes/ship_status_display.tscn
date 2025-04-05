@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://hbc8ew5rrs1q"]
+
+[ext_resource type="Script" uid="uid://djl4tf4nn3o8a" path="res://scenes/ship_status_display.gd" id="1_ght6x"]
+
+[node name="ShipStatusDisplay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ght6x")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

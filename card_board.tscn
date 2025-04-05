@@ -1,14 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://cjfjsxsu1ecg2"]
+[gd_scene load_steps=5 format=3 uid="uid://cjfjsxsu1ecg2"]
 
 [ext_resource type="Script" uid="uid://bygc27tiilr0t" path="res://card_board.gd" id="1_qs8yt"]
 [ext_resource type="PackedScene" uid="uid://cqtida6kfefcr" path="res://scenes/ship.tscn" id="2_mpg2q"]
 [ext_resource type="PackedScene" uid="uid://l6x1r2h3ia8x" path="res://scenes/progress_bar.tscn" id="3_o0c05"]
+[ext_resource type="PackedScene" uid="uid://hbc8ew5rrs1q" path="res://scenes/ship_status_display.tscn" id="4_tq2su"]
 
 [node name="CardBoard" type="Node2D"]
 script = ExtResource("1_qs8yt")
 
 [node name="Ship" parent="." instance=ExtResource("2_mpg2q")]
 position = Vector2(408, 236)
+
+[node name="Events" type="Node2D" parent="."]
+
+[node name="Tokens" type="Node2D" parent="."]
 
 [node name="Button" type="Button" parent="."]
 offset_left = 918.0
@@ -18,3 +23,9 @@ offset_bottom = 515.0
 text = "Continue"
 
 [node name="ProgressBar" parent="." instance=ExtResource("3_o0c05")]
+
+[node name="ShipStatusDisplay" parent="." instance=ExtResource("4_tq2su")]
+offset_left = 1.0
+offset_top = 52.0
+offset_right = 1.0
+offset_bottom = 52.0

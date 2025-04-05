@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4qavkl3v3xgd"]
+
+[ext_resource type="Script" uid="uid://biuld8u83bgf4" path="res://cards/generic_card.gd" id="1_fsb64"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4d6ar"]
+
+[node name="GenericCard" type="Node2D"]
+script = ExtResource("1_fsb64")
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="HitboxRect" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_4d6ar")
+
+[node name="Sprite" type="Sprite2D" parent="."]

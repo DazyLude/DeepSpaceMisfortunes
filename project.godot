@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="DeepSpaceMisfortunes"
+run/main_scene="uid://cjfjsxsu1ecg2"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameState="*res://scripts/game_state.gd"
 
 [rendering]
 

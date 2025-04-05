@@ -87,24 +87,24 @@ class ShipState extends RefCounted:
 	
 	func take_physical_damage(system: System, damage: int) -> void:
 		match system:
+			_ when is_system_ok(System.OUTER_HULL):
+				system_hp[System.OUTER_HULL] -= damage;
+			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
+				system_hp[System.INNER_HULL] -= damage;
 			_:
-				#TODO
-				pass;
-		
-		system_hp[system] -= damage;
+				system_hp[system] -= damage;
 	
 	
 	func take_electric_damage(system: System, damage: int) -> void:
 		match system:
+			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
+				system_hp[System.INNER_HULL] -= damage;
 			_:
-				#TODO
-				pass;
-		
-		system_hp[system] -= damage;
+				system_hp[system] -= damage;
 	
 	
 	func take_damage_to_random_system(damage_type: DamageType, value: int) -> void:
-		var system : System = randi_range(0, System.size() - 2);
+		var system : System = GameState.rng.randi_range(0, System.size() - 2);
 		
 		match damage_type:
 			DamageType.PHYSICAL:

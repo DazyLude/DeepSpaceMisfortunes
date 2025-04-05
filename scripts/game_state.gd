@@ -65,7 +65,6 @@ func advance_phase() -> void:
 				new_token.emit(Table.TokenType.CREWMATE, crewmate);
 			
 			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
-			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
 			
 			new_event.emit(GlobalEventPool.get_event_instance(GlobalEventPool.EventID.SHIP_NAVIGATION));
 		
@@ -76,6 +75,7 @@ func advance_phase() -> void:
 		
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
+			ship.repair_systems();
 			new_event.emit(event_pools[hyper_depth].pull_random_event());
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
@@ -159,6 +159,22 @@ class ShipState extends RefCounted:
 				take_physical_damage(system, value);
 			DamageType.ELECTRIC:
 				take_electric_damage(system, value);
+	
+	
+	func repair_system(system: System) -> void:
+		if not system_hp.has(system):
+			return;
+		
+		if system_hp[system] < 0:
+			system_hp[system] += 1;
+		
+		system_hp[system] += 1;
+		system_hp[system] = mini(system_hp[system], default_hp[system]);
+	
+	
+	func repair_systems() -> void:
+		for crewmate in ships_crew.values():
+			repair_system(ships_crew[crewmate]);
 	
 	
 	func man_system(mate: Crewmate, system: System) -> void:

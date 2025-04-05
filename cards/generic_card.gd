@@ -25,6 +25,14 @@ func unhover() -> void:
 	is_hovered = false;
 
 
+func setup_hitbox() -> void:
+	hitbox_shape.shape.size = sprite.get_rect().size;
+	hitbox.position = sprite.position;
+	
+	hitbox.mouse_entered.connect(hover);
+	hitbox.mouse_exited.connect(unhover);
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_btn_event := event as InputEventMouseButton;
@@ -39,8 +47,4 @@ func _ready() -> void:
 	if card_texture != null:
 		sprite.texture = card_texture;
 	
-	hitbox_shape.shape.size = sprite.get_rect().size;
-	hitbox.position = sprite.position;
-	
-	hitbox.mouse_entered.connect(hover);
-	hitbox.mouse_exited.connect(unhover);
+	setup_hitbox();

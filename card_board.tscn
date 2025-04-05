@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cjfjsxsu1ecg2"]
+[gd_scene load_steps=4 format=3 uid="uid://cjfjsxsu1ecg2"]
 
 [ext_resource type="Script" uid="uid://bygc27tiilr0t" path="res://card_board.gd" id="1_qs8yt"]
 [ext_resource type="PackedScene" uid="uid://cqtida6kfefcr" path="res://scenes/ship.tscn" id="2_mpg2q"]
+[ext_resource type="PackedScene" uid="uid://l6x1r2h3ia8x" path="res://scenes/progress_bar.tscn" id="3_o0c05"]
 
 [node name="CardBoard" type="Node2D"]
 script = ExtResource("1_qs8yt")
@@ -19,3 +20,5 @@ offset_top = 484.0
 offset_right = 997.0
 offset_bottom = 515.0
 text = "Continue"
+
+[node name="ProgressBar" parent="." instance=ExtResource("3_o0c05")]

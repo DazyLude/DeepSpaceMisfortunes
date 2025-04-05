@@ -63,6 +63,8 @@ func advance_phase() -> void:
 			
 			for crewmate in ship.ships_crew:
 				new_token.emit(Table.TokenType.CREWMATE, crewmate);
+			
+			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
 			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
 			
 			new_event.emit(GlobalEventPool.get_event_instance(GlobalEventPool.EventID.SHIP_NAVIGATION));

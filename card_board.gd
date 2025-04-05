@@ -12,6 +12,7 @@ enum TokenType {
 
 var active_cards : Dictionary[GenericCard, RefCounted] = {};
 var active_zones : Dictionary[GenericTableZone, GenericCard] = {};
+var token_stacks : Array[TokenStack] = [];
 
 var current_event : GenericEvent = null;
 
@@ -29,8 +30,12 @@ func get_card_token_type(card: GenericCard) -> TokenType:
 			return TokenType.OTHER;
 
 
-func collision_check(card: GenericCard, zone: GenericTableZone) -> bool:
-	return card.hitbox.overlaps_area(zone);
+func zone_collision_check(card: GenericCard, zone: GenericTableZone) -> bool:
+	return card.hitbox.overlaps_area(zone) and card.visible and zone.visible;
+
+
+func card_collision_check(card: GenericCard, another: GenericCard) -> bool:
+	return card.hitbox.overlaps_area(another.hitbox) and card.visible and another.visible;
 
 
 func add_active_zone(zone: GenericTableZone) -> void:
@@ -53,6 +58,23 @@ func remove_active_card(card: GenericCard) -> void:
 	active_cards.erase(card);
 
 
+func spawn_stack(stack: TokenStack, zone: GenericTableZone = null) -> void:
+	$Stacks.add_child(stack);
+	stack.picked.connect(stack.card_removed.bind(null, self));
+	if zone != null:
+		stack.picked_from_stack.connect(zone._card_removed.bind(self));
+	token_stacks.push_back(stack);
+
+
+func remove_stack(stack: TokenStack) -> void:
+	var stack_zone_owner = active_zones.find_key(stack);
+	if stack_zone_owner != null:
+		active_zones[stack_zone_owner] = stack.tokens.back();
+	
+	$Stacks.remove_child(stack);
+	token_stacks.erase(stack);
+
+
 func picked_card(card: GenericCard) -> void:
 	if picked_card_ref != null:
 		dropped_card(card);
@@ -64,15 +86,51 @@ func picked_card(card: GenericCard) -> void:
 		var card_owner_zone := active_zones.find_key(card) as GenericTableZone;
 		if card_owner_zone != null:
 			active_zones[card_owner_zone] = null;
-			card_owner_zone._card_removed();
+			card_owner_zone._card_removed(card, self);
 
 
 func dropped_card(card: GenericCard) -> void:
 	for zone in active_zones:
-		if collision_check(card, zone) and zone._can_accept_card(card, self):
-			zone._card_accepted();
-			card.position = self.to_local(zone.to_global(zone.card_destination_position));
-			active_zones[zone] = card;
+		if zone_collision_check(card, zone) and zone._can_accept_card(card, self):
+			match active_zones[zone]:
+				null:
+					zone._card_accepted(card, self);
+					card.position = self.to_local(zone.to_global(zone.card_destination_position));
+					active_zones[zone] = card;
+				
+				var another_card when active_cards.has(another_card):
+					var new_stack = TokenStack.from_two_tokens(card, another_card);
+					new_stack.position = another_card.position;
+					active_zones[zone] = new_stack;
+					spawn_stack(new_stack, zone);
+				
+				var stack when token_stacks.has(stack) \
+					and get_card_token_type(card) == stack.get_token_type(self):
+					stack.card_added(card, self);
+				
+				_:
+					push_error("unexpected collision scenario");
+				
+			picked_card_ref = null;
+			return;
+	
+	for stack in token_stacks:
+		if card_collision_check(card, stack) \
+			and get_card_token_type(card) == stack.get_token_type(self):
+				stack.card_added(card, self);
+				picked_card_ref = null;
+				return;
+	
+	for another_card in active_cards:
+		if card != another_card \
+			and card_collision_check(card, another_card) \
+			and active_zones.find_key(another_card) == null \
+			and get_card_token_type(card) == get_card_token_type(another_card):
+				var new_stack = TokenStack.from_two_tokens(card, another_card);
+				new_stack.position = card.position;
+				spawn_stack(new_stack);
+				picked_card_ref = null;
+				return;
 	
 	picked_card_ref = null;
 
@@ -106,6 +164,11 @@ func despawn_tokens() -> void:
 		$Tokens.remove_child(token);
 		token.queue_free();
 		remove_active_card(token);
+	
+	for stack in $Stacks.get_children():
+		$Stacks.remove_child(stack);
+		stack.queue_free();
+		remove_stack(stack);
 
 
 func spawn_event(event_instance: GenericEvent) -> void:

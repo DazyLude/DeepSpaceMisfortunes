@@ -10,9 +10,9 @@ func _can_accept_card(_card: GenericCard, _table: Table) -> bool:
 	return true;
 
 
-func _card_accepted():
+func _card_accepted(_card: GenericCard, _table: Table):
 	pass;
 
 
-func _card_removed():
+func _card_removed(_card: GenericCard, _table: Table):
 	pass;

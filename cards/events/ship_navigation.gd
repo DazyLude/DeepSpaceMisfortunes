@@ -4,11 +4,11 @@ extends GenericEvent
 var course : int;
 
 
-func course_chosen(which: int) -> void:
+func course_chosen(_card, which: int) -> void:
 	course = which;
 
 
-func course_unchosen() -> void:
+func course_unchosen(_card) -> void:
 	course = -1;
 
 

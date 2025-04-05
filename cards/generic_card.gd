@@ -37,10 +37,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_btn_event := event as InputEventMouseButton;
 		match mouse_btn_event.button_index:
-			MOUSE_BUTTON_LEFT when is_hovered and mouse_btn_event.pressed:
+			MOUSE_BUTTON_LEFT when is_hovered and mouse_btn_event.pressed and visible:
 				picked.emit();
-			MOUSE_BUTTON_LEFT when is_hovered and not mouse_btn_event.pressed:
+				get_viewport().set_input_as_handled();
+				
+			MOUSE_BUTTON_LEFT when is_hovered and not mouse_btn_event.pressed and visible:
 				dropped.emit();
+				#get_viewport().set_input_as_handled();
 
 
 func _ready() -> void:

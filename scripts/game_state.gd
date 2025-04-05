@@ -1,7 +1,7 @@
 extends Node
 
 
-
+#TODO ShipState, TravelDistance, TravelGoal, HyperDepth, roundN, roundPhase
 
 
 

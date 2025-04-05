@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://b30et0jmfbm73"]
+
+[ext_resource type="Script" uid="uid://6tfy5iyy3q6m" path="res://cards/generic_event.gd" id="1_ocxnd"]
+[ext_resource type="Texture2D" uid="uid://yndfel38ox5p" path="res://icon.svg" id="2_4kah0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h7fig"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_wweyf"]
+size = Vector2(128, 196)
+
+[node name="GenericEvent" type="Node2D"]
+script = ExtResource("1_ocxnd")
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="HitboxRect" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_h7fig")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = SubResource("PlaceholderTexture2D_wweyf")
+
+[node name="EventImage" type="Sprite2D" parent="."]
+position = Vector2(0, -34)
+texture = ExtResource("2_4kah0")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -64.0
+offset_top = -4.0
+offset_right = 64.0
+offset_bottom = 98.0
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Proin tortor purus platea sit eu id nisi litora libero. Neque vulputate consequat ac amet augue blandit maximus aliquet congue. Pharetra vestibulum posuere ornare faucibus fusce dictumst orci aenean eu facilisis ut volutpat commodo senectus purus himenaeos fames primis convallis nisi."
+autowrap_mode = 3
+text_overrun_behavior = 3

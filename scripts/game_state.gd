@@ -34,11 +34,12 @@ enum RoundPhase {
 	EXECUTION,
 	EVENT,
 	SHIP_ACTION,
+	ENDGAME,
 };
 
 
 const TRAVEL_GOAL : float = 20.0;
-const GAMEOVER_TIME : int = 25;
+const GAMEOVER_PENALTY : int = 30;
 
 
 var rng := RandomNumberGenerator.new();
@@ -50,7 +51,7 @@ var hyper_depth : HyperspaceDepth;
 var current_phase : RoundPhase;
 var round_n : int = 0;
 var score : int = 0;
-var ingot_count : int;
+var ingot_count : int = 0;
 
 var active_table : Table = null;
 
@@ -59,6 +60,10 @@ var event_pools : Dictionary[HyperspaceDepth, EventPool] = {};
 var interrupt_phase_sequence = null;
 
 var life_support_failure : bool = false;
+
+
+func get_score() -> int:
+	return GameState.ingot_count * 3 - GameState.round_n;
 
 
 func get_speed() -> float:
@@ -137,8 +142,10 @@ func advance_phase() -> void:
 			
 			round_n += 1;
 		
-		RoundPhase.PREPARATION: # has not resolved nav 
-			pass;
+		RoundPhase.ENDGAME when active_table.current_event.is_token_set: # has not resolved nav 
+			new_event.emit(null);
+			clear_tokens.emit();
+			new_game(active_table);
 	
 	new_phase.emit(current_phase);
 
@@ -155,7 +162,7 @@ func new_game(table: Table) -> void:
 	current_phase = RoundPhase.GAME_START;
 	round_n = 0;
 	score = 0;
-	ingot_count = 0;
+	ingot_count = 10;
 	life_support_failure = false;
 	interrupt_phase_sequence = null;
 	

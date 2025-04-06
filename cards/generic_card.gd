@@ -9,7 +9,9 @@ signal dropped;
 const fly_transition : float = 0.05;
 const fly_offset := Vector2(-1.0, -1.0);
 const max_blur : float = 1.5;
+const shake_power : float = 10.0;
 var transition_tween : Tween = null;
+var shake_tween : Tween = null;
 
 
 @export var card_texture : Texture2D = null;
@@ -69,6 +71,16 @@ func stop_flying() -> void:
 	
 	transition_tween.tween_callback(shadow_sprite.material.set_shader_parameter.bind(&"display", false));
 	transition_tween.tween_callback(func(): sprite.z_index = 0);
+	
+
+func shake() -> void:
+	if shake_tween:
+		shake_tween.kill();
+	shake_tween = create_tween().set_loops();
+	
+	shake_tween.tween_property(self, "scale",
+		Vector2(randf_range(-shake_power, shake_power),
+				randf_range(-shake_power, shake_power)), 0.2).as_relative();
 
 
 func _unhandled_input(event: InputEvent) -> void:

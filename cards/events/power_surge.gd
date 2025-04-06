@@ -8,20 +8,22 @@ func _action() -> void:
 		GameState.HyperspaceDepth.NONE:
 			damage = 1;
 		GameState.HyperspaceDepth.SHALLOW:
-			damage = 2;
+			damage = 1;
 		GameState.HyperspaceDepth.NORMAL:
-			damage = 4;
+			damage = 3;
 		GameState.HyperspaceDepth.DEEP:
-			damage = 8;
+			damage = 6;
 	
-	if GameState.ship.is_system_manned(GameStateClass.ShipState.System.NAVIGATION):
+	var target_system = GameState.ship.get_random_system();
+	
+	if GameState.ship.is_system_manned(target_system):
 		damage -= 1;
 	
 	damage = maxi(0, damage);
 	
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage);
+	GameState.ship.take_electric_damage(target_system, damage);
 
 
 func _init() -> void:
-	event_title = "An Asteroid Field";
-	event_text = "A minor course correction might be needed.";
+	event_title = "Power Surge!";
+	event_text = "System overloads with energy! Sparks everywhere.";

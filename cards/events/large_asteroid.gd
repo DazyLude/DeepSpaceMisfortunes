@@ -6,16 +6,16 @@ func _action() -> void:
 	
 	match GameState.hyper_depth:
 		GameState.HyperspaceDepth.NONE:
-			damage = 1;
-		GameState.HyperspaceDepth.SHALLOW:
 			damage = 2;
+		GameState.HyperspaceDepth.SHALLOW:
+			damage = 3;
 		GameState.HyperspaceDepth.NORMAL:
-			damage = 4;
+			damage = 6;
 		GameState.HyperspaceDepth.DEEP:
-			damage = 8;
+			damage = 12;
 	
 	if GameState.ship.is_system_manned(GameStateClass.ShipState.System.NAVIGATION):
-		damage -= 1;
+		damage -= 2;
 	
 	damage = maxi(0, damage);
 	
@@ -23,5 +23,5 @@ func _action() -> void:
 
 
 func _init() -> void:
-	event_title = "An Asteroid Field";
-	event_text = "A minor course correction might be needed.";
+	event_title = "A Large Asteroid Field";
+	event_text = "This one is particularly large and dense. A course adjustment is required.";

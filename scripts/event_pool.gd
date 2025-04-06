@@ -15,7 +15,10 @@ func add_event_with_weight(event: GenericEvent, weight: float) -> void:
 func reduce_limited_events_weight(event: GenericEvent) -> void:
 	var event_idx = events.find(event);
 	
-	match event.LimitedType:
+	if event_idx == -1:
+		return;
+	
+	match event.is_consumed:
 		GenericEvent.LimitedType.LIMITED_PER_LAYER:
 			weights[event_idx] -= 1.0;
 		GenericEvent.LimitedType.LIMITED_GLOBALLY:
@@ -26,7 +29,7 @@ func pull_random_event() -> GenericEvent:
 	var event_idx = GameState.rng.rand_weighted(weights);
 	var event = events[event_idx];
 	
-	match event.LimitedType:
+	match event.is_consumed:
 		GenericEvent.LimitedType.LIMITED_PER_LAYER:
 			reduce_limited_events_weight(event);
 		GenericEvent.LimitedType.LIMITED_GLOBALLY:
@@ -39,7 +42,28 @@ func pull_random_event() -> GenericEvent:
 static func get_placeholder_pool() -> EventPool:
 	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
 		GlobalEventPool.EventID.NOTHING: 1.0,
-		GlobalEventPool.EventID.ASTEROID: 1.0,
+	};
+	
+	return get_pool_populated_with_weights(placeholder_weights);
+
+
+static func get_test_pool() -> EventPool:
+	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
+		GlobalEventPool.EventID.NOTHING : 1.0,
+		#GlobalEventPool.EventID.ASTEROID : 1.0,
+		#GlobalEventPool.EventID.LARGE_ASTEROID : 1.0,
+		#GlobalEventPool.EventID.POWER_SURGE : 1.0,
+		#GlobalEventPool.EventID.PLASMA_INCARNATE : 1.0,
+		#GlobalEventPool.EventID.SPACE_RAY : 1.0,
+		#GlobalEventPool.EventID.FLUCTUATION_UP : 1.0,
+		#GlobalEventPool.EventID.FLUCTUATION_DOWN : 1.0,
+		#GlobalEventPool.EventID.ALIENS : 1.0,
+		
+		#GlobalEventPool.EventID.SHINY : 1.0,
+		#GlobalEventPool.EventID.TIME_DILATION : 1.0,
+		
+		GlobalEventPool.EventID.GOODWILL : 1.0,
+		#GlobalEventPool.EventID.FRIEND : 1.0,
 	};
 	
 	return get_pool_populated_with_weights(placeholder_weights);

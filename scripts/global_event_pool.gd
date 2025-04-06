@@ -5,12 +5,33 @@ extends Node
 enum EventID {
 	GENERIC,
 	
+	# default gameplay loop events
 	SHIP_NAVIGATION,
 	PROGRESS_REPORT,
+	SHIP_ACTION,
 	
+	# continuations of other events
+	FRIEND2,
+	
+	
+	# random bad events
 	NOTHING,
 	ASTEROID,
+	LARGE_ASTEROID,
+	POWER_SURGE,
+	PLASMA_INCARNATE,
+	SPACE_RAY,
+	FLUCTUATION_UP,
+	FLUCTUATION_DOWN,
+	ALIENS,
 	
+	# random neutral
+	SHINY,
+	TIME_DILATION,
+	
+	# random good
+	GOODWILL,
+	FRIEND,
 };
 
 
@@ -22,6 +43,20 @@ var event_load_params : Dictionary[EventID, String] = {
 	
 	EventID.NOTHING: "res://cards/events/space_is_empty.gd",
 	EventID.ASTEROID: "res://cards/events/asteroid.gd",
+	EventID.LARGE_ASTEROID: "res://cards/events/large_asteroid.gd",
+	EventID.POWER_SURGE: "res://cards/events/power_surge.gd",
+	EventID.PLASMA_INCARNATE: "res://cards/events/plasma_guy.gd",
+	EventID.SPACE_RAY: "res://cards/events/space_beam.gd",
+	EventID.FLUCTUATION_UP: "res://cards/events/fluctuation_up.gd",
+	EventID.FLUCTUATION_DOWN: "res://cards/events/fluctuation_down.gd",
+	EventID.ALIENS: "res://cards/events/ayyy_lmao.gd",
+	
+	EventID.SHINY: "res://cards/events/shiny.gd",
+	EventID.TIME_DILATION: "res://cards/events/double_time.gd",
+	
+	EventID.GOODWILL: "res://cards/events/good_will.gd",
+	EventID.FRIEND: "res://cards/events/friend1.gd",
+	EventID.FRIEND2: "res://cards/events/friend2.gd",
 };
 
 
@@ -30,10 +65,6 @@ var event_instances : Dictionary[EventID, GenericEvent];
 
 func get_event_instance(id: EventID) -> GenericEvent:
 	var instance := event_instances.get(id, null) as GenericEvent;
-	
-	if instance != null:
-		instance._prepare();
-	
 	return instance;
 
 

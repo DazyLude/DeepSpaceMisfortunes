@@ -81,6 +81,7 @@ func picked_card(card: GenericCard) -> void:
 	
 	if card != null:
 		grabbed_offset = card.position - get_local_mouse_position();
+		grabbed_offset.clamp(card.hitbox_shape.shape.size / -2, card.hitbox_shape.shape.size / 2)
 		picked_card_ref = card;
 		
 		card.fly_with_shadow();
@@ -206,13 +207,12 @@ func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 func despawn_all_tokens() -> void:
 	for token in $Tokens.get_children():
 		$Tokens.remove_child(token);
-		token.queue_free();
 		remove_active_card(token);
+		token.queue_free();
 	
 	for stack in $Stacks.get_children():
-		$Stacks.remove_child(stack);
-		stack.queue_free();
 		remove_stack(stack);
+		stack.queue_free();
 	
 	for zone in active_zones:
 		active_zones[zone] = null;
@@ -220,8 +220,11 @@ func despawn_all_tokens() -> void:
 
 func spawn_event(event_instance: GenericEvent) -> void:
 	despawn_event();
+	
 	if event_instance == null:
 		return;
+	
+	event_instance._prepare();
 	
 	$Events.add_child(event_instance);
 	

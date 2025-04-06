@@ -2,17 +2,7 @@ extends GenericEvent
 
 
 func _action() -> void:
-	var speed : float;
-	
-	match GameState.hyper_depth:
-		GameState.HyperspaceDepth.NONE:
-			speed = 0.1;
-		GameState.HyperspaceDepth.SHALLOW:
-			speed = 0.4;
-		GameState.HyperspaceDepth.NORMAL:
-			speed = 1.6;
-		GameState.HyperspaceDepth.DEEP:
-			speed = 6.0;
+	var speed : float = GameState.get_speed();
 	
 	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES):
 		speed = 0;

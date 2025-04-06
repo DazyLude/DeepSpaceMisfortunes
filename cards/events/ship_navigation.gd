@@ -1,7 +1,7 @@
 extends GenericEvent
 
 
-var course : int;
+var course : int = -1;
 
 
 func course_chosen(_card, which: int) -> void:
@@ -17,8 +17,12 @@ func _can_play() -> bool:
 
 
 func _action() -> void:
+	if course == -1:
+		return;
+	
 	GameState.hyper_depth += course - 1;
 	GameState.hyper_depth = clampi(GameState.hyper_depth, 0, 3);
+	course = -1;
 
 
 func _prepare() -> void:

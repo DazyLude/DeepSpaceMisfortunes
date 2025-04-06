@@ -55,8 +55,6 @@ func advance_phase() -> void:
 	match current_phase:
 		#TODO
 		_ when false:
-			new_event.emit();
-			new_token.emit();
 			gameover.emit(score);
 			victory.emit(score);
 		

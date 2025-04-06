@@ -8,8 +8,8 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	GameState.clear_tokens.emit();
-	GameState.new_token.emit(Table.TokenType.CREWMATE);
+	GameState.ship.ships_crew[GameState.Crewmate.new()] = GameState.ShipState.System.OTHER;
+	GameState.reset_tokens();
 	
 	event_title = "Tutorial 4";
 	event_text = "The big thing on the left is your ship.\n"\

@@ -77,10 +77,13 @@ func _ready() -> void:
 		$VBoxContainer/Label.text = event_text;
 	
 	if event_title != "" and $VBoxContainer/Title != null:
-		$VBoxContainer/Title.text = event_title;
+		$VBoxContainer/Title.text = event_title.to_upper();
 	
 	if event_image != null and $EventImage != null:
 		$EventImage.texture = event_image;
+	
+	if GameState != null and $LevelHint != null:
+		$LevelHint.text = "EVENT | DEPTH LVL%d" % (GameState.hyper_depth + 1);
 	
 	reset_input_connections();
 	

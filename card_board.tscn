@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cjfjsxsu1ecg2"]
+[gd_scene load_steps=9 format=3 uid="uid://cjfjsxsu1ecg2"]
 
 [ext_resource type="Script" uid="uid://bygc27tiilr0t" path="res://card_board.gd" id="1_qs8yt"]
 [ext_resource type="PackedScene" uid="uid://cqtida6kfefcr" path="res://scenes/ship.tscn" id="2_mpg2q"]
 [ext_resource type="PackedScene" uid="uid://l6x1r2h3ia8x" path="res://scenes/progress_bar.tscn" id="3_o0c05"]
 [ext_resource type="PackedScene" uid="uid://hbc8ew5rrs1q" path="res://scenes/ship_status_display.tscn" id="4_tq2su"]
 [ext_resource type="PackedScene" uid="uid://cy3qtxhsudcd7" path="res://scenes/background.tscn" id="5_3tt6t"]
+[ext_resource type="Texture2D" uid="uid://c8llkj3fjx3d5" path="res://assets/card_slot_ph.png" id="6_oeco7"]
 [ext_resource type="Texture2D" uid="uid://b7sdk0qopl0mh" path="res://assets/giant_helping_arrow_stage1.png" id="6_om5b5"]
 [ext_resource type="Texture2D" uid="uid://dl5v7dicnxcye" path="res://assets/giant_helping_arrow_stage2.png" id="7_xjc58"]
 
@@ -43,8 +44,15 @@ offset_bottom = 52.0
 [node name="Background" parent="." instance=ExtResource("5_3tt6t")]
 z_index = -5
 
+[node name="NavigationTokenHolder" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(682, 513)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("6_oeco7")
+
 [node name="Hint" type="Sprite2D" parent="."]
 visible = false
+z_index = -1
 position = Vector2(719, 559)
 rotation = -0.0237849
 scale = Vector2(1.5, 1.5)
@@ -52,6 +60,7 @@ texture = ExtResource("6_om5b5")
 
 [node name="Hint2" type="Sprite2D" parent="."]
 visible = false
+z_index = -1
 position = Vector2(719, 559)
 rotation = -0.0237849
 scale = Vector2(1.5, 1.5)

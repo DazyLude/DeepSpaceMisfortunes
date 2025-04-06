@@ -9,6 +9,10 @@ enum TokenType {
 	OTHER,
 }
 
+const nav_token_spawn_location := Vector2(680.0, 500.0);
+const crew_token_spawn_location := Vector2(380.0, 600.0);
+const ingot_token_spawn_location := Vector2(180.0, 600.0);
+
 
 var active_cards : Dictionary[GenericCard, RefCounted] = {};
 var active_zones : Dictionary[GenericTableZone, GenericCard] = {};
@@ -171,15 +175,15 @@ func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 		TokenType.CREWMATE:
 			token = load("res://cards/tokens/crewmate.tscn").instantiate();
 			ph_token_data = GameState.Crewmate.new();
-			where = Vector2(250, 600);
+			where = crew_token_spawn_location;
 		TokenType.INGOT:
 			token = load("res://cards/tokens/contraband.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_ingot_token();
-			where = Vector2(350, 600);
+			where = ingot_token_spawn_location;
 		TokenType.SHIP_NAVIGATION:
 			token = load("res://cards/tokens/ship_navigation.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_nav_token();
-			where = Vector2(450, 600);
+			where = nav_token_spawn_location;
 	
 	token.position = where;
 	$Tokens.add_child(token);
@@ -288,5 +292,5 @@ func _ready() -> void:
 	
 	GameState.new_event.connect(spawn_event);
 	GameState.new_token.connect(spawn_token);
-	GameState.clear_tokens.connect(despawn_tokens);
+	GameState.clear_tokens.connect(despawn_all_tokens);
 	GameState.ping_tokens.connect(shake_tokens);

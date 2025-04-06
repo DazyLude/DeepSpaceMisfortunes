@@ -37,10 +37,8 @@ func _prepare() -> void:
 	ingot_set = false;
 	nav_set = false;
 	
-	GameState.clear_tokens.emit();
-	GameState.new_token.emit(Table.TokenType.CREWMATE);
-	GameState.new_token.emit(Table.TokenType.INGOT);
-	GameState.new_token.emit(Table.TokenType.SHIP_NAVIGATION);
+	GameState.ingot_count += 1;
+	GameState.reset_tokens();
 	
 	event_title = "Tutorial 3";
 	event_text = "Game flow and event outcomes are controlled by dragging tokens to various inputs.\n"\

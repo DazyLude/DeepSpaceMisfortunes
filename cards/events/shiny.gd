@@ -25,8 +25,6 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	GameState.new_token.emit(Table.TokenType.SHIP_NAVIGATION);
-	
 	event_title = "A Mineral Rich Asteroid!";
 	event_text = "Your ship's scanner picks up a strange signal. The adamantine you're transporting, "\
 		+ "the asteroid's core is basically made from it! "\

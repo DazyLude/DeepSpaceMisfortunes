@@ -78,11 +78,24 @@ func get_speed() -> float:
 		GameState.HyperspaceDepth.SHALLOW:
 			speed = 0.4;
 		GameState.HyperspaceDepth.NORMAL:
-			speed = 1.6;
+			speed = 1.2;
 		GameState.HyperspaceDepth.DEEP:
-			speed = 6.0;
+			speed = 3.0;
 	
 	return speed;
+
+
+func reset_tokens() -> void:
+	clear_tokens.emit();
+	
+	for crewmate in ship.ships_crew: # idle crewmembers
+		if ship.ships_crew[crewmate] == ShipState.System.OTHER:
+			new_token.emit(Table.TokenType.CREWMATE, crewmate);
+	
+	for ingot_i in ingot_count:
+		new_token.emit(Table.TokenType.INGOT, null);
+	
+	new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
 
 
 func advance_phase() -> void:
@@ -114,7 +127,6 @@ func advance_phase() -> void:
 		
 		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == HyperspaceDepth.NONE:
 			clear_tokens.emit();
-			new_token.emit.call_deferred(Table.TokenType.SHIP_NAVIGATION);
 			play_event(GlobalEventPool.EventID.VICTORY);
 		
 		_ when should_interrupt:
@@ -125,15 +137,6 @@ func advance_phase() -> void:
 			current_phase = RoundPhase.PREPARATION;
 			ship.reset_crew();
 			new_event.emit(null);
-			
-			for crewmate in ship.ships_crew:
-				new_token.emit(Table.TokenType.CREWMATE, crewmate);
-			
-			for ingot_i in ingot_count:
-				new_token.emit(Table.TokenType.INGOT, null);
-			
-			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
-			
 			play_event(GlobalEventPool.EventID.SHIP_NAVIGATION);
 		
 		RoundPhase.PREPARATION when active_table.current_event._can_play():
@@ -147,23 +150,12 @@ func advance_phase() -> void:
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
 			new_event.emit(null);
-			
-			for crewmate in ship.ships_crew: # idle crewmembers
-				if ship.ships_crew[crewmate] == ShipState.System.OTHER:
-					new_token.emit(Table.TokenType.CREWMATE, crewmate);
-			
-			for ingot_i in ingot_count:
-				new_token.emit(Table.TokenType.INGOT, null);
-			
 			new_event.emit(event_pools[hyper_depth].pull_random_event());
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
-			new_event.emit(null);
-			clear_tokens.emit();
 			
 			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
-				new_token.emit(Table.TokenType.SHIP_NAVIGATION);
 				play_event(GlobalEventPool.EventID.GAMEOVER);
 			elif not ship.is_system_ok(ShipState.System.LIFE_SUPPORT):
 				life_support_failure = true;
@@ -172,8 +164,10 @@ func advance_phase() -> void:
 				life_support_failure = false;
 				play_event(GlobalEventPool.EventID.SHIP_ACTION);
 			
+			new_event.emit(null);
 			round_n += 1;
 	
+	reset_tokens.call_deferred();
 	new_phase.emit(current_phase);
 
 
@@ -183,10 +177,12 @@ func play_event(id: GlobalEventPool.EventID) -> void:
 
 func go_to_menu(table: Table) -> void:
 	ship = ShipState.new();
+	ship.ships_crew.clear();
+	
 	active_table = table;
 	current_phase = RoundPhase.STARTUP;
 	play_event.call_deferred(GlobalEventPool.EventID.MAIN_MENU);
-	new_token.emit.call_deferred(Table.TokenType.SHIP_NAVIGATION);
+	reset_tokens.call_deferred();
 
 
 func new_game() -> void:
@@ -207,6 +203,8 @@ func new_game() -> void:
 	
 	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
 	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();
+	
+	advance_phase.call_deferred();
 
 
 class ShipState extends RefCounted:
@@ -252,19 +250,23 @@ class ShipState extends RefCounted:
 	
 	func take_physical_damage(system: System, damage: int) -> void:
 		match system:
-			_ when is_system_ok(System.OUTER_HULL):
+			_ when system_hp[System.OUTER_HULL] > 0:
 				var hull_hp = system_hp[System.OUTER_HULL];
 				if hull_hp > damage:
 					system_hp[System.OUTER_HULL] -= damage;
-				elif hull_hp > 0:
+				else:
 					damage -= hull_hp;
 					system_hp[System.OUTER_HULL] = 0;
-					system_hp[system] -= damage;
-				else:
-					system_hp[system] -= damage;
+					take_physical_damage(system, damage);
 			
-			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
-				system_hp[System.INNER_HULL] -= damage;
+			System.LIFE_SUPPORT, System.NAVIGATION when system_hp[System.INNER_HULL] > 0:
+				var hull_hp = system_hp[System.INNER_HULL];
+				if hull_hp > damage:
+					system_hp[System.INNER_HULL] -= damage;
+				elif hull_hp > 0:
+					damage -= hull_hp;
+					system_hp[System.INNER_HULL] = 0;
+					take_physical_damage(system, damage);
 			_:
 				system_hp[system] -= damage;
 	

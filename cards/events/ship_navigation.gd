@@ -28,10 +28,19 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES):
+	var are_drives_ok = GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES);
+	var is_nav_ok = GameState.ship.is_system_ok(GameStateClass.ShipState.System.NAVIGATION);
+	
+	if not are_drives_ok:
 		event_title = "Hyper Drive is out!";
-		event_text = "You can't manually change the Hyperspace level you're in when Hyper Drive is out of commission."
+		event_text = "You can't manually change the Hyperspace level when Hyper Drive is out of commission."
 		var stay_idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "I guess I'll stay");
+		setup_event_signals(stay_idx, course_chosen.bind(1), course_unchosen);
+	
+	elif not is_nav_ok:
+		event_title = "Navigation is out!";
+		event_text = "You can't manually change the Hyperspace level if your bridge is busted."
+		var stay_idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "I guess I'll fix it");
 		setup_event_signals(stay_idx, course_chosen.bind(1), course_unchosen);
 	
 	else:

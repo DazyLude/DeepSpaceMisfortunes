@@ -213,6 +213,7 @@ func spawn_event(event_instance: GenericEvent) -> void:
 func despawn_event() -> void:
 	if current_event != null:
 		current_event._action();
+		
 		for zone in current_event.event_zones:
 			remove_active_zone(zone);
 		

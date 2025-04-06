@@ -19,7 +19,12 @@ var event_instances : Dictionary[EventID, GenericEvent];
 
 
 func get_event_instance(id: EventID) -> GenericEvent:
-	return event_instances.get(id, null);
+	var instance := event_instances.get(id, null) as GenericEvent;
+	
+	if instance != null:
+		instance._prepare();
+	
+	return instance;
 
 
 func _init() -> void:

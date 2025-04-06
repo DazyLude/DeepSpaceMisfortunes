@@ -83,6 +83,8 @@ func picked_card(card: GenericCard) -> void:
 		grabbed_offset = card.position - get_local_mouse_position();
 		picked_card_ref = card;
 		
+		card.fly_with_shadow();
+		
 		var card_owner_zone := active_zones.find_key(card) as GenericTableZone;
 		if card_owner_zone != null:
 			active_zones[card_owner_zone] = null;
@@ -90,30 +92,49 @@ func picked_card(card: GenericCard) -> void:
 
 
 func dropped_card(card: GenericCard) -> void:
+	card.stop_flying();
+	
 	for zone in active_zones:
 		if zone_collision_check(card, zone) and zone._can_accept_card(card, self):
+			var zone_content := active_zones[zone];
+			
+			if zone_content == card:
+				picked_card_ref = null;
+				return;
+			
+			var is_same_type := zone_content is GenericCard \
+				and get_card_token_type(card) == get_card_token_type(zone_content);
+			
+			var is_valid_stack : bool = zone_content is TokenStack \
+				and token_stacks.has(zone_content) \
+				and get_card_token_type(card) == zone_content.get_token_type(self)
+			
 			match active_zones[zone]:
 				null:
 					zone._card_accepted(card, self);
 					card.position = self.to_local(zone.to_global(zone.card_destination_position));
 					active_zones[zone] = card;
 				
-				var another_card when card != another_card \
-					and active_cards.has(another_card) \
-					and zone.accepts_stacks:
-						var new_stack = TokenStack.from_two_tokens(card, another_card);
-						new_stack.position = another_card.position;
-						active_zones[zone] = new_stack;
-						spawn_stack(new_stack, zone);
+				var another_card when is_same_type and zone.accepts_stacks:
+					var new_stack = TokenStack.from_two_tokens(card, another_card);
+					new_stack.position = another_card.position;
+					active_zones[zone] = new_stack;
+					spawn_stack(new_stack, zone);
 				
-				var stack when token_stacks.has(stack) \
-					and get_card_token_type(card) == stack.get_token_type(self) \
-					and zone.stack_limit > stack.tokens.size():
-						stack.card_added(card, self);
+				var another_card when is_same_type and not zone.accepts_stacks:
+					picked_card_ref = null;
+					return;
 				
+				var stack when is_valid_stack and zone.stack_limit > stack.tokens.size():
+					stack.card_added(card, self);
+				
+				var stack when is_valid_stack and zone.stack_limit <= stack.tokens.size():
+					picked_card_ref = null;
+					return;
 				_:
 					push_error("unexpected collision scenario");
-				
+					break;
+			
 			picked_card_ref = null;
 			return;
 	
@@ -147,15 +168,15 @@ func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 		TokenType.CREWMATE:
 			token = load("res://cards/tokens/crewmate.tscn").instantiate();
 			ph_token_data = GameState.Crewmate.new();
-			where = Vector2(100, 100);
+			where = Vector2(100, 400);
 		TokenType.INGOT:
 			token = load("res://cards/tokens/contraband.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_ingot_token();
-			where = Vector2(100, 150);
+			where = Vector2(200, 400);
 		TokenType.SHIP_NAVIGATION:
 			token = load("res://cards/tokens/ship_navigation.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_nav_token();
-			where = Vector2(100, 200);
+			where = Vector2(300, 400);
 	
 	token.position = where;
 	$Tokens.add_child(token);
@@ -176,21 +197,22 @@ func despawn_tokens() -> void:
 
 func spawn_event(event_instance: GenericEvent) -> void:
 	despawn_event();
-	
 	if event_instance == null:
 		return;
+	
+	$Events.add_child(event_instance);
 	
 	for zone in event_instance.event_zones:
 		add_active_zone(zone);
 	
-	event_instance.position = Vector2(900, 300);
+	event_instance.position = Vector2(980, 360);
 	
 	current_event = event_instance;
-	$Events.add_child(event_instance);
 
 
 func despawn_event() -> void:
 	if current_event != null:
+		current_event._action();
 		for zone in current_event.event_zones:
 			remove_active_zone(zone);
 		

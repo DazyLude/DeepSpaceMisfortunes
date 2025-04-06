@@ -1,4 +1,5 @@
 extends Node
+class_name GameStateClass
 
 
 signal new_phase(round_phase);
@@ -7,6 +8,7 @@ signal new_event(GenericEvent);
 
 signal clear_tokens;
 signal new_token(TokenType, RefCounted);
+signal ping_tokens(TokenType);
 
 signal gameover(int);
 signal victory(int);
@@ -173,7 +175,7 @@ class ShipState extends RefCounted:
 	
 	
 	func repair_systems() -> void:
-		for crewmate in ships_crew.values():
+		for crewmate in ships_crew:
 			repair_system(ships_crew[crewmate]);
 	
 	

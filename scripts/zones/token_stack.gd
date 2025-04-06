@@ -44,12 +44,12 @@ func card_removed(_card: GenericCard, table: Table):
 static func from_two_tokens(token : GenericCard, another : GenericCard) -> TokenStack:
 	var stack := load("res://cards/generic_card.tscn").instantiate() as GenericCard;
 	stack.set_script(TokenStack);
+	stack.can_have_shadow = false;
 	
 	stack.tokens.push_back(token);
 	stack.tokens.push_back(another);
 	
 	stack.card_texture = token.sprite.texture.duplicate();
-	
 	stack.label = Label.new();
 	stack.label.text = "2";
 	stack.add_child(stack.label);

@@ -218,6 +218,16 @@ func despawn_all_tokens() -> void:
 		active_zones[zone] = null;
 
 
+func shake_tokens(token_type: TokenType) -> void:
+	for card in self.active_cards.keys():
+		if (get_card_token_type(card) == token_type):
+			card.shake();
+	
+	for stack in self.token_stacks:
+		if stack.get_token_type(self) == token_type:
+			stack.shake();
+
+
 func spawn_event(event_instance: GenericEvent) -> void:
 	despawn_event();
 	
@@ -263,4 +273,5 @@ func _ready() -> void:
 	
 	GameState.new_event.connect(spawn_event);
 	GameState.new_token.connect(spawn_token);
-	GameState.clear_tokens.connect(despawn_all_tokens);
+	GameState.clear_tokens.connect(despawn_tokens);
+	GameState.ping_tokens.connect(shake_tokens);

@@ -10,6 +10,12 @@ signal clear_tokens;
 signal new_token(TokenType, RefCounted);
 signal ping_tokens(TokenType);
 
+signal system_repaired(System);
+signal system_damaged(System);
+signal system_manned(System);
+
+signal ship_reset;
+
 signal gameover(int);
 signal victory(int);
 
@@ -28,11 +34,12 @@ enum RoundPhase {
 	EXECUTION,
 	EVENT,
 	SHIP_ACTION,
+	ENDGAME,
 };
 
 
 const TRAVEL_GOAL : float = 20.0;
-const GAMEOVER_TIME : int = 25;
+const GAMEOVER_PENALTY : int = 30;
 
 
 var rng := RandomNumberGenerator.new();
@@ -44,50 +51,114 @@ var hyper_depth : HyperspaceDepth;
 var current_phase : RoundPhase;
 var round_n : int = 0;
 var score : int = 0;
+var ingot_count : int = 0;
 
 var active_table : Table = null;
 
 
 var event_pools : Dictionary[HyperspaceDepth, EventPool] = {};
+var interrupt_phase_sequence = null;
+
+var life_support_failure : bool = false;
+
+
+func get_score() -> int:
+	return GameState.ingot_count * 3 - GameState.round_n;
+
+
+func get_speed() -> float:
+	var speed : float;
+	
+	match GameState.hyper_depth:
+		GameState.HyperspaceDepth.NONE:
+			speed = 0.1;
+		GameState.HyperspaceDepth.SHALLOW:
+			speed = 0.4;
+		GameState.HyperspaceDepth.NORMAL:
+			speed = 1.6;
+		GameState.HyperspaceDepth.DEEP:
+			speed = 6.0;
+	
+	return speed;
 
 
 func advance_phase() -> void:
+	var should_interrupt : bool = interrupt_phase_sequence != null \
+		and typeof(interrupt_phase_sequence) == TYPE_CALLABLE;
+	
 	match current_phase:
-		#TODO
-		_ when false:
-			new_event.emit();
-			new_token.emit();
-			gameover.emit(score);
-			victory.emit(score);
+		RoundPhase.ENDGAME when active_table.current_event.is_token_set:
+			new_game(active_table);
+			new_event.emit(null);
+			clear_tokens.emit();
+		
+		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == HyperspaceDepth.NONE:
+			clear_tokens.emit();
+			new_token.emit.call_deferred(Table.TokenType.SHIP_NAVIGATION);
+			play_event(GlobalEventPool.EventID.VICTORY);
+		
+		_ when should_interrupt:
+			interrupt_phase_sequence.call_deferred();
+			interrupt_phase_sequence = null;
 		
 		RoundPhase.SHIP_ACTION, RoundPhase.GAME_START:
 			current_phase = RoundPhase.PREPARATION;
+			ship.reset_crew();
+			new_event.emit(null);
 			
 			for crewmate in ship.ships_crew:
 				new_token.emit(Table.TokenType.CREWMATE, crewmate);
 			
+			for ingot_i in ingot_count:
+				new_token.emit(Table.TokenType.INGOT, null);
+			
 			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
 			
-			new_event.emit(GlobalEventPool.get_event_instance(GlobalEventPool.EventID.SHIP_NAVIGATION));
+			play_event(GlobalEventPool.EventID.SHIP_NAVIGATION);
 		
 		RoundPhase.PREPARATION when active_table.current_event._can_play():
 			current_phase = RoundPhase.EXECUTION;
-			clear_tokens.emit();
 			new_event.emit(null);
+			
+			clear_tokens.emit();
+			ship.repair_systems();
+			play_event(GlobalEventPool.EventID.PROGRESS_REPORT);
 		
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
-			ship.repair_systems();
+			new_event.emit(null);
+			
+			for crewmate in ship.ships_crew: # idle crewmembers
+				if ship.ships_crew[crewmate] == ShipState.System.OTHER:
+					new_token.emit(Table.TokenType.CREWMATE, crewmate);
+			
+			for ingot_i in ingot_count:
+				new_token.emit(Table.TokenType.INGOT, null);
+			
 			new_event.emit(event_pools[hyper_depth].pull_random_event());
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
 			new_event.emit(null);
-		
-		RoundPhase.PREPARATION: # has not resolved nav 
-			pass;
+			clear_tokens.emit();
+			
+			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
+				new_token.emit(Table.TokenType.SHIP_NAVIGATION);
+				play_event(GlobalEventPool.EventID.GAMEOVER);
+			elif not ship.is_system_ok(ShipState.System.LIFE_SUPPORT):
+				life_support_failure = true;
+				play_event(GlobalEventPool.EventID.SHIP_ACTION);
+			else:
+				life_support_failure = false;
+				play_event(GlobalEventPool.EventID.SHIP_ACTION);
+			
+			round_n += 1;
 	
 	new_phase.emit(current_phase);
+
+
+func play_event(id: GlobalEventPool.EventID) -> void:
+	new_event.emit(GlobalEventPool.get_event_instance(id));
 
 
 func new_game(table: Table) -> void:
@@ -98,9 +169,17 @@ func new_game(table: Table) -> void:
 	current_phase = RoundPhase.GAME_START;
 	round_n = 0;
 	score = 0;
+	ingot_count = 10;
+	life_support_failure = false;
+	interrupt_phase_sequence = null;
 	
-	for depth in HyperspaceDepth.values():
-		event_pools[depth] = EventPool.get_placeholder_pool();
+	event_pools[HyperspaceDepth.NONE] = EventPool.get_space_pool();
+	event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
+	event_pools[HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
+	event_pools[HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
+	
+	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
+	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();
 
 
 class ShipState extends RefCounted:
@@ -135,10 +214,28 @@ class ShipState extends RefCounted:
 	var ships_crew : Dictionary[Crewmate, System] = {};
 	
 	
+	func get_total_damage() -> int:
+		var total : int = 0;
+		
+		for system in default_hp:
+			total += default_hp[system] - system_hp[system];
+		
+		return total;
+	
+	
 	func take_physical_damage(system: System, damage: int) -> void:
 		match system:
 			_ when is_system_ok(System.OUTER_HULL):
-				system_hp[System.OUTER_HULL] -= damage;
+				var hull_hp = system_hp[System.OUTER_HULL];
+				if hull_hp > damage:
+					system_hp[System.OUTER_HULL] -= damage;
+				elif hull_hp > 0:
+					damage -= hull_hp;
+					system_hp[System.OUTER_HULL] = 0;
+					system_hp[system] -= damage;
+				else:
+					system_hp[system] -= damage;
+			
 			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
 				system_hp[System.INNER_HULL] -= damage;
 			_:
@@ -153,8 +250,13 @@ class ShipState extends RefCounted:
 				system_hp[system] -= damage;
 	
 	
+	func get_random_working_system() -> System:
+		var systems = system_hp.keys().filter(is_system_ok);
+		return GameState.rng.randi_range(0, systems.size() - 1) as System;
+	
+	
 	func take_damage_to_random_system(damage_type: DamageType, value: int) -> void:
-		var system : System = GameState.rng.randi_range(0, System.size() - 2) as System;
+		var system : System = get_random_working_system();
 		
 		match damage_type:
 			DamageType.PHYSICAL:
@@ -177,6 +279,15 @@ class ShipState extends RefCounted:
 	func repair_systems() -> void:
 		for crewmate in ships_crew:
 			repair_system(ships_crew[crewmate]);
+	
+	
+	func full_repair() -> void:
+		system_hp = default_hp.duplicate();
+	
+	
+	func reset_crew() -> void:
+		for mate in ships_crew:
+			ships_crew[mate] = System.OTHER;
 	
 	
 	func man_system(mate: Crewmate, system: System) -> void:

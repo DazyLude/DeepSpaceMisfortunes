@@ -1,11 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://b30et0jmfbm73"]
+[gd_scene load_steps=7 format=3 uid="uid://b30et0jmfbm73"]
 
 [ext_resource type="Script" uid="uid://6tfy5iyy3q6m" path="res://cards/generic_event.gd" id="1_ocxnd"]
-[ext_resource type="Texture2D" uid="uid://yndfel38ox5p" path="res://icon.svg" id="2_4kah0"]
 [ext_resource type="Texture2D" uid="uid://dycyfex0muwg8" path="res://assets/event_ph.png" id="2_wweyf"]
+[ext_resource type="Texture2D" uid="uid://b3o1ns25sybgy" path="res://assets/crewmate_ph.png" id="3_cdktb"]
 [ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="3_mw8ml"]
+[ext_resource type="Texture2D" uid="uid://c8llkj3fjx3d5" path="res://assets/card_slot_ph.png" id="4_mw8ml"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h7fig"]
+size = Vector2(23, 31)
 
 [node name="GenericEvent" type="Node2D"]
 script = ExtResource("1_ocxnd")
@@ -19,6 +21,11 @@ shape = SubResource("RectangleShape2D_h7fig")
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_wweyf")
 
+[node name="EventImage" type="Sprite2D" parent="."]
+position = Vector2(-124, 0)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("3_cdktb")
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 offset_left = -3.0
 offset_top = -173.0
@@ -30,6 +37,7 @@ theme_override_constants/separation = 15
 [node name="Title" type="Label" parent="VBoxContainer"]
 custom_minimum_size = Vector2(250, 10)
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "LOREM IPSUM DOLOR SIT"
 autowrap_mode = 3
 
@@ -49,12 +57,13 @@ position = Vector2(34, 28)
 script = ExtResource("3_mw8ml")
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
-[node name="EventImage" type="Sprite2D" parent="VBoxContainer/EventInputRow1/EventZone"]
+[node name="CardSlotImage" type="Sprite2D" parent="VBoxContainer/EventInputRow1/EventZone"]
 position = Vector2(0, 1)
-scale = Vector2(0.25, 0.265625)
-texture = ExtResource("2_4kah0")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_mw8ml")
 
 [node name="HitboxRect" type="CollisionShape2D" parent="VBoxContainer/EventInputRow1/EventZone"]
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_h7fig")
 
 [node name="Label" type="Label" parent="VBoxContainer/EventInputRow1"]
@@ -80,12 +89,13 @@ position = Vector2(34, 28)
 script = ExtResource("3_mw8ml")
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
-[node name="EventImage" type="Sprite2D" parent="VBoxContainer/EventInputRow2/EventZone"]
+[node name="CardSlotImage" type="Sprite2D" parent="VBoxContainer/EventInputRow2/EventZone"]
 position = Vector2(0, 1)
-scale = Vector2(0.25, 0.265625)
-texture = ExtResource("2_4kah0")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_mw8ml")
 
 [node name="HitboxRect" type="CollisionShape2D" parent="VBoxContainer/EventInputRow2/EventZone"]
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_h7fig")
 
 [node name="Label" type="Label" parent="VBoxContainer/EventInputRow2"]
@@ -111,12 +121,13 @@ position = Vector2(34, 28)
 script = ExtResource("3_mw8ml")
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
-[node name="EventImage" type="Sprite2D" parent="VBoxContainer/EventInputRow3/EventZone"]
+[node name="CardSlotImage" type="Sprite2D" parent="VBoxContainer/EventInputRow3/EventZone"]
 position = Vector2(0, 1)
-scale = Vector2(0.25, 0.265625)
-texture = ExtResource("2_4kah0")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_mw8ml")
 
 [node name="HitboxRect" type="CollisionShape2D" parent="VBoxContainer/EventInputRow3/EventZone"]
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_h7fig")
 
 [node name="Label" type="Label" parent="VBoxContainer/EventInputRow3"]

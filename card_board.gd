@@ -81,6 +81,7 @@ func picked_card(card: GenericCard) -> void:
 	
 	if card != null:
 		grabbed_offset = card.position - get_local_mouse_position();
+		grabbed_offset.clamp(card.hitbox_shape.shape.size / -2, card.hitbox_shape.shape.size / 2)
 		picked_card_ref = card;
 		
 		card.fly_with_shadow();
@@ -120,6 +121,8 @@ func dropped_card(card: GenericCard) -> void:
 					new_stack.position = another_card.position;
 					active_zones[zone] = new_stack;
 					spawn_stack(new_stack, zone);
+					if zone is EventZone:
+						zone._card_accepted(card, self);
 				
 				var another_card when is_same_type and not zone.accepts_stacks:
 					picked_card_ref = null;
@@ -168,31 +171,51 @@ func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 		TokenType.CREWMATE:
 			token = load("res://cards/tokens/crewmate.tscn").instantiate();
 			ph_token_data = GameState.Crewmate.new();
-			where = Vector2(100, 400);
+			where = Vector2(250, 600);
 		TokenType.INGOT:
 			token = load("res://cards/tokens/contraband.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_ingot_token();
-			where = Vector2(200, 400);
+			where = Vector2(350, 600);
 		TokenType.SHIP_NAVIGATION:
 			token = load("res://cards/tokens/ship_navigation.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_nav_token();
-			where = Vector2(300, 400);
+			where = Vector2(450, 600);
 	
 	token.position = where;
 	$Tokens.add_child(token);
 	add_active_card(token, token_data if token_data != null else ph_token_data);
+	
+	var respective_stack_i = token_stacks.find_custom(
+		func(t: TokenStack): return t.get_token_type(self) == token_type and active_zones.find_key(t) == null;
+	);
+	if respective_stack_i != -1:
+		token_stacks[respective_stack_i].card_added(token, self);
+		return;
+	
+	var other_tokens = active_cards.keys();
+	var similar_card_i = other_tokens.find_custom(
+		func(t: GenericCard): return get_card_token_type(t) == token_type and t != token;
+	);
+	if similar_card_i != -1:
+		var other_token = other_tokens[similar_card_i];
+		var new_stack = TokenStack.from_two_tokens(token, other_token);
+		new_stack.position = token.position;
+		spawn_stack(new_stack);
+		return;
 
 
-func despawn_tokens() -> void:
+func despawn_all_tokens() -> void:
 	for token in $Tokens.get_children():
 		$Tokens.remove_child(token);
-		token.queue_free();
 		remove_active_card(token);
+		token.queue_free();
 	
 	for stack in $Stacks.get_children():
-		$Stacks.remove_child(stack);
-		stack.queue_free();
 		remove_stack(stack);
+		stack.queue_free();
+	
+	for zone in active_zones:
+		active_zones[zone] = null;
 
 
 func shake_tokens(token_type: TokenType) -> void:
@@ -207,8 +230,11 @@ func shake_tokens(token_type: TokenType) -> void:
 
 func spawn_event(event_instance: GenericEvent) -> void:
 	despawn_event();
+	
 	if event_instance == null:
 		return;
+	
+	event_instance._prepare();
 	
 	$Events.add_child(event_instance);
 	
@@ -223,6 +249,7 @@ func spawn_event(event_instance: GenericEvent) -> void:
 func despawn_event() -> void:
 	if current_event != null:
 		current_event._action();
+		
 		for zone in current_event.event_zones:
 			remove_active_zone(zone);
 		

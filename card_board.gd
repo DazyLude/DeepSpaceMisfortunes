@@ -168,15 +168,15 @@ func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 		TokenType.CREWMATE:
 			token = load("res://cards/tokens/crewmate.tscn").instantiate();
 			ph_token_data = GameState.Crewmate.new();
-			where = Vector2(100, 100);
+			where = Vector2(100, 400);
 		TokenType.INGOT:
 			token = load("res://cards/tokens/contraband.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_ingot_token();
-			where = Vector2(100, 150);
+			where = Vector2(200, 400);
 		TokenType.SHIP_NAVIGATION:
 			token = load("res://cards/tokens/ship_navigation.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_nav_token();
-			where = Vector2(100, 200);
+			where = Vector2(300, 400);
 	
 	token.position = where;
 	$Tokens.add_child(token);
@@ -197,21 +197,22 @@ func despawn_tokens() -> void:
 
 func spawn_event(event_instance: GenericEvent) -> void:
 	despawn_event();
-	
 	if event_instance == null:
 		return;
+	
+	$Events.add_child(event_instance);
 	
 	for zone in event_instance.event_zones:
 		add_active_zone(zone);
 	
-	event_instance.position = Vector2(900, 300);
+	event_instance.position = Vector2(980, 360);
 	
 	current_event = event_instance;
-	$Events.add_child(event_instance);
 
 
 func despawn_event() -> void:
 	if current_event != null:
+		current_event._action();
 		for zone in current_event.event_zones:
 			remove_active_zone(zone);
 		

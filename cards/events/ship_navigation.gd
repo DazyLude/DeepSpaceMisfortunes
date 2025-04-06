@@ -21,11 +21,26 @@ func _action() -> void:
 	GameState.hyper_depth = clampi(GameState.hyper_depth, 0, 3);
 
 
-func _ready() -> void:
-	$AscendInput.card_recieved.connect(course_chosen.bind(2));
-	$StayInput.card_recieved.connect(course_chosen.bind(1));
-	$DescendInput.card_recieved.connect(course_chosen.bind(0));
+func _init() -> void:
+	event_zone_types.clear();
 	
-	$AscendInput.card_lost.connect(course_unchosen);
-	$StayInput.card_lost.connect(course_unchosen);
-	$DescendInput.card_lost.connect(course_unchosen);
+	event_zone_labels[0] = "ascend";
+	event_zone_labels[1] = "stay on this level";
+	event_zone_labels[2] = "descend";
+	
+	event_zone_types.push_back(Table.TokenType.SHIP_NAVIGATION);
+	event_zone_types.push_back(Table.TokenType.SHIP_NAVIGATION);
+	event_zone_types.push_back(Table.TokenType.SHIP_NAVIGATION);
+
+
+func _ready() -> void:
+	super._ready();
+	
+	event_zones[0].card_recieved.connect(course_chosen.bind(0));
+	event_zones[0].card_lost.connect(course_unchosen);
+	
+	event_zones[1].card_recieved.connect(course_chosen.bind(1));
+	event_zones[1].card_lost.connect(course_unchosen);
+	
+	event_zones[2].card_recieved.connect(course_chosen.bind(2));
+	event_zones[2].card_lost.connect(course_unchosen);

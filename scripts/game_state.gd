@@ -159,10 +159,10 @@ func new_game(table: Table) -> void:
 	life_support_failure = false;
 	interrupt_phase_sequence = null;
 	
-	#event_pools[HyperspaceDepth.NONE] = EventPool.get_space_pool();
-	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
-	#event_pools[HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
-	#event_pools[HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
+	event_pools[HyperspaceDepth.NONE] = EventPool.get_space_pool();
+	event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
+	event_pools[HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
+	event_pools[HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
 	
 	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
 	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();

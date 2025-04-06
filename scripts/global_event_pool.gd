@@ -5,6 +5,10 @@ extends Node
 enum EventID {
 	GENERIC,
 	
+	# special
+	MAIN_MENU,
+	TUTORIAL,
+	
 	# default gameplay loop events
 	SHIP_NAVIGATION,
 	PROGRESS_REPORT,
@@ -15,6 +19,9 @@ enum EventID {
 	
 	# continuations of other events
 	FRIEND2,
+	TUTORIAL2,
+	TUTORIAL3,
+	TUTORIAL4,
 	
 	# random bad events
 	NOTHING,
@@ -39,6 +46,12 @@ enum EventID {
 
 var event_load_params : Dictionary[EventID, String] = {
 	EventID.GENERIC: "res://cards/generic_event.tscn",
+	
+	EventID.MAIN_MENU: "res://cards/events/menu.gd",
+	EventID.TUTORIAL: "res://cards/events/tutorial1.gd",
+	EventID.TUTORIAL2: "res://cards/events/tutorial2.gd",
+	EventID.TUTORIAL3: "res://cards/events/tutorial3.gd",
+	EventID.TUTORIAL4: "res://cards/events/tutorial4.gd",
 	
 	EventID.SHIP_NAVIGATION: "res://cards/events/ship_navigation.gd",
 	EventID.PROGRESS_REPORT: "res://cards/events/ship_progress.gd",

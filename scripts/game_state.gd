@@ -29,6 +29,9 @@ enum HyperspaceDepth {
 
 
 enum RoundPhase {
+	STARTUP,
+	TUTORIAL,
+	
 	GAME_START,
 	PREPARATION,
 	EXECUTION,
@@ -87,8 +90,25 @@ func advance_phase() -> void:
 		and typeof(interrupt_phase_sequence) == TYPE_CALLABLE;
 	
 	match current_phase:
+		RoundPhase.STARTUP when active_table.current_event.new_game_selected:
+			active_table.hide_hint();
+			new_game();
+			new_event.emit(null);
+			clear_tokens.emit();
+		
+		RoundPhase.STARTUP when active_table.current_event.tutorial_selected:
+			active_table.hide_hint();
+			current_phase = RoundPhase.TUTORIAL;
+			new_event.emit(null);
+			play_event(GlobalEventPool.EventID.TUTORIAL);
+		
+		RoundPhase.STARTUP:
+			new_event.emit(null);
+			play_event(GlobalEventPool.EventID.MAIN_MENU);
+			active_table.display_hint();
+		
 		RoundPhase.ENDGAME when active_table.current_event.is_token_set:
-			new_game(active_table);
+			new_game();
 			new_event.emit(null);
 			clear_tokens.emit();
 		
@@ -161,8 +181,15 @@ func play_event(id: GlobalEventPool.EventID) -> void:
 	new_event.emit(GlobalEventPool.get_event_instance(id));
 
 
-func new_game(table: Table) -> void:
+func go_to_menu(table: Table) -> void:
+	ship = ShipState.new();
 	active_table = table;
+	current_phase = RoundPhase.STARTUP;
+	play_event.call_deferred(GlobalEventPool.EventID.MAIN_MENU);
+	new_token.emit.call_deferred(Table.TokenType.SHIP_NAVIGATION);
+
+
+func new_game() -> void:
 	ship = ShipState.new();
 	travel_distance = 0.0;
 	hyper_depth = HyperspaceDepth.NONE;

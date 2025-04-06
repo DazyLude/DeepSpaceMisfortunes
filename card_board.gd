@@ -247,18 +247,33 @@ func despawn_event() -> void:
 		current_event = null;
 
 
+func display_hint() -> void:
+	match null:
+		_ when $Hint.visible:
+			$Hint.visible = false;
+			$Hint2.visible = true;
+		_:
+			$Hint.visible = true;
+
+
+func hide_hint() -> void:
+	$Hint2.visible = false;
+	$Hint.visible = false;
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouse and picked_card_ref != null:
 		picked_card_ref.position = event.position + grabbed_offset;
 
 
 func _ready() -> void:
-	GameState.new_game(self);
+	GameState.go_to_menu(self);
 	
 	var ship : Ship = $Ship;
 	for zone in ship.get_active_zones():
 		add_active_zone(zone);
 	
+	hide_hint();
 	$Button.pressed.connect(GameState.advance_phase);
 	
 	GameState.new_event.connect(spawn_event);

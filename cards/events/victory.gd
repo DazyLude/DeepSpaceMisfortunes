@@ -20,9 +20,6 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	GameState.clear_tokens.emit();
-	GameState.new_token.emit(Table.TokenType.SHIP_NAVIGATION);
-	
 	event_title = "Victory!";
 	event_text = "Congratulations, you've won!\n"
 	event_text += "Your score is... %d!\n" % GameState.get_score();

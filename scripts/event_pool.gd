@@ -38,7 +38,8 @@ func pull_random_event() -> GenericEvent:
 
 static func get_placeholder_pool() -> EventPool:
 	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
-		GlobalEventPool.EventID.GENERIC: 1.0,
+		GlobalEventPool.EventID.NOTHING: 1.0,
+		GlobalEventPool.EventID.ASTEROID: 1.0,
 	};
 	
 	return get_pool_populated_with_weights(placeholder_weights);

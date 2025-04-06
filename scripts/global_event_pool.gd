@@ -6,12 +6,20 @@ enum EventID {
 	GENERIC,
 	
 	SHIP_NAVIGATION,
+	
+	NOTHING,
+	ASTEROID,
+	
 };
 
 
 var event_load_params : Dictionary[EventID, String] = {
 	EventID.GENERIC: "res://cards/generic_event.tscn",
+	
 	EventID.SHIP_NAVIGATION: "res://cards/events/ship_navigation.gd",
+	
+	EventID.NOTHING: "res://cards/events/space_is_empty.gd",
+	EventID.ASTEROID: "res://cards/events/asteroid.gd",
 };
 
 

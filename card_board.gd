@@ -120,6 +120,8 @@ func dropped_card(card: GenericCard) -> void:
 					new_stack.position = another_card.position;
 					active_zones[zone] = new_stack;
 					spawn_stack(new_stack, zone);
+					if zone is EventZone:
+						zone._card_accepted(card, self);
 				
 				var another_card when is_same_type and not zone.accepts_stacks:
 					picked_card_ref = null;
@@ -211,6 +213,9 @@ func despawn_all_tokens() -> void:
 		$Stacks.remove_child(stack);
 		stack.queue_free();
 		remove_stack(stack);
+	
+	for zone in active_zones:
+		active_zones[zone] = null;
 
 
 func spawn_event(event_instance: GenericEvent) -> void:

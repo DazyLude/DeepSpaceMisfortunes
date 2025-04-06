@@ -26,6 +26,18 @@ enum LimitedType {
 var is_consumed : LimitedType = LimitedType.NOT_LIMITED;
 
 
+func reset_event_inputs() -> void:
+	event_zone_types.clear();
+
+
+func setup_event_input(token: Table.TokenType, label: String, stacks := false, limit := 10):
+	var i = event_zone_types.size();
+	event_zone_types.push_back(token);
+	event_zone_stacks[i] = stacks;
+	event_zone_limits[i] = limit;
+	event_zone_labels[i] = label;
+
+
 func _can_play() -> bool:
 	return true;
 

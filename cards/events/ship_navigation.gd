@@ -22,15 +22,11 @@ func _action() -> void:
 
 
 func _init() -> void:
-	event_zone_types.clear();
+	reset_event_inputs();
 	
-	event_zone_labels[0] = "ascend";
-	event_zone_labels[1] = "stay on this level";
-	event_zone_labels[2] = "descend";
-	
-	event_zone_types.push_back(Table.TokenType.SHIP_NAVIGATION);
-	event_zone_types.push_back(Table.TokenType.SHIP_NAVIGATION);
-	event_zone_types.push_back(Table.TokenType.SHIP_NAVIGATION);
+	setup_event_input(Table.TokenType.SHIP_NAVIGATION, "ascend");
+	setup_event_input(Table.TokenType.SHIP_NAVIGATION, "stay on this level");
+	setup_event_input(Table.TokenType.SHIP_NAVIGATION, "descend");
 
 
 func _ready() -> void:

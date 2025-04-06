@@ -62,7 +62,7 @@ static func get_test_pool() -> EventPool:
 		#GlobalEventPool.EventID.SHINY : 1.0,
 		#GlobalEventPool.EventID.TIME_DILATION : 1.0,
 		
-		GlobalEventPool.EventID.GOODWILL : 1.0,
+		#GlobalEventPool.EventID.GOODWILL : 1.0,
 		#GlobalEventPool.EventID.FRIEND : 1.0,
 	};
 	

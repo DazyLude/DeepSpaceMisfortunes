@@ -83,6 +83,8 @@ func picked_card(card: GenericCard) -> void:
 		grabbed_offset = card.position - get_local_mouse_position();
 		picked_card_ref = card;
 		
+		card.fly_with_shadow();
+		
 		var card_owner_zone := active_zones.find_key(card) as GenericTableZone;
 		if card_owner_zone != null:
 			active_zones[card_owner_zone] = null;
@@ -90,30 +92,49 @@ func picked_card(card: GenericCard) -> void:
 
 
 func dropped_card(card: GenericCard) -> void:
+	card.stop_flying();
+	
 	for zone in active_zones:
 		if zone_collision_check(card, zone) and zone._can_accept_card(card, self):
+			var zone_content := active_zones[zone];
+			
+			if zone_content == card:
+				picked_card_ref = null;
+				return;
+			
+			var is_same_type := zone_content is GenericCard \
+				and get_card_token_type(card) == get_card_token_type(zone_content);
+			
+			var is_valid_stack : bool = zone_content is TokenStack \
+				and token_stacks.has(zone_content) \
+				and get_card_token_type(card) == zone_content.get_token_type(self)
+			
 			match active_zones[zone]:
 				null:
 					zone._card_accepted(card, self);
 					card.position = self.to_local(zone.to_global(zone.card_destination_position));
 					active_zones[zone] = card;
 				
-				var another_card when card != another_card \
-					and active_cards.has(another_card) \
-					and zone.accepts_stacks:
-						var new_stack = TokenStack.from_two_tokens(card, another_card);
-						new_stack.position = another_card.position;
-						active_zones[zone] = new_stack;
-						spawn_stack(new_stack, zone);
+				var another_card when is_same_type and zone.accepts_stacks:
+					var new_stack = TokenStack.from_two_tokens(card, another_card);
+					new_stack.position = another_card.position;
+					active_zones[zone] = new_stack;
+					spawn_stack(new_stack, zone);
 				
-				var stack when token_stacks.has(stack) \
-					and get_card_token_type(card) == stack.get_token_type(self) \
-					and zone.stack_limit > stack.tokens.size():
-						stack.card_added(card, self);
+				var another_card when is_same_type and not zone.accepts_stacks:
+					picked_card_ref = null;
+					return;
 				
+				var stack when is_valid_stack and zone.stack_limit > stack.tokens.size():
+					stack.card_added(card, self);
+				
+				var stack when is_valid_stack and zone.stack_limit <= stack.tokens.size():
+					picked_card_ref = null;
+					return;
 				_:
 					push_error("unexpected collision scenario");
-				
+					break;
+			
 			picked_card_ref = null;
 			return;
 	

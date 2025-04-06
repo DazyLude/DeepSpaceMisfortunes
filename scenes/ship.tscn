@@ -18,6 +18,8 @@ texture = ExtResource("2_2gnfn")
 position = Vector2(-49, 28)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
+stack_limit = 10
+accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Background" type="Sprite2D" parent="LifeSupportSlot"]
@@ -32,6 +34,8 @@ shape = SubResource("RectangleShape2D_tfsc7")
 position = Vector2(223, 45)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
+stack_limit = 10
+accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Background" type="Sprite2D" parent="NavigationSlot"]
@@ -46,6 +50,8 @@ shape = SubResource("RectangleShape2D_tfsc7")
 position = Vector2(222, -52)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
+stack_limit = 10
+accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Background" type="Sprite2D" parent="AutopilotSlot"]
@@ -60,6 +66,8 @@ shape = SubResource("RectangleShape2D_tfsc7")
 position = Vector2(59, -21)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
+stack_limit = 10
+accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Background" type="Sprite2D" parent="InnerHullSlot"]
@@ -74,6 +82,8 @@ shape = SubResource("RectangleShape2D_tfsc7")
 position = Vector2(-44, -74)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
+stack_limit = 10
+accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Background" type="Sprite2D" parent="OuterHullSlot"]
@@ -88,6 +98,8 @@ shape = SubResource("RectangleShape2D_tfsc7")
 position = Vector2(-235, -52)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
+stack_limit = 10
+accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Background" type="Sprite2D" parent="EnginesSlot"]
@@ -102,6 +114,8 @@ shape = SubResource("RectangleShape2D_tfsc7")
 position = Vector2(-235, 51)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
+stack_limit = 10
+accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Background" type="Sprite2D" parent="HyperSlot"]

@@ -13,9 +13,13 @@ func get_token_type(table: Table) -> Table.TokenType:
 	return table.get_card_token_type(tokens[0]);
 
 
-func card_added(card: GenericCard, _table: Table):
+func card_added(card: GenericCard, table: Table):
 	if tokens.has(card):
 		return;
+	
+	var stack_owner_zone = table.active_zones.find_key(self) as EventZone;
+	if stack_owner_zone != null:
+		stack_owner_zone._card_accepted(card, table);
 	
 	tokens.push_back(card);
 	card.hide();
@@ -31,6 +35,8 @@ func card_removed(_card: GenericCard, table: Table):
 	picked_from_stack.emit(card);
 	card.show();
 	table.picked_card(card);
+	
+	label.text = "%d" % tokens.size();
 	
 	if tokens.size() == 1:
 		var last_token = tokens.back();

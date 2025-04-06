@@ -10,7 +10,7 @@
 script = ExtResource("1_qs8yt")
 
 [node name="Ship" parent="." instance=ExtResource("2_mpg2q")]
-position = Vector2(408, 236)
+position = Vector2(353, 294)
 
 [node name="Events" type="Node2D" parent="."]
 
@@ -27,6 +27,10 @@ scale = Vector2(2, 2)
 text = "Continue"
 
 [node name="ProgressBar" parent="." instance=ExtResource("3_o0c05")]
+offset_left = 434.0
+offset_top = 25.0
+offset_right = 434.0
+offset_bottom = 25.0
 
 [node name="ShipStatusDisplay" parent="." instance=ExtResource("4_tq2su")]
 offset_left = 1.0

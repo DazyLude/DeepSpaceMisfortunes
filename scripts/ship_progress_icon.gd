@@ -17,5 +17,5 @@ func _advance(_dummy) -> void:
 		.set_trans(Tween.TRANS_QUAD);
 
 
-func _init() -> void:
+func _ready() -> void:
 	GameState.new_phase.connect(_advance);

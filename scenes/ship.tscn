@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cqtida6kfefcr"]
+[gd_scene load_steps=6 format=3 uid="uid://cqtida6kfefcr"]
 
 [ext_resource type="Script" uid="uid://wvcjart1cb28" path="res://scenes/ship.gd" id="1_q631a"]
 [ext_resource type="Texture2D" uid="uid://yndfel38ox5p" path="res://icon.svg" id="2_2gnfn"]
+[ext_resource type="Texture2D" uid="uid://dk6jbeqflm4vn" path="res://assets/ship_ph.png" id="2_tfsc7"]
 [ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="3_tfsc7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tfsc7"]
@@ -11,11 +12,10 @@ script = ExtResource("1_q631a")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(0, 5.96046e-08)
-scale = Vector2(4.54688, 1.27344)
-texture = ExtResource("2_2gnfn")
+texture = ExtResource("2_tfsc7")
 
 [node name="LifeSupportSlot" type="Area2D" parent="."]
-position = Vector2(-49, 28)
+position = Vector2(159, -46)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -31,7 +31,7 @@ texture = ExtResource("2_2gnfn")
 shape = SubResource("RectangleShape2D_tfsc7")
 
 [node name="NavigationSlot" type="Area2D" parent="."]
-position = Vector2(223, 45)
+position = Vector2(243, -48)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -47,7 +47,7 @@ texture = ExtResource("2_2gnfn")
 shape = SubResource("RectangleShape2D_tfsc7")
 
 [node name="AutopilotSlot" type="Area2D" parent="."]
-position = Vector2(222, -52)
+position = Vector2(-10, -53)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -63,7 +63,7 @@ texture = ExtResource("2_2gnfn")
 shape = SubResource("RectangleShape2D_tfsc7")
 
 [node name="InnerHullSlot" type="Area2D" parent="."]
-position = Vector2(59, -21)
+position = Vector2(74, -48)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -79,7 +79,7 @@ texture = ExtResource("2_2gnfn")
 shape = SubResource("RectangleShape2D_tfsc7")
 
 [node name="OuterHullSlot" type="Area2D" parent="."]
-position = Vector2(-44, -74)
+position = Vector2(-258, -52)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -95,7 +95,7 @@ texture = ExtResource("2_2gnfn")
 shape = SubResource("RectangleShape2D_tfsc7")
 
 [node name="EnginesSlot" type="Area2D" parent="."]
-position = Vector2(-235, -52)
+position = Vector2(-174, -53)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -111,7 +111,7 @@ texture = ExtResource("2_2gnfn")
 shape = SubResource("RectangleShape2D_tfsc7")
 
 [node name="HyperSlot" type="Area2D" parent="."]
-position = Vector2(-235, 51)
+position = Vector2(-93, -51)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10

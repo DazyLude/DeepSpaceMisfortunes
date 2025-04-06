@@ -171,15 +171,15 @@ func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 		TokenType.CREWMATE:
 			token = load("res://cards/tokens/crewmate.tscn").instantiate();
 			ph_token_data = GameState.Crewmate.new();
-			where = Vector2(100, 400);
+			where = Vector2(250, 600);
 		TokenType.INGOT:
 			token = load("res://cards/tokens/contraband.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_ingot_token();
-			where = Vector2(200, 400);
+			where = Vector2(350, 600);
 		TokenType.SHIP_NAVIGATION:
 			token = load("res://cards/tokens/ship_navigation.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_nav_token();
-			where = Vector2(300, 400);
+			where = Vector2(450, 600);
 	
 	token.position = where;
 	$Tokens.add_child(token);

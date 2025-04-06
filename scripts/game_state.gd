@@ -58,6 +58,8 @@ var active_table : Table = null;
 var event_pools : Dictionary[HyperspaceDepth, EventPool] = {};
 var interrupt_phase_sequence = null;
 
+var life_support_failure : bool = false;
+
 
 func get_speed() -> float:
 	var speed : float;
@@ -80,10 +82,8 @@ func advance_phase() -> void:
 		and typeof(interrupt_phase_sequence) == TYPE_CALLABLE;
 	
 	match current_phase:
-		#TODO
-		_ when false:
-			gameover.emit(score);
-			victory.emit(score);
+		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == HyperspaceDepth.NONE:
+			play_event(GlobalEventPool.EventID.VICTORY);
 		
 		_ when should_interrupt:
 			interrupt_phase_sequence.call_deferred();
@@ -95,11 +95,15 @@ func advance_phase() -> void:
 			
 			for crewmate in ship.ships_crew:
 				new_token.emit(Table.TokenType.CREWMATE, crewmate);
+			
+			for ingot_i in ingot_count:
+				new_token.emit(Table.TokenType.INGOT, null);
+			
 			new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
 			
 			play_event(GlobalEventPool.EventID.SHIP_NAVIGATION);
 		
-		RoundPhase.PREPARATION: # when active_table.current_event._can_play():
+		RoundPhase.PREPARATION when active_table.current_event._can_play():
 			current_phase = RoundPhase.EXECUTION;
 			clear_tokens.emit();
 			ship.repair_systems();
@@ -108,14 +112,28 @@ func advance_phase() -> void:
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
 			
-			new_token.emit(Table.TokenType.INGOT, null);
+			for crewmate in ship.ships_crew: # idle crewmembers
+				if ship.ships_crew[crewmate] == ShipState.System.OTHER:
+					new_token.emit(Table.TokenType.CREWMATE, crewmate);
+			
+			for ingot_i in ingot_count:
+				new_token.emit(Table.TokenType.INGOT, null);
 			
 			new_event.emit(event_pools[hyper_depth].pull_random_event());
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
+			
+			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
+				play_event(GlobalEventPool.EventID.GAMEOVER);
+			elif not ship.is_system_ok(ShipState.System.LIFE_SUPPORT):
+				life_support_failure = true;
+				play_event(GlobalEventPool.EventID.SHIP_ACTION);
+			else:
+				life_support_failure = false;
+				play_event(GlobalEventPool.EventID.SHIP_ACTION);
+			
 			clear_tokens.emit();
-			new_event.emit(null);
 			
 			round_n += 1;
 		
@@ -138,11 +156,13 @@ func new_game(table: Table) -> void:
 	round_n = 0;
 	score = 0;
 	ingot_count = 0;
+	life_support_failure = false;
+	interrupt_phase_sequence = null;
 	
-	event_pools[HyperspaceDepth.NONE] = EventPool.get_space_pool();
-	event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
-	event_pools[HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
-	event_pools[HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
+	#event_pools[HyperspaceDepth.NONE] = EventPool.get_space_pool();
+	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
+	#event_pools[HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
+	#event_pools[HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
 	
 	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
 	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();

@@ -19,7 +19,7 @@ func _prepare() -> void:
 	
 	else:
 		event_title = "Another Day";
-		event_text = "The engines murmur their Meganewton powered song through your ship's hull.\n"\
+		event_text = "The engines murmur their antimatter powered Meganewton song through your ship's hull.\n"\
 			+ "You get closer to your destination.";
 	
 	super._ready();

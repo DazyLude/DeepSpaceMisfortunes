@@ -10,9 +10,11 @@ enum EventID {
 	PROGRESS_REPORT,
 	SHIP_ACTION,
 	
+	GAMEOVER,
+	VICTORY,
+	
 	# continuations of other events
 	FRIEND2,
-	
 	
 	# random bad events
 	NOTHING,
@@ -40,6 +42,10 @@ var event_load_params : Dictionary[EventID, String] = {
 	
 	EventID.SHIP_NAVIGATION: "res://cards/events/ship_navigation.gd",
 	EventID.PROGRESS_REPORT: "res://cards/events/ship_progress.gd",
+	EventID.SHIP_ACTION: "res://cards/events/ship_action.gd",
+	
+	EventID.GAMEOVER: "res://cards/events/gameover.gd",
+	EventID.VICTORY: "res://cards/events/victory.gd",
 	
 	EventID.NOTHING: "res://cards/events/space_is_empty.gd",
 	EventID.ASTEROID: "res://cards/events/asteroid.gd",

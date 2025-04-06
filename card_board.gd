@@ -181,9 +181,27 @@ func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
 	token.position = where;
 	$Tokens.add_child(token);
 	add_active_card(token, token_data if token_data != null else ph_token_data);
+	
+	var respective_stack_i = token_stacks.find_custom(
+		func(t: TokenStack): return t.get_token_type(self) == token_type and active_zones.find_key(t) == null;
+	);
+	if respective_stack_i != -1:
+		token_stacks[respective_stack_i].card_added(token, self);
+		return;
+	
+	var other_tokens = active_cards.keys();
+	var similar_card_i = other_tokens.find_custom(
+		func(t: GenericCard): return get_card_token_type(t) == token_type and t != token;
+	);
+	if similar_card_i != -1:
+		var other_token = other_tokens[similar_card_i];
+		var new_stack = TokenStack.from_two_tokens(token, other_token);
+		new_stack.position = token.position;
+		spawn_stack(new_stack);
+		return;
 
 
-func despawn_tokens() -> void:
+func despawn_all_tokens() -> void:
 	for token in $Tokens.get_children():
 		$Tokens.remove_child(token);
 		token.queue_free();
@@ -237,4 +255,4 @@ func _ready() -> void:
 	
 	GameState.new_event.connect(spawn_event);
 	GameState.new_token.connect(spawn_token);
-	GameState.clear_tokens.connect(despawn_tokens);
+	GameState.clear_tokens.connect(despawn_all_tokens);

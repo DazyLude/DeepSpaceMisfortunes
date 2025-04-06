@@ -32,6 +32,8 @@ func card_removed(_card: GenericCard, table: Table):
 	card.show();
 	table.picked_card(card);
 	
+	label.text = "%d" % tokens.size();
+	
 	if tokens.size() == 1:
 		var last_token = tokens.back();
 		last_token.position = position;

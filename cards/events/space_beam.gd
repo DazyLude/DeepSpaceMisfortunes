@@ -14,7 +14,7 @@ func _action() -> void:
 		GameState.HyperspaceDepth.DEEP:
 			damage = 4;
 	
-	var target_system = GameState.ship.get_random_system();
+	var target_system = GameState.ship.get_random_working_system();
 	
 	GameState.ship.take_electric_damage(target_system, damage);
 	

@@ -19,9 +19,6 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	GameState.clear_tokens.emit();
-	GameState.new_token.emit(Table.TokenType.SHIP_NAVIGATION);
-	
 	event_title = "Game Over...";
 	event_text = "The infinite coldness of cosmos has consumed you and your ship.\n"
 	event_text += "Your score is... %d!\n" % (GameState.get_score() - GameState.GAMEOVER_PENALTY);

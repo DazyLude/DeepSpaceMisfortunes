@@ -87,7 +87,14 @@ func advance_phase() -> void:
 		and typeof(interrupt_phase_sequence) == TYPE_CALLABLE;
 	
 	match current_phase:
+		RoundPhase.ENDGAME when active_table.current_event.is_token_set:
+			new_game(active_table);
+			new_event.emit(null);
+			clear_tokens.emit();
+		
 		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == HyperspaceDepth.NONE:
+			clear_tokens.emit();
+			new_token.emit.call_deferred(Table.TokenType.SHIP_NAVIGATION);
 			play_event(GlobalEventPool.EventID.VICTORY);
 		
 		_ when should_interrupt:
@@ -97,6 +104,7 @@ func advance_phase() -> void:
 		RoundPhase.SHIP_ACTION, RoundPhase.GAME_START:
 			current_phase = RoundPhase.PREPARATION;
 			ship.reset_crew();
+			new_event.emit(null);
 			
 			for crewmate in ship.ships_crew:
 				new_token.emit(Table.TokenType.CREWMATE, crewmate);
@@ -110,12 +118,15 @@ func advance_phase() -> void:
 		
 		RoundPhase.PREPARATION when active_table.current_event._can_play():
 			current_phase = RoundPhase.EXECUTION;
+			new_event.emit(null);
+			
 			clear_tokens.emit();
 			ship.repair_systems();
 			play_event(GlobalEventPool.EventID.PROGRESS_REPORT);
 		
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
+			new_event.emit(null);
 			
 			for crewmate in ship.ships_crew: # idle crewmembers
 				if ship.ships_crew[crewmate] == ShipState.System.OTHER:
@@ -128,8 +139,11 @@ func advance_phase() -> void:
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
+			new_event.emit(null);
+			clear_tokens.emit();
 			
 			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
+				new_token.emit(Table.TokenType.SHIP_NAVIGATION);
 				play_event(GlobalEventPool.EventID.GAMEOVER);
 			elif not ship.is_system_ok(ShipState.System.LIFE_SUPPORT):
 				life_support_failure = true;
@@ -138,14 +152,7 @@ func advance_phase() -> void:
 				life_support_failure = false;
 				play_event(GlobalEventPool.EventID.SHIP_ACTION);
 			
-			clear_tokens.emit();
-			
 			round_n += 1;
-		
-		RoundPhase.ENDGAME when active_table.current_event.is_token_set: # has not resolved nav 
-			new_event.emit(null);
-			clear_tokens.emit();
-			new_game(active_table);
 	
 	new_phase.emit(current_phase);
 
@@ -243,12 +250,13 @@ class ShipState extends RefCounted:
 				system_hp[system] -= damage;
 	
 	
-	func get_random_system() -> System:
-		return GameState.rng.randi_range(0, System.size() - 2) as System;
+	func get_random_working_system() -> System:
+		var systems = system_hp.keys().filter(is_system_ok);
+		return GameState.rng.randi_range(0, systems.size() - 1) as System;
 	
 	
 	func take_damage_to_random_system(damage_type: DamageType, value: int) -> void:
-		var system : System = get_random_system();
+		var system : System = get_random_working_system();
 		
 		match damage_type:
 			DamageType.PHYSICAL:

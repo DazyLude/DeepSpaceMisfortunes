@@ -16,7 +16,7 @@ func _action() -> void:
 	if did:
 		GameState.ingot_count += 1;
 		var damage = 6;
-		var target_system = GameState.ship.get_random_system();
+		var target_system = GameState.ship.get_random_working_system();
 		GameState.ship.take_physical_damage(target_system, damage);
 	
 	did = false;

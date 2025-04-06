@@ -139,10 +139,13 @@ func new_game(table: Table) -> void:
 	score = 0;
 	ingot_count = 0;
 	
-	event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
-	event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();
-	event_pools[HyperspaceDepth.NORMAL] = EventPool.get_test_pool();
-	event_pools[HyperspaceDepth.DEEP] = EventPool.get_test_pool();
+	event_pools[HyperspaceDepth.NONE] = EventPool.get_space_pool();
+	event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
+	event_pools[HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
+	event_pools[HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
+	
+	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
+	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();
 
 
 class ShipState extends RefCounted:

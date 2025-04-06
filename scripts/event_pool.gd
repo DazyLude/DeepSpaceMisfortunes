@@ -69,6 +69,60 @@ static func get_test_pool() -> EventPool:
 	return get_pool_populated_with_weights(placeholder_weights);
 
 
+static func get_space_pool() -> EventPool:
+	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
+		GlobalEventPool.EventID.NOTHING : 8.0,
+		GlobalEventPool.EventID.ASTEROID : 2.0,
+		GlobalEventPool.EventID.ALIENS : 1.0,
+	};
+	
+	return get_pool_populated_with_weights(placeholder_weights);
+
+
+static func get_shallow_pool() -> EventPool:
+	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
+		GlobalEventPool.EventID.ASTEROID : 5.0,
+		GlobalEventPool.EventID.LARGE_ASTEROID : 1.0,
+		GlobalEventPool.EventID.ALIENS : 1.0,
+		GlobalEventPool.EventID.SPACE_RAY : 1.0,
+		GlobalEventPool.EventID.FLUCTUATION_UP : 1.0,
+		GlobalEventPool.EventID.FLUCTUATION_DOWN : 1.0,
+		GlobalEventPool.EventID.FRIEND : 1.0,
+	};
+	
+	return get_pool_populated_with_weights(placeholder_weights);
+
+
+static func get_normal_pool() -> EventPool:
+	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
+		GlobalEventPool.EventID.LARGE_ASTEROID : 5.0,
+		GlobalEventPool.EventID.POWER_SURGE : 3.0,
+		GlobalEventPool.EventID.SPACE_RAY : 3.0,
+		GlobalEventPool.EventID.FLUCTUATION_UP : 3.0,
+		GlobalEventPool.EventID.ALIENS : 1.0,
+		GlobalEventPool.EventID.ASTEROID : 1.0,
+		GlobalEventPool.EventID.SHINY : 1.0,
+		GlobalEventPool.EventID.TIME_DILATION : 1.0,
+		GlobalEventPool.EventID.FLUCTUATION_DOWN : 1.0,
+		GlobalEventPool.EventID.FRIEND : 1.0,
+	};
+	
+	return get_pool_populated_with_weights(placeholder_weights);
+
+
+static func get_deep_pool() -> EventPool:
+	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
+		GlobalEventPool.EventID.PLASMA_INCARNATE : 2.0,
+		GlobalEventPool.EventID.POWER_SURGE : 1.0,
+		GlobalEventPool.EventID.SPACE_RAY : 1.0,
+		GlobalEventPool.EventID.FLUCTUATION_UP : 1.0,
+		GlobalEventPool.EventID.SHINY : 1.0,
+		GlobalEventPool.EventID.GOODWILL : 1.0,
+	};
+	
+	return get_pool_populated_with_weights(placeholder_weights);
+
+
 static func get_pool_populated_with_weights(event_weights: Dictionary[GlobalEventPool.EventID, float]) -> EventPool:
 	var pool := EventPool.new();
 	

@@ -10,6 +10,12 @@ signal clear_tokens;
 signal new_token(TokenType, RefCounted);
 signal ping_tokens(TokenType);
 
+signal system_repaired;
+signal system_damaged;
+signal system_manned;
+
+signal ship_reset;
+
 signal gameover(int);
 signal victory(int);
 
@@ -60,6 +66,7 @@ func advance_phase() -> void:
 		
 		RoundPhase.SHIP_ACTION, RoundPhase.GAME_START:
 			current_phase = RoundPhase.PREPARATION;
+			ship.reset_crew();
 			
 			for crewmate in ship.ships_crew:
 				new_token.emit(Table.TokenType.CREWMATE, crewmate);
@@ -71,7 +78,9 @@ func advance_phase() -> void:
 		RoundPhase.PREPARATION when active_table.current_event._can_play():
 			current_phase = RoundPhase.EXECUTION;
 			clear_tokens.emit();
+			
 			new_event.emit(null);
+			new_event.emit(GlobalEventPool.get_event_instance(GlobalEventPool.EventID.PROGRESS_REPORT));
 		
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
@@ -175,6 +184,11 @@ class ShipState extends RefCounted:
 	func repair_systems() -> void:
 		for crewmate in ships_crew:
 			repair_system(ships_crew[crewmate]);
+	
+	
+	func reset_crew() -> void:
+		for mate in ships_crew:
+			ships_crew[mate] = System.OTHER;
 	
 	
 	func man_system(mate: Crewmate, system: System) -> void:

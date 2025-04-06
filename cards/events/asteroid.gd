@@ -14,6 +14,11 @@ func _action() -> void:
 		GameState.HyperspaceDepth.DEEP:
 			damage = 8;
 	
+	if GameState.ship.is_system_manned(GameStateClass.ShipState.System.NAVIGATION):
+		damage -= 1;
+	
+	damage = maxi(0, damage);
+	
 	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage);
 
 

@@ -23,6 +23,9 @@ var current_event : GenericEvent = null;
 var picked_card_ref : GenericCard = null;
 var grabbed_offset := Vector2();
 
+var grace : bool = false;
+var GRACE_PERIOD : float = 0.3;
+
 
 func get_card_token_type(card: GenericCard) -> TokenType:
 	match active_cards.get(card, null):
@@ -275,6 +278,14 @@ func hide_hint() -> void:
 	$Hint.visible = false;
 
 
+func try_to_advance_phase() -> void:
+	if not grace:
+		GameState.advance_phase();
+		grace = true;
+		await get_tree().create_timer(GRACE_PERIOD).timeout;
+		grace = false;
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouse and picked_card_ref != null:
 		picked_card_ref.position = event.position + grabbed_offset;
@@ -288,7 +299,8 @@ func _ready() -> void:
 		add_active_zone(zone);
 	
 	hide_hint();
-	$Button.pressed.connect(GameState.advance_phase);
+	
+	$Button.pressed.connect(try_to_advance_phase);
 	
 	GameState.new_event.connect(spawn_event);
 	GameState.new_token.connect(spawn_token);

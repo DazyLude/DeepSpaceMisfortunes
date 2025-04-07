@@ -22,8 +22,18 @@ func get_active_zones() -> Array[GenericTableZone]:
 	return zones;
 
 
+func hide_manned_icons() -> void:
+	for system_slot in zone_to_system:
+		var manned_icon := system_slot.get_node("Manned");
+		manned_icon.hide();
+
+
 func update_manned_icons() -> void:
-	pass;
+	for system_slot in zone_to_system:
+		var manned_icon := system_slot.get_node("Manned");
+		var system := zone_to_system[system_slot];
+		
+		manned_icon.visible = GameState.ship.is_system_manned(system);
 
 
 func on_system_damaged(system: GameState.ShipState.System) -> void:
@@ -55,6 +65,8 @@ func _ready() -> void:
 	GameState.system_damaged.connect(on_system_damaged);
 	GameState.system_repaired.connect(on_system_repaired);
 	GameState.system_manned.connect(update_manned_icons);
+	
+	hide_manned_icons();
 	
 	for zone in get_active_zones():
 		zone.card_recieved.connect(_add_crewmate_to_system.bind(zone));

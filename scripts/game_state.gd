@@ -321,7 +321,7 @@ class ShipState extends RefCounted:
 	
 	func repair_systems() -> void:
 		for crewmate in ships_crew:
-			repair_system(ships_crew[crewmate], true);
+			repair_system(ships_crew[crewmate]);
 	
 	
 	func full_repair() -> void:

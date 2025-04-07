@@ -12,7 +12,7 @@ func _prepare() -> void:
 	GameState.new_phase.emit(GameState.current_phase);
 	
 	event_title = "Tutorial: Winning";
-	event_text = "You win the game when the travel progress reaches 100%. The progress is tracked by the bar above. You also have to be on the topmost layer of the Hyperspace to win. However, the deeper you go, the faster the travel progress increases. Your score decreases with the amount of spent rounds, and increases by the amount of Adamantine Ingots that you have by the end.";
+	event_text = "To win you need to:\n1) Reach 100% travel progress. The progress is tracked by the bar above.\n2) Be on the first layer of the Hyperspace.\nThe deeper you go into the Hyperspace, the faster you travel. At the end of the game, you get a score, based on how many Adamantine you have and how fast you reached the finish line.";
 	
 	GameState.interrupt_phase_sequence = GameState.play_event.bind(GlobalEventPool.EventID.TUTORIAL_MANNING);
 	

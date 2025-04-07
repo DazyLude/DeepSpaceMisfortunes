@@ -41,7 +41,7 @@ enum RoundPhase {
 };
 
 
-const TRAVEL_GOAL : float = 1.0;
+const TRAVEL_GOAL : float = 22.0;
 const GAMEOVER_PENALTY : int = 30;
 
 
@@ -246,8 +246,6 @@ class ShipState extends RefCounted:
 	
 	
 	func take_physical_damage(system: System, damage: int) -> void:
-		print("ph ", system_hp, " ", system, " ", damage);
-		
 		match system:
 			_ when system_hp[System.OUTER_HULL] > 0:
 				var hull_hp = system_hp[System.OUTER_HULL];
@@ -273,13 +271,9 @@ class ShipState extends RefCounted:
 			_:
 				system_hp[system] -= damage;
 				GameState.system_damaged.emit(system);
-		
-		print(system_hp, system, damage);
 	
 	
 	func take_electric_damage(system: System, damage: int) -> void:
-		print("el ", system_hp, " ", system, " ", damage);
-		
 		match system:
 			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
 				system_hp[System.INNER_HULL] -= damage;
@@ -287,9 +281,6 @@ class ShipState extends RefCounted:
 			_:
 				system_hp[system] -= damage;
 				GameState.system_damaged.emit(system);
-		
-		print(system_hp, system, damage);
-		
 	
 	
 	func get_random_working_system() -> System:

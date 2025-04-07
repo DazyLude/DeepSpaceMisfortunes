@@ -31,10 +31,12 @@ func _prepare() -> void:
 	if not is_autopilot_ok:
 		event_title = "Autopilot Is Out!";
 		event_text = "Silence greets you."
+		event_image = preload("res://assets/graphics/events/ev_autopilot ded.png");
 	
 	else:
 		event_title = "Autopilot Greets You";
 		event_text = "\"All systems green, Captain!\" - you hear the always cheery autopilot's voice through the ship's audio system" ;
+		event_image = preload("res://assets/graphics/events/ev_autopilot.png");
 		
 		match [are_engines_ok, is_life_support_ok]:
 			[true, true]:

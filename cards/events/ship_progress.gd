@@ -18,7 +18,10 @@ func _prepare() -> void:
 	
 	var is_goal_reached = GameState.travel_distance >= GameState.TRAVEL_GOAL;
 	
+	event_image = preload("res://assets/graphics/events/ev_progress.png");
+	
 	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES):
+		event_image = preload("res://assets/graphics/events/ev_notravel.png");
 		event_title = "Engines Are Out!";
 		event_text = "Your progress is halted when the heart of your ship is standing still."
 	

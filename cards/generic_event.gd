@@ -140,4 +140,5 @@ func _ready() -> void:
 			input.card_lost.connect(on_takeout);
 			callable_reset.push_back([on_takeout, input.card_lost]);
 		
+		img.texture = slots[event_zone_types[i]];
 		label.text = event_zone_labels[i];

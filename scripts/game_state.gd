@@ -154,6 +154,7 @@ func advance_phase() -> void:
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
+			new_event.emit(null);
 			
 			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
 				play_event(GlobalEventPool.EventID.GAMEOVER);
@@ -164,7 +165,6 @@ func advance_phase() -> void:
 				life_support_failure = false;
 				play_event(GlobalEventPool.EventID.SHIP_ACTION);
 			
-			new_event.emit(null);
 			round_n += 1;
 	
 	reset_tokens.call_deferred();

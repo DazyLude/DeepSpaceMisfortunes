@@ -26,4 +26,4 @@ func _action() -> void:
 
 func _init() -> void:
 	event_title = "Power Surge!";
-	event_text = "System overloads with energy! Sparks everywhere.";
+	event_text = "A strong electromagnetic pulse catches your ship. Ship's electronics are protected, but it might be not enough for a beam of such intensity.";

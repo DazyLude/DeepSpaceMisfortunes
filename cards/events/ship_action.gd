@@ -7,6 +7,9 @@ func _action() -> void:
 	var is_hyper_drive_ok :=  GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES);
 	var is_life_support_ok := GameState.ship.is_system_ok(GameStateClass.ShipState.System.LIFE_SUPPORT);
 	
+	if not is_autopilot_ok:
+		return;
+	
 	if not is_hyper_drive_ok:
 		GameState.ship.repair_system(GameStateClass.ShipState.System.HYPER_ENGINES);
 	elif not is_engine_ok:

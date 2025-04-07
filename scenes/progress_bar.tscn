@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://l6x1r2h3ia8x"]
 
-[ext_resource type="Texture2D" uid="uid://cbddd36esoxw5" path="res://assets/graphics/circle.png" id="1_1iuoo"]
+[ext_resource type="Texture2D" uid="uid://b6sldrg3xl3s2" path="res://assets/graphics/progress.png" id="1_eu8db"]
 [ext_resource type="Script" uid="uid://cxxj26vsaf1hr" path="res://scripts/ship_progress_icon.gd" id="2_8un81"]
-[ext_resource type="Texture2D" uid="uid://dsh2ix3q41cq8" path="res://assets/graphics/ship.png" id="2_eu8db"]
+[ext_resource type="Texture2D" uid="uid://bjswjeet22mda" path="res://assets/graphics/smol spaceship.png" id="3_eu8db"]
 [ext_resource type="Shader" uid="uid://cxvp76a1v11b8" path="res://shaders/alpha_mod.gdshader" id="4_eu8db"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_tumid"]
@@ -13,25 +13,21 @@ shader_parameter/alpha = 2.0
 layout_mode = 3
 anchors_preset = 0
 
-[node name="NinePatchRect" type="NinePatchRect" parent="."]
+[node name="NinePatchRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_top = 15.0
-offset_right = 415.0
-offset_bottom = 25.0
-texture = ExtResource("1_1iuoo")
-region_rect = Rect2(12, 16, 8, 3)
-patch_margin_left = 7
-patch_margin_top = 2
-patch_margin_right = 7
-patch_margin_bottom = 2
+offset_left = -7.0
+offset_top = -1.0
+offset_right = 447.0
+offset_bottom = 40.0
+texture = ExtResource("1_eu8db")
 
 [node name="ShipPredictIcon" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_tumid")
 layout_mode = 0
 offset_top = 5.0
-offset_right = 46.3354
+offset_right = 30.0
 offset_bottom = 35.0
-texture = ExtResource("2_eu8db")
+texture = ExtResource("3_eu8db")
 expand_mode = 3
 script = ExtResource("2_8un81")
 predict = true
@@ -41,6 +37,6 @@ layout_mode = 0
 offset_top = 5.0
 offset_right = 30.0
 offset_bottom = 35.0
-texture = ExtResource("2_eu8db")
+texture = ExtResource("3_eu8db")
 expand_mode = 3
 script = ExtResource("2_8un81")

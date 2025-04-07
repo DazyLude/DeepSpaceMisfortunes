@@ -48,25 +48,27 @@ static func get_placeholder_pool() -> EventPool:
 
 
 static func get_test_pool() -> EventPool:
-	var placeholder_weights : Dictionary[GlobalEventPool.EventID, float] = {
-		GlobalEventPool.EventID.NOTHING : 1.0,
+	var placeholder_weights : Array[GlobalEventPool.EventID] = [
+		#GlobalEventPool.EventID.NOTHING : 1.0,
 		#GlobalEventPool.EventID.ASTEROID : 1.0,
-		#GlobalEventPool.EventID.LARGE_ASTEROID : 1.0,
+		GlobalEventPool.EventID.LARGE_ASTEROID,
+		GlobalEventPool.EventID.LARGE_ASTEROID,
+		GlobalEventPool.EventID.LARGE_ASTEROID,
 		#GlobalEventPool.EventID.POWER_SURGE : 1.0,
 		#GlobalEventPool.EventID.PLASMA_INCARNATE : 1.0,
 		#GlobalEventPool.EventID.SPACE_RAY : 1.0,
 		#GlobalEventPool.EventID.FLUCTUATION_UP : 1.0,
 		#GlobalEventPool.EventID.FLUCTUATION_DOWN : 1.0,
-		GlobalEventPool.EventID.ALIENS : 1.0,
+		#GlobalEventPool.EventID.ALIENS : 1.0,
 		
 		#GlobalEventPool.EventID.SHINY : 1.0,
 		#GlobalEventPool.EventID.TIME_DILATION : 1.0,
-		
+		#
 		#GlobalEventPool.EventID.GOODWILL : 1.0,
 		#GlobalEventPool.EventID.FRIEND : 1.0,
-	};
+	];
 	
-	return get_pool_populated_with_weights(placeholder_weights);
+	return get_rigged_pool(placeholder_weights);
 
 
 static func get_space_pool() -> EventPool:
@@ -103,7 +105,7 @@ static func get_normal_pool() -> EventPool:
 		GlobalEventPool.EventID.ASTEROID : 1.0,
 		GlobalEventPool.EventID.SHINY : 1.0,
 		GlobalEventPool.EventID.TIME_DILATION : 1.0,
-		GlobalEventPool.EventID.FLUCTUATION_DOWN : 1.0,
+		GlobalEventPool.EventID.FLUCTUATION_DOWN : 2.0,
 		GlobalEventPool.EventID.FRIEND : 1.0,
 	};
 	
@@ -132,3 +134,25 @@ static func get_pool_populated_with_weights(event_weights: Dictionary[GlobalEven
 		pool.add_event_with_weight(event, weight);
 	
 	return pool;
+
+
+static func get_rigged_pool(weights: Array) -> RiggedPool:
+	var pool := RiggedPool.new();
+	
+	for event_id in weights:
+		var event := GlobalEventPool.get_event_instance(event_id);
+		var weight = 1.0;
+		pool.add_event_with_weight(event, weight);
+	
+	return pool;
+
+
+class RiggedPool extends EventPool:
+	func pull_random_event() -> GenericEvent:
+		if events.size() > 0:
+			weights.pop_back();
+			return events.pop_back();
+		
+		else:
+			return GlobalEventPool.get_event_instance(GlobalEventPool.EventID.NOTHING);
+		

@@ -10,7 +10,7 @@ enum TokenType {
 }
 
 const nav_token_spawn_location := Vector2(910.0, 665.0);
-const crew_token_spawn_location := Vector2(595.0, 665.0);
+const crew_token_spawn_location := Vector2(720.0, 395.0);
 const ingot_token_spawn_location := Vector2(280.0, 665.0);
 
 const EVENT_POSITION := Vector2(1200, 400)
@@ -89,7 +89,7 @@ func picked_card(card: GenericCard) -> void:
 	
 	if card != null:
 		grabbed_offset = card.position - get_local_mouse_position();
-		grabbed_offset.clamp(card.hitbox_shape.shape.size / -2.5, card.hitbox_shape.shape.size / 2.5)
+		grabbed_offset = grabbed_offset.clamp(card.hitbox_shape.shape.size * -0.3, card.hitbox_shape.shape.size * 0.3)
 		picked_card_ref = card;
 		
 		card.fly_with_shadow();
@@ -265,18 +265,18 @@ func despawn_event() -> void:
 		current_event = null;
 
 
+
+var hint_counter : int = 0;
+
 func display_hint() -> void:
-	match null:
-		_ when $Hint.visible:
-			$Hint.visible = false;
-			$Hint2.visible = true;
-		_:
-			$Hint.visible = true;
+	if hint_counter > 2:
+		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_INTRO);
+		hint_counter = 0;
+		return;
+	
+	hint_counter += 1;
+	shake_tokens(TokenType.SHIP_NAVIGATION);
 
-
-func hide_hint() -> void:
-	$Hint2.visible = false;
-	$Hint.visible = false;
 
 
 func try_to_advance_phase() -> void:
@@ -298,8 +298,6 @@ func _ready() -> void:
 	var ship : Ship = $Ship;
 	for zone in ship.get_active_zones():
 		add_active_zone(zone);
-	
-	hide_hint();
 	
 	$Button.pressed.connect(try_to_advance_phase);
 	

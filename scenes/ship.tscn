@@ -40,7 +40,7 @@ position = Vector2(0, 5.96046e-08)
 texture = ExtResource("2_3m36u")
 
 [node name="NavigationSlot" type="Area2D" parent="."]
-position = Vector2(250, -1)
+position = Vector2(191, -9)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -83,7 +83,7 @@ text = "1"
 horizontal_alignment = 1
 
 [node name="LifeSupportSlot" type="Area2D" parent="."]
-position = Vector2(167, -1)
+position = Vector2(108, -9)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -130,7 +130,7 @@ position = Vector2(168, 36)
 texture = ExtResource("3_gudjc")
 
 [node name="InnerHullSlot" type="Area2D" parent="."]
-position = Vector2(84, -1)
+position = Vector2(25, -9)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -173,7 +173,7 @@ text = "1"
 horizontal_alignment = 1
 
 [node name="AutopilotSlot" type="Area2D" parent="."]
-position = Vector2(0, -1)
+position = Vector2(-59, -9)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -216,7 +216,7 @@ text = "1"
 horizontal_alignment = 1
 
 [node name="HyperSlot" type="Area2D" parent="."]
-position = Vector2(-83, -1)
+position = Vector2(-142, -9)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -259,7 +259,7 @@ text = "1"
 horizontal_alignment = 1
 
 [node name="EnginesSlot" type="Area2D" parent="."]
-position = Vector2(-165, -1)
+position = Vector2(-224, -9)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -302,7 +302,7 @@ text = "1"
 horizontal_alignment = 1
 
 [node name="OuterHullSlot" type="Area2D" parent="."]
-position = Vector2(-249, 0)
+position = Vector2(-308, -8)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10

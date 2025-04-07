@@ -3,7 +3,7 @@ extends TextureRect
 @export var predict : bool = false;
 
 @onready var start_x = self.position.x;
-const progress_bar_len = 400;
+const progress_bar_len = 415;
 var tween = null;
 
 

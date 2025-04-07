@@ -41,7 +41,7 @@ enum RoundPhase {
 };
 
 
-const TRAVEL_GOAL : float = 20.0;
+const TRAVEL_GOAL : float = 1.0;
 const GAMEOVER_PENALTY : int = 30;
 
 
@@ -76,11 +76,11 @@ func get_speed() -> float:
 		GameState.HyperspaceDepth.NONE:
 			speed = 0.1;
 		GameState.HyperspaceDepth.SHALLOW:
-			speed = 0.4;
+			speed = 0.5;
 		GameState.HyperspaceDepth.NORMAL:
-			speed = 1.2;
+			speed = 2.0;
 		GameState.HyperspaceDepth.DEEP:
-			speed = 3.0;
+			speed = 5.0;
 	
 	return speed;
 
@@ -104,13 +104,11 @@ func advance_phase() -> void:
 	
 	match current_phase:
 		RoundPhase.STARTUP when active_table.current_event.new_game_selected:
-			active_table.hide_hint();
 			new_game();
 			new_event.emit(null);
 			clear_tokens.emit();
 		
 		RoundPhase.STARTUP when active_table.current_event.tutorial_selected:
-			active_table.hide_hint();
 			current_phase = RoundPhase.TUTORIAL;
 			new_event.emit(null);
 			play_event(GlobalEventPool.EventID.TUTORIAL_INTRO);
@@ -136,12 +134,10 @@ func advance_phase() -> void:
 		RoundPhase.SHIP_ACTION, RoundPhase.GAME_START:
 			current_phase = RoundPhase.PREPARATION;
 			ship.reset_crew();
-			new_event.emit(null);
 			play_event(GlobalEventPool.EventID.SHIP_NAVIGATION);
 		
 		RoundPhase.PREPARATION when active_table.current_event._can_play():
 			current_phase = RoundPhase.EXECUTION;
-			new_event.emit(null);
 			
 			ship.repair_systems();
 			play_event(GlobalEventPool.EventID.PROGRESS_REPORT);
@@ -152,12 +148,10 @@ func advance_phase() -> void:
 		
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
-			new_event.emit(null);
 			new_event.emit(event_pools[hyper_depth].pull_random_event());
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
-			new_event.emit(null);
 			
 			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
 				play_event(GlobalEventPool.EventID.GAMEOVER);
@@ -252,6 +246,8 @@ class ShipState extends RefCounted:
 	
 	
 	func take_physical_damage(system: System, damage: int) -> void:
+		print("ph ", system_hp, " ", system, " ", damage);
+		
 		match system:
 			_ when system_hp[System.OUTER_HULL] > 0:
 				var hull_hp = system_hp[System.OUTER_HULL];
@@ -259,7 +255,7 @@ class ShipState extends RefCounted:
 					system_hp[System.OUTER_HULL] -= damage;
 					GameState.system_damaged.emit(System.OUTER_HULL);
 				else:
-					damage -= hull_hp;
+					var new_damage = damage - hull_hp;
 					system_hp[System.OUTER_HULL] = 0;
 					GameState.system_damaged.emit(System.OUTER_HULL);
 					take_physical_damage(system, damage);
@@ -277,9 +273,13 @@ class ShipState extends RefCounted:
 			_:
 				system_hp[system] -= damage;
 				GameState.system_damaged.emit(system);
+		
+		print(system_hp, system, damage);
 	
 	
 	func take_electric_damage(system: System, damage: int) -> void:
+		print("el ", system_hp, " ", system, " ", damage);
+		
 		match system:
 			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
 				system_hp[System.INNER_HULL] -= damage;
@@ -287,6 +287,8 @@ class ShipState extends RefCounted:
 			_:
 				system_hp[system] -= damage;
 				GameState.system_damaged.emit(system);
+		
+		print(system_hp, system, damage);
 		
 	
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cjfjsxsu1ecg2"]
+[gd_scene load_steps=9 format=3 uid="uid://cjfjsxsu1ecg2"]
 
 [ext_resource type="Script" uid="uid://bygc27tiilr0t" path="res://card_board.gd" id="1_qs8yt"]
 [ext_resource type="PackedScene" uid="uid://cqtida6kfefcr" path="res://scenes/ship.tscn" id="2_mpg2q"]
@@ -8,8 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://cy3qtxhsudcd7" path="res://scenes/background.tscn" id="5_3tt6t"]
 [ext_resource type="Texture2D" uid="uid://pdmlg2u3ux1s" path="res://assets/graphics/CONTINUE4.png" id="5_5u1fr"]
 [ext_resource type="Texture2D" uid="uid://p6h6va0nqqlx" path="res://assets/graphics/CONTINUE3.png" id="6_7kihr"]
-[ext_resource type="Texture2D" uid="uid://b7sdk0qopl0mh" path="res://assets/giant_helping_arrow_stage1.png" id="6_om5b5"]
-[ext_resource type="Texture2D" uid="uid://dl5v7dicnxcye" path="res://assets/giant_helping_arrow_stage2.png" id="7_xjc58"]
 
 [node name="CardBoard" type="Node2D"]
 script = ExtResource("1_qs8yt")
@@ -34,26 +32,10 @@ texture_hover = ExtResource("5_5u1fr")
 texture_disabled = ExtResource("6_7kihr")
 
 [node name="ProgressBar" parent="." instance=ExtResource("3_o0c05")]
-offset_left = 434.0
+offset_left = 593.0
 offset_top = 25.0
-offset_right = 434.0
+offset_right = 593.0
 offset_bottom = 25.0
 
 [node name="Background" parent="." instance=ExtResource("5_3tt6t")]
 z_index = -5
-
-[node name="Hint" type="Sprite2D" parent="."]
-visible = false
-z_index = -1
-position = Vector2(719, 559)
-rotation = -0.0237849
-scale = Vector2(1.5, 1.5)
-texture = ExtResource("6_om5b5")
-
-[node name="Hint2" type="Sprite2D" parent="."]
-visible = false
-z_index = -1
-position = Vector2(719, 559)
-rotation = -0.0237849
-scale = Vector2(1.5, 1.5)
-texture = ExtResource("7_xjc58")

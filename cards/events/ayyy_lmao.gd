@@ -17,10 +17,11 @@ func _action() -> void:
 	if bribe:
 		GameState.ingot_count -= 1;
 	else:
-		var damage = 3;
+		var damage = 4; # x2
 		var target_system = GameState.ship.get_random_working_system();
-		GameState.ship.take_physical_damage(target_system, damage);
 		GameState.ship.take_electric_damage(target_system, damage);
+		target_system = GameState.ship.get_random_working_system();
+		GameState.ship.take_physical_damage(target_system, damage);
 	
 	bribe = false;
 

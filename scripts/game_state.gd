@@ -12,7 +12,7 @@ signal ping_tokens(TokenType);
 
 signal system_repaired(System);
 signal system_damaged(System);
-signal system_manned(System);
+signal system_manned;
 
 signal ship_reset;
 
@@ -254,29 +254,37 @@ class ShipState extends RefCounted:
 				var hull_hp = system_hp[System.OUTER_HULL];
 				if hull_hp > damage:
 					system_hp[System.OUTER_HULL] -= damage;
+					GameState.system_damaged.emit(System.OUTER_HULL);
 				else:
 					damage -= hull_hp;
 					system_hp[System.OUTER_HULL] = 0;
+					GameState.system_damaged.emit(System.OUTER_HULL);
 					take_physical_damage(system, damage);
 			
 			System.LIFE_SUPPORT, System.NAVIGATION when system_hp[System.INNER_HULL] > 0:
 				var hull_hp = system_hp[System.INNER_HULL];
 				if hull_hp > damage:
 					system_hp[System.INNER_HULL] -= damage;
+					GameState.system_damaged.emit(System.INNER_HULL);
 				elif hull_hp > 0:
 					damage -= hull_hp;
 					system_hp[System.INNER_HULL] = 0;
+					GameState.system_damaged.emit(System.INNER_HULL);
 					take_physical_damage(system, damage);
 			_:
 				system_hp[system] -= damage;
+				GameState.system_damaged.emit(system);
 	
 	
 	func take_electric_damage(system: System, damage: int) -> void:
 		match system:
 			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
 				system_hp[System.INNER_HULL] -= damage;
+				GameState.system_damaged.emit(System.INNER_HULL);
 			_:
 				system_hp[system] -= damage;
+				GameState.system_damaged.emit(system);
+		
 	
 	
 	func get_random_working_system() -> System:
@@ -294,29 +302,38 @@ class ShipState extends RefCounted:
 				take_electric_damage(system, value);
 	
 	
-	func repair_system(system: System) -> void:
+	func repair_system(system: System, to_full: bool = false) -> void:
 		if not system_hp.has(system):
 			return;
 		
-		if system_hp[system] < 0:
-			system_hp[system] += 1;
+		if to_full:
+			system_hp[system] = default_hp[system];
 		
-		system_hp[system] += 1;
-		system_hp[system] = mini(system_hp[system], default_hp[system]);
+		else:
+			if system_hp[system] < 0:
+				system_hp[system] += 1;
+			
+			system_hp[system] += 1;
+			system_hp[system] = mini(system_hp[system], default_hp[system]);
+		
+		GameState.system_repaired.emit(system);
 	
 	
 	func repair_systems() -> void:
 		for crewmate in ships_crew:
-			repair_system(ships_crew[crewmate]);
+			repair_system(ships_crew[crewmate], true);
 	
 	
 	func full_repair() -> void:
-		system_hp = default_hp.duplicate();
+		for system in System.values():
+			repair_system(system, true);
 	
 	
 	func reset_crew() -> void:
 		for mate in ships_crew:
 			ships_crew[mate] = System.OTHER;
+		
+		GameState.system_manned.emit();
 	
 	
 	func man_system(mate: Crewmate, system: System) -> void:
@@ -324,6 +341,8 @@ class ShipState extends RefCounted:
 			ships_crew[mate] = system;
 		else:
 			push_error("impostor amongus");
+		
+		GameState.system_manned.emit();
 	
 	
 	func stop_manning(mate: Crewmate) -> void:
@@ -331,6 +350,8 @@ class ShipState extends RefCounted:
 			ships_crew[mate] = System.OTHER;
 		else:
 			push_error("impostor amongus");
+		
+		GameState.system_manned.emit();
 	
 	
 	func is_system_ok(system: System) -> bool:

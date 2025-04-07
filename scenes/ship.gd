@@ -22,6 +22,22 @@ func get_active_zones() -> Array[GenericTableZone]:
 	return zones;
 
 
+func update_manned_icons() -> void:
+	pass;
+
+
+func on_system_damaged(system: GameState.ShipState.System) -> void:
+	pass;
+
+
+func on_system_repaired(system: GameState.ShipState.System) -> void:
+	pass;
+
+
+func update_warning_icon(_p) -> void:
+	$Warning.visible = GameState.life_support_failure;
+
+
 func _add_crewmate_to_system(card: GenericCard, zone: GenericTableZone) -> void:
 	GameState.ship.man_system(
 		GameState.active_table.active_cards[card], zone_to_system[zone]
@@ -32,13 +48,13 @@ func _remove_crewmate_from_system(card: GenericCard) -> void:
 	GameState.ship.stop_manning(GameState.active_table.active_cards[card]);
 
 
-func update_warning_icon(_p) -> void:
-	$Warning.visible = GameState.life_support_failure;
-
-
 func _ready() -> void:
 	GameState.new_phase.connect(update_warning_icon);
 	$Warning.hide();
+	
+	GameState.system_damaged.connect(on_system_damaged);
+	GameState.system_repaired.connect(on_system_repaired);
+	GameState.system_manned.connect(update_manned_icons);
 	
 	for zone in get_active_zones():
 		zone.card_recieved.connect(_add_crewmate_to_system.bind(zone));

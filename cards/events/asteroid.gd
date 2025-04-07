@@ -28,3 +28,4 @@ func _action() -> void:
 func _init() -> void:
 	event_title = "An Asteroid Field";
 	event_text = "A minor course correction might be needed.";
+	event_image = preload("res://assets/graphics/events/ev_aster.png");

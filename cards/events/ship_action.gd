@@ -7,6 +7,9 @@ func _action() -> void:
 	var is_hyper_drive_ok :=  GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES);
 	var is_life_support_ok := GameState.ship.is_system_ok(GameStateClass.ShipState.System.LIFE_SUPPORT);
 	
+	if not is_autopilot_ok:
+		return;
+	
 	if not is_hyper_drive_ok:
 		GameState.ship.repair_system(GameStateClass.ShipState.System.HYPER_ENGINES);
 	elif not is_engine_ok:
@@ -31,19 +34,17 @@ func _prepare() -> void:
 	
 	else:
 		event_title = "Autopilot Greets You";
-		event_text = "\"All systems green, Captain!\" - you hear the autopilot's cheery voice through ship's audio system" ;
+		event_text = "\"All systems green, Captain!\" - you hear the always cheery autopilot's voice through the ship's audio system" ;
 		
-		if are_engines_ok and is_life_support_ok:
-			event_text += "."
-		
-		if not are_engines_ok and is_life_support_ok:
-			event_text += ", - \"Almost all of them, at least! Diverting power to fix the engines, Captain!\""
-		
-		if not is_life_support_ok and are_engines_ok:
-			event_text += ", - \"Almost all of them, at least!"\
-				+ " Diverting power to engines to get you out of here, Captain!\"";
-		
-		if not is_life_support_ok and not are_engines_ok:
-			event_text += ", - \"Nevermind that! Everything is on fire! Diverting power to fix the engines, Captain!\"";
+		match [are_engines_ok, is_life_support_ok]:
+			[true, true]:
+				event_text += "."
+			[false, true]:
+				event_text += ", - \"Almost all of them, at least! Diverting power to fix the engines, Captain!\""
+			[true, false]:
+				event_text += ", - \"Almost all of them, at least!"\
+					+ " Diverting power to engines to get you out of here, Captain!\"";
+			[false, false]:
+				event_text += ", - \"Nevermind that! Everything is on fire! Diverting power to fix the engines, Captain!\"";
 	
 	super._ready();

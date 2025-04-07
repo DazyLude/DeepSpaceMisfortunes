@@ -15,7 +15,7 @@ func dond(_card) -> void:
 func _action() -> void:
 	if did:
 		GameState.ingot_count += 1;
-		var damage = 6;
+		var damage = 8;
 		var target_system = GameState.ship.get_random_working_system();
 		GameState.ship.take_physical_damage(target_system, damage);
 	
@@ -31,5 +31,7 @@ func _prepare() -> void:
 		+ "You need, however, to slam your ship into the asteroid to get to it... "
 	var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "HAL, do it.");
 	setup_event_signals(idx, do, dond);
+	
+	event_image = preload("res://assets/graphics/events/ev_rich_aster.png");
 	
 	super._ready();

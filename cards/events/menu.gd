@@ -34,7 +34,7 @@ func _prepare() -> void:
 	var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "start a new game");
 	setup_event_signals(idx, set_token, unset_token);
 	
-	var idx2 = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "play through tutorial");
+	var idx2 = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "play the tutorial");
 	setup_event_signals(idx2, set_tutorial_token, unset_token);
 	
 	super._ready();

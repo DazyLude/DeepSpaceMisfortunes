@@ -9,10 +9,11 @@ signal dropped;
 const fly_transition : float = 0.05;
 const fly_offset := Vector2(-1.0, -1.0);
 const max_blur : float = 1.5;
-const shake_power : float = 10.0;
+
+const shake_time : float = 0.5;
 var transition_tween : Tween = null;
 var shake_tween : Tween = null;
-
+@onready var reset_scale = scale;
 
 @export var card_texture : Texture2D = null;
 
@@ -37,7 +38,7 @@ func unhover() -> void:
 
 
 func setup_hitbox() -> void:
-	hitbox_shape.shape.size = sprite.get_rect().size * 0.75;
+	hitbox_shape.shape.size = sprite.get_rect().size * 0.85;
 	hitbox.position = sprite.position;
 	
 	hitbox.mouse_entered.connect(hover);
@@ -76,11 +77,36 @@ func stop_flying() -> void:
 func shake() -> void:
 	if shake_tween:
 		shake_tween.kill();
-	shake_tween = create_tween().set_loops();
+	shake_tween = create_tween();
 	
-	shake_tween.tween_property(self, "scale",
-		Vector2(randf_range(-shake_power, shake_power),
-				randf_range(-shake_power, shake_power)), 0.2).as_relative();
+	shake_tween.tween_property(sprite, ^"material:shader_parameter/intensity", 1.0, shake_time)\
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT);
+	shake_tween.parallel().tween_property(sprite, ^"material:shader_parameter/thickness", 3.5, shake_time);
+	
+	shake_tween.tween_property(sprite, ^"material:shader_parameter/intensity", 0.0, shake_time)\
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN);
+	shake_tween.parallel().tween_property(sprite, ^"material:shader_parameter/thickness", 0.0, shake_time);
+
+
+func set_outline_material() -> void:
+	var shader := preload("res://shaders/outline.gdshader");
+	
+	var shader_material := ShaderMaterial.new()
+	shader_material.shader = shader;
+	
+	var gradient_texture = GradientTexture1D.new();
+	gradient_texture.gradient = preload("res://assets/ping_gradient.tres");
+	
+	shader_material.set_shader_parameter(&"color", gradient_texture);
+	shader_material.set_shader_parameter(&"gradientResolution", 30);
+	shader_material.set_shader_parameter(&"thickness", 0.0);
+	shader_material.set_shader_parameter(&"tolerance", 0.9);
+	shader_material.set_shader_parameter(&"intensity", 0.0);
+	
+	if sprite != null:
+		sprite.material = shader_material;
+	else:
+		material = shader_material;
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -108,5 +134,7 @@ func _ready() -> void:
 		shadow_sprite.material.shader = load("res://shaders/shadow.gdshader");
 		shadow_sprite.material.set_shader_parameter(&"shadow_offset", Vector2());
 		shadow_sprite.material.set_shader_parameter(&"blur_amount", 0.0);
+	
+	set_outline_material();
 	
 	setup_hitbox();

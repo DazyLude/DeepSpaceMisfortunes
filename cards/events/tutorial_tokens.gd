@@ -22,9 +22,12 @@ func unset_nav(_c) -> void:
 
 func go_next() -> void:
 	if nav_set and ingot_set:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL4);
+		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_SYSTEMS);
 	else:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL3);
+		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_TOKENS);
+		
+		if not ingot_set: GameState.ping_tokens.emit.call_deferred(Table.TokenType.INGOT);
+		if not nav_set: GameState.ping_tokens.emit.call_deferred(Table.TokenType.SHIP_NAVIGATION);
 
 
 func _action() -> void:
@@ -37,13 +40,11 @@ func _prepare() -> void:
 	ingot_set = false;
 	nav_set = false;
 	
-	GameState.ingot_count += 1;
+	GameState.ingot_count = 1;
 	GameState.reset_tokens();
 	
-	event_title = "Tutorial 3";
-	event_text = "Game flow and event outcomes are controlled by dragging tokens to various inputs.\n"\
-		+ "The tokens are spawned in the bottom right part of the screen.\n"\
-		+ "To continue, please fill inputs on this event card correctly :)";
+	event_title = "Tutorial: Tokens";
+	event_text = "The game flow and event outcomes are controlled by dragging tokens to various inputs. The tokens are spawned in the bottom right part of the screen.\nTo continue, please fill inputs on this event card correctly.";
 	
 	var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "put navigation here");
 	setup_event_signals(idx, set_nav, unset_nav);

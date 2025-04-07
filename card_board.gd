@@ -9,10 +9,11 @@ enum TokenType {
 	OTHER,
 }
 
-const nav_token_spawn_location := Vector2(680.0, 500.0);
-const crew_token_spawn_location := Vector2(380.0, 600.0);
-const ingot_token_spawn_location := Vector2(180.0, 600.0);
+const nav_token_spawn_location := Vector2(910.0, 665.0);
+const crew_token_spawn_location := Vector2(720.0, 395.0);
+const ingot_token_spawn_location := Vector2(280.0, 665.0);
 
+const EVENT_POSITION := Vector2(1200, 400)
 
 var active_cards : Dictionary[GenericCard, RefCounted] = {};
 var active_zones : Dictionary[GenericTableZone, GenericCard] = {};
@@ -22,6 +23,9 @@ var current_event : GenericEvent = null;
 
 var picked_card_ref : GenericCard = null;
 var grabbed_offset := Vector2();
+
+var grace : bool = false;
+var GRACE_PERIOD : float = 0.3;
 
 
 func get_card_token_type(card: GenericCard) -> TokenType:
@@ -85,7 +89,7 @@ func picked_card(card: GenericCard) -> void:
 	
 	if card != null:
 		grabbed_offset = card.position - get_local_mouse_position();
-		grabbed_offset.clamp(card.hitbox_shape.shape.size / -2, card.hitbox_shape.shape.size / 2)
+		grabbed_offset = grabbed_offset.clamp(card.hitbox_shape.shape.size * -0.3, card.hitbox_shape.shape.size * 0.3)
 		picked_card_ref = card;
 		
 		card.fly_with_shadow();
@@ -245,7 +249,7 @@ func spawn_event(event_instance: GenericEvent) -> void:
 	for zone in event_instance.event_zones:
 		add_active_zone(zone);
 	
-	event_instance.position = Vector2(980, 360);
+	event_instance.position = EVENT_POSITION;
 	
 	current_event = event_instance;
 
@@ -261,18 +265,26 @@ func despawn_event() -> void:
 		current_event = null;
 
 
+
+var hint_counter : int = 0;
+
 func display_hint() -> void:
-	match null:
-		_ when $Hint.visible:
-			$Hint.visible = false;
-			$Hint2.visible = true;
-		_:
-			$Hint.visible = true;
+	if hint_counter > 2:
+		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_INTRO);
+		hint_counter = 0;
+		return;
+	
+	hint_counter += 1;
+	shake_tokens(TokenType.SHIP_NAVIGATION);
 
 
-func hide_hint() -> void:
-	$Hint2.visible = false;
-	$Hint.visible = false;
+
+func try_to_advance_phase() -> void:
+	if not grace:
+		GameState.advance_phase();
+		grace = true;
+		await get_tree().create_timer(GRACE_PERIOD).timeout;
+		grace = false;
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -287,8 +299,7 @@ func _ready() -> void:
 	for zone in ship.get_active_zones():
 		add_active_zone(zone);
 	
-	hide_hint();
-	$Button.pressed.connect(GameState.advance_phase);
+	$Button.pressed.connect(try_to_advance_phase);
 	
 	GameState.new_event.connect(spawn_event);
 	GameState.new_token.connect(spawn_token);

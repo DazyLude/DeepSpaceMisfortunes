@@ -12,13 +12,13 @@ func _action() -> void:
 		GameState.HyperspaceDepth.NORMAL:
 			damage = 6;
 		GameState.HyperspaceDepth.DEEP:
-			damage = 12;
+			damage = 10;
 	
 	var is_navigation_ok_and_manned = GameState.ship.is_system_manned(GameStateClass.ShipState.System.NAVIGATION) \
 		and GameState.ship.is_system_ok(GameStateClass.ShipState.System.NAVIGATION);
 	
 	if is_navigation_ok_and_manned:
-		damage -= 2;
+		damage -= 1;
 	
 	damage = maxi(0, damage);
 	
@@ -28,3 +28,4 @@ func _action() -> void:
 func _init() -> void:
 	event_title = "A Large Asteroid Field";
 	event_text = "This one is particularly large and dense. A course adjustment is required.";
+	event_image = preload("res://assets/graphics/events/ev_big_aster.png");

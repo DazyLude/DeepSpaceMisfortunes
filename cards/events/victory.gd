@@ -22,6 +22,8 @@ func _prepare() -> void:
 	unset_token(null);
 	
 	event_title = "Victory!";
+	event_image = preload("res://assets/graphics/events/ev_pirate.png");
+	
 	event_text = "Congratulations, you've won!\n"
 	event_text += "Your score is... %d!\n" % GameState.get_score();
 	event_text += "Score increases with the ingot count, and decreases with rounds spent. Maybe another try? :)"

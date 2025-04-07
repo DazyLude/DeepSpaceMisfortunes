@@ -6,17 +6,18 @@ func _action() -> void:
 	
 	match GameState.hyper_depth:
 		GameState.HyperspaceDepth.NONE:
-			damage = 3;
+			damage = 4;
 		GameState.HyperspaceDepth.SHALLOW:
-			damage = 3;
+			damage = 4;
 		GameState.HyperspaceDepth.NORMAL:
-			damage = 6;
+			damage = 8;
 		GameState.HyperspaceDepth.DEEP:
 			damage = 12;
 	
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.ELECTRIC, damage / 3);
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.ELECTRIC, damage / 3);
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage / 3);
+	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.ELECTRIC, damage / 4);
+	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.ELECTRIC, damage / 4);
+	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage / 4);
+	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage / 4);
 
 
 func _init() -> void:

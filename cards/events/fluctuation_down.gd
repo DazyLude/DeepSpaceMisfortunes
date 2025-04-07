@@ -51,6 +51,14 @@ func _prepare() -> void:
 	var is_navigation_ok_and_manned = GameState.ship.is_system_ok(GameState.ShipState.System.NAVIGATION)\
 		and GameState.ship.is_system_manned(GameState.ShipState.System.NAVIGATION);
 	
+	match GameState.hyper_depth:
+		GameState.HyperspaceDepth.SHALLOW:
+			event_image = preload("res://assets/graphics/events/ev_batat1.png");
+		GameState.HyperspaceDepth.NORMAL:
+			event_image = preload("res://assets/graphics/events/ev_batat2.png");
+		GameState.HyperspaceDepth.DEEP:
+			event_image = preload("res://assets/graphics/events/ev_batat3.png");
+	
 	event_title = "Hyperspace Fluctuation";
 	event_text = "A Space-Time fluctuation of Hyperspace causes a system overload. "\
 		+ "This one tries to pull you deeper in!";

@@ -18,4 +18,4 @@ func update_ship_status(_d: GameState.RoundPhase) -> void:
 
 func _ready() -> void:
 	GameState.new_phase.connect(update_ship_status);
-	update_ship_status(0);
+	update_ship_status(GameState.current_phase);

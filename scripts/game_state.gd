@@ -143,9 +143,12 @@ func advance_phase() -> void:
 			current_phase = RoundPhase.EXECUTION;
 			new_event.emit(null);
 			
-			clear_tokens.emit();
 			ship.repair_systems();
 			play_event(GlobalEventPool.EventID.PROGRESS_REPORT);
+		
+		RoundPhase.PREPARATION:
+			ping_tokens.emit(Table.TokenType.SHIP_NAVIGATION);
+			return;
 		
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;

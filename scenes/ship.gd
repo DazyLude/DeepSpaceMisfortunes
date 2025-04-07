@@ -13,6 +13,21 @@ var zone_to_system : Dictionary[GenericTableZone, GameState.ShipState.System] = 
 	$HyperSlot: GameState.ShipState.System.HYPER_ENGINES
 };
 
+@onready
+var icon_tweens : Dictionary[Node, Tween] = {
+	$LifeSupportSlot/Background: null,
+	$NavigationSlot/Background: null,
+	$AutopilotSlot/Background: null,
+	$InnerHullSlot/Background: null,
+	$OuterHullSlot/Background: null,
+	$EnginesSlot/Background: null,
+	$HyperSlot/Background: null
+}
+
+const flare_time : float = 0.5;
+var green_gradient = GradientTexture1D.new();
+var red_gradient = GradientTexture1D.new();
+
 
 func get_active_zones() -> Array[GenericTableZone]:
 	var zones : Array[GenericTableZone] = [];
@@ -37,11 +52,17 @@ func update_manned_icons() -> void:
 
 
 func on_system_damaged(system: GameState.ShipState.System) -> void:
-	pass;
+	var system_node = zone_to_system.find_key(system);
+	if system_node != null:
+		var system_icon = system_node.get_node("Background");
+		flare_red(system_icon);
 
 
 func on_system_repaired(system: GameState.ShipState.System) -> void:
-	pass;
+	var system_node = zone_to_system.find_key(system);
+	if system_node != null:
+		var system_icon = system_node.get_node("Background");
+		flare_green(system_icon);
 
 
 func update_warning_icon(_p) -> void:
@@ -58,6 +79,60 @@ func _remove_crewmate_from_system(card: GenericCard) -> void:
 	GameState.ship.stop_manning(GameState.active_table.active_cards[card]);
 
 
+func flare_red(icon: Sprite2D) -> void:
+	icon.material.set_shader_parameter(&"color", red_gradient);
+	icon.material.set_shader_parameter(&"intensity", 0.0);
+	
+	if icon_tweens.get(icon, null):
+		icon_tweens[icon].kill();
+	
+	var tween := create_tween();
+	
+	tween.tween_property(icon, ^"material:shader_parameter/intensity", 1.0, flare_time)\
+		.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT);
+	tween.tween_property(icon, ^"material:shader_parameter/intensity", 0.0, flare_time)\
+		.set_ease(Tween.EASE_IN);
+	
+	icon_tweens[icon] = tween;
+
+
+func flare_green(icon: Sprite2D) -> void:
+	icon.material.set_shader_parameter(&"color", green_gradient);
+	icon.material.set_shader_parameter(&"intensity", 0.0);
+	
+	if icon_tweens.get(icon, null):
+		icon_tweens[icon].kill();
+	
+	var tween := create_tween();
+	
+	tween.tween_property(icon, ^"material:shader_parameter/intensity", 1.0, flare_time)\
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT);
+	tween.tween_property(icon, ^"material:shader_parameter/intensity", 0.0, flare_time)\
+		.set_ease(Tween.EASE_IN);
+	
+	icon_tweens[icon] = tween;
+
+
+func set_icon_materials() -> void:
+	for system_slot in zone_to_system:
+		var icon := system_slot.get_node("Background");
+		setup_icon_outline_shader(icon);
+
+
+func setup_icon_outline_shader(icon: Sprite2D) -> void:
+	var shader := preload("res://shaders/outline.gdshader");
+	var shader_material := ShaderMaterial.new()
+	shader_material.shader = shader;
+	
+	shader_material.set_shader_parameter(&"color", green_gradient);
+	shader_material.set_shader_parameter(&"gradientResolution", 30);
+	shader_material.set_shader_parameter(&"thickness", 3.5);
+	shader_material.set_shader_parameter(&"tolerance", 0.9);
+	shader_material.set_shader_parameter(&"intensity", 0.0);
+	
+	icon.material = shader_material;
+
+
 func _ready() -> void:
 	GameState.new_phase.connect(update_warning_icon);
 	$Warning.hide();
@@ -66,6 +141,10 @@ func _ready() -> void:
 	GameState.system_repaired.connect(on_system_repaired);
 	GameState.system_manned.connect(update_manned_icons);
 	
+	green_gradient.gradient = preload("res://assets/green_gradient.tres");
+	red_gradient.gradient = preload("res://assets/red_gradient.tres");
+	
+	set_icon_materials();
 	hide_manned_icons();
 	
 	for zone in get_active_zones():

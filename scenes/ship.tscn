@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cqtida6kfefcr"]
+[gd_scene load_steps=12 format=3 uid="uid://cqtida6kfefcr"]
 
 [ext_resource type="Script" uid="uid://wvcjart1cb28" path="res://scenes/ship.gd" id="1_q631a"]
 [ext_resource type="Texture2D" uid="uid://dk6jbeqflm4vn" path="res://assets/ship_ph.png" id="2_tfsc7"]
@@ -6,6 +6,22 @@
 [ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="3_tfsc7"]
 [ext_resource type="Texture2D" uid="uid://cgmu16kxwp77h" path="res://assets/astronaut.png" id="5_7j21i"]
 [ext_resource type="Texture2D" uid="uid://ucaxubkfu57c" path="res://assets/shields.png" id="5_gudjc"]
+[ext_resource type="Shader" uid="uid://dk0pff5l0tf3w" path="res://shaders/outline.gdshader" id="6_3m36u"]
+
+[sub_resource type="Gradient" id="Gradient_3m36u"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8qiel"]
+gradient = SubResource("Gradient_3m36u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_itrim"]
+shader = ExtResource("6_3m36u")
+shader_parameter/color = SubResource("GradientTexture1D_8qiel")
+shader_parameter/gradientResolution = 10
+shader_parameter/thickness = 1.0
+shader_parameter/tolerance = 0.0
+shader_parameter/intensity = 0.0
+shader_parameter/diagonals = true
+shader_parameter/rounded = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tfsc7"]
 
@@ -34,6 +50,7 @@ scale = Vector2(0.7, 0.7)
 texture = ExtResource("5_7j21i")
 
 [node name="Background" type="Sprite2D" parent="NavigationSlot"]
+material = SubResource("ShaderMaterial_itrim")
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("5_gudjc")
 

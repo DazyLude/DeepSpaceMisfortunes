@@ -98,7 +98,8 @@ func _remove_crewmate_from_system(card: GenericCard) -> void:
 
 func flare_red(icon: Sprite2D) -> void:
 	icon.material.set_shader_parameter(&"color", red_gradient);
-	icon.material.set_shader_parameter(&"intensity", 0.0);
+	icon.material.set_shader_parameter(&"intensity", 0.2);
+	icon.material.set_shader_parameter(&"thickness", 1.0);
 	
 	if icon_tweens.get(icon, null):
 		icon_tweens[icon].kill();
@@ -107,15 +108,18 @@ func flare_red(icon: Sprite2D) -> void:
 	
 	tween.tween_property(icon, ^"material:shader_parameter/intensity", 1.0, flare_time)\
 		.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT);
-	tween.tween_property(icon, ^"material:shader_parameter/intensity", 0.0, flare_time)\
+	tween.parallel().tween_property(icon, ^"material:shader_parameter/thickness", 3.5, flare_time);
+	tween.tween_property(icon, ^"material:shader_parameter/intensity", 0.2, flare_time)\
 		.set_ease(Tween.EASE_IN);
+	tween.parallel().tween_property(icon, ^"material:shader_parameter/thickness", 1.0, flare_time);
 	
 	icon_tweens[icon] = tween;
 
 
 func flare_green(icon: Sprite2D) -> void:
 	icon.material.set_shader_parameter(&"color", green_gradient);
-	icon.material.set_shader_parameter(&"intensity", 0.0);
+	icon.material.set_shader_parameter(&"intensity", 0.2);
+	icon.material.set_shader_parameter(&"thickness", 1.0);
 	
 	if icon_tweens.get(icon, null):
 		icon_tweens[icon].kill();
@@ -124,8 +128,10 @@ func flare_green(icon: Sprite2D) -> void:
 	
 	tween.tween_property(icon, ^"material:shader_parameter/intensity", 1.0, flare_time)\
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT);
-	tween.tween_property(icon, ^"material:shader_parameter/intensity", 0.0, flare_time)\
+	tween.parallel().tween_property(icon, ^"material:shader_parameter/thickness", 3.5, flare_time);
+	tween.tween_property(icon, ^"material:shader_parameter/intensity", 0.2, flare_time)\
 		.set_ease(Tween.EASE_IN);
+	tween.parallel().tween_property(icon, ^"material:shader_parameter/thickness", 1.0, flare_time);
 	
 	icon_tweens[icon] = tween;
 
@@ -143,7 +149,7 @@ func setup_icon_outline_shader(icon: Sprite2D) -> void:
 	
 	shader_material.set_shader_parameter(&"color", green_gradient);
 	shader_material.set_shader_parameter(&"gradientResolution", 30);
-	shader_material.set_shader_parameter(&"thickness", 3.5);
+	shader_material.set_shader_parameter(&"thickness", 1.0);
 	shader_material.set_shader_parameter(&"tolerance", 0.9);
 	shader_material.set_shader_parameter(&"intensity", 0.0);
 	

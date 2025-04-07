@@ -10,8 +10,8 @@ enum TokenType {
 }
 
 const nav_token_spawn_location := Vector2(910.0, 665.0);
-const crew_token_spawn_location := Vector2(720.0, 395.0);
-const ingot_token_spawn_location := Vector2(280.0, 665.0);
+const crew_token_spawn_location := Vector2(375.0, 560.0);
+const ingot_token_spawn_location := Vector2(375.0, 230.0);
 
 const EVENT_POSITION := Vector2(1200, 400)
 
@@ -265,17 +265,16 @@ func despawn_event() -> void:
 		current_event = null;
 
 
-
 var hint_counter : int = 0;
 
 func display_hint() -> void:
 	if hint_counter > 2:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_INTRO);
+		GameState.play_event(GlobalEventPool.EventID.TUTORIAL_INTRO);
 		hint_counter = 0;
 		return;
 	
 	hint_counter += 1;
-	shake_tokens(TokenType.SHIP_NAVIGATION);
+	shake_tokens.call_deferred(TokenType.SHIP_NAVIGATION);
 
 
 
@@ -304,4 +303,4 @@ func _ready() -> void:
 	GameState.new_event.connect(spawn_event);
 	GameState.new_token.connect(spawn_token);
 	GameState.clear_tokens.connect(despawn_all_tokens);
-	GameState.ping_tokens.connect(shake_tokens);
+	GameState.ping_tokens.connect(shake_tokens, CONNECT_DEFERRED);

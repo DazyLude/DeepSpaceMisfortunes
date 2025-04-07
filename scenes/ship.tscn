@@ -125,8 +125,7 @@ text = "1"
 horizontal_alignment = 1
 
 [node name="Warning" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(168, 36)
+position = Vector2(108, 21)
 texture = ExtResource("3_gudjc")
 
 [node name="InnerHullSlot" type="Area2D" parent="."]

@@ -21,6 +21,8 @@ func _action() -> void:
 
 
 func _init() -> void:
+	
+	event_image = preload("res://assets/graphics/events/ev_plasma.png");
 	event_title = "A Plasma Incarnate";
 	event_text = "He looks like a giant sphere of lighting, "\
 		+ "and his movements hint on a will behind them. "\

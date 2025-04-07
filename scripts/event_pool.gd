@@ -51,9 +51,8 @@ static func get_test_pool() -> EventPool:
 	var placeholder_weights : Array[GlobalEventPool.EventID] = [
 		#GlobalEventPool.EventID.NOTHING : 1.0,
 		#GlobalEventPool.EventID.ASTEROID : 1.0,
-		GlobalEventPool.EventID.LARGE_ASTEROID,
-		GlobalEventPool.EventID.LARGE_ASTEROID,
-		GlobalEventPool.EventID.LARGE_ASTEROID,
+		GlobalEventPool.EventID.COSMOCOP,
+		
 		#GlobalEventPool.EventID.POWER_SURGE : 1.0,
 		#GlobalEventPool.EventID.PLASMA_INCARNATE : 1.0,
 		#GlobalEventPool.EventID.SPACE_RAY : 1.0,
@@ -76,6 +75,7 @@ static func get_space_pool() -> EventPool:
 		GlobalEventPool.EventID.NOTHING : 8.0,
 		GlobalEventPool.EventID.ASTEROID : 2.0,
 		GlobalEventPool.EventID.ALIENS : 1.0,
+		GlobalEventPool.EventID.COSMOCOP : 1.0,
 	};
 	
 	return get_pool_populated_with_weights(placeholder_weights);
@@ -90,6 +90,7 @@ static func get_shallow_pool() -> EventPool:
 		GlobalEventPool.EventID.FLUCTUATION_UP : 1.0,
 		GlobalEventPool.EventID.FLUCTUATION_DOWN : 1.0,
 		GlobalEventPool.EventID.FRIEND : 1.0,
+		GlobalEventPool.EventID.COSMOCOP : 1.0,
 	};
 	
 	return get_pool_populated_with_weights(placeholder_weights);

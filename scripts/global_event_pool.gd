@@ -30,6 +30,8 @@ enum EventID {
 	
 	# continuations of other events
 	FRIEND2,
+	COSMOCOP2,
+	COSMOCOP3,
 	
 	# random bad events
 	NOTHING,
@@ -41,6 +43,7 @@ enum EventID {
 	FLUCTUATION_UP,
 	FLUCTUATION_DOWN,
 	ALIENS,
+	COSMOCOP,
 	
 	# random neutral
 	SHINY,
@@ -86,6 +89,9 @@ var event_load_params : Dictionary[EventID, String] = {
 	EventID.FLUCTUATION_UP: "res://cards/events/fluctuation_up.gd",
 	EventID.FLUCTUATION_DOWN: "res://cards/events/fluctuation_down.gd",
 	EventID.ALIENS: "res://cards/events/ayyy_lmao.gd",
+	EventID.COSMOCOP: "res://cards/events/cosmocop1.gd",
+	EventID.COSMOCOP2: "res://cards/events/cosmocop2.gd",
+	EventID.COSMOCOP3: "res://cards/events/cosmocop3.gd",
 	
 	EventID.SHINY: "res://cards/events/shiny.gd",
 	EventID.TIME_DILATION: "res://cards/events/double_time.gd",

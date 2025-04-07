@@ -269,6 +269,7 @@ var hint_counter : int = 0;
 
 func display_hint() -> void:
 	if hint_counter > 2:
+		GameState.current_phase = GameState.RoundPhase.TUTORIAL;
 		GameState.play_event(GlobalEventPool.EventID.TUTORIAL_INTRO);
 		hint_counter = 0;
 		return;

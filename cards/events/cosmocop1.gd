@@ -48,7 +48,7 @@ func _prepare() -> void:
 	event_text = "\"Hello there, citizen!\" - a space cop pulls you over. A drop of sweat runs down your face. Space cop looks at your ship's cargo bay, as if he can see it contents right through...";
 	event_image = preload("res://assets/graphics/events/ev_police.png");
 	
-	var idx1 = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "bribe him");
+	var idx1 = setup_event_input(Table.TokenType.INGOT, "bribe him");
 	setup_event_signals(idx1, give, dond);
 	
 	var idx2 = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "go with him");

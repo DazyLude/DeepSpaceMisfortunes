@@ -10,7 +10,7 @@ var zone_to_system : Dictionary[GenericTableZone, GameState.ShipState.System] = 
 	$InnerHullSlot: GameState.ShipState.System.INNER_HULL,
 	$OuterHullSlot: GameState.ShipState.System.OUTER_HULL,
 	$EnginesSlot: GameState.ShipState.System.ENGINES,
-	$HyperSlot: GameState.ShipState.System.HYPER_ENGINES
+	$HyperSlot: GameState.ShipState.System.HYPER_ENGINES,
 };
 
 @onready
@@ -24,9 +24,26 @@ var icon_tweens : Dictionary[Node, Tween] = {
 	$HyperSlot/Background: null
 }
 
-const flare_time : float = 0.5;
+@onready
+var hp_per_system : Dictionary = {
+	GameState.ShipState.System.NAVIGATION: $NavigationSlot/HP,
+	GameState.ShipState.System.LIFE_SUPPORT: $LifeSupportSlot/HP,
+	GameState.ShipState.System.INNER_HULL: $InnerHullSlot/HP, 
+	GameState.ShipState.System.AUTOPILOT: $AutopilotSlot/HP,
+	GameState.ShipState.System.ENGINES: $EnginesSlot/HP,
+	GameState.ShipState.System.HYPER_ENGINES: $HyperSlot/HP, 
+	GameState.ShipState.System.OUTER_HULL: $OuterHullSlot/HP,
+}
+
+
+const flare_time : float = 1.5;
 var green_gradient = GradientTexture1D.new();
 var red_gradient = GradientTexture1D.new();
+
+
+func update_hp_display(_s) -> void:
+	for system in GameState.ship.system_hp:
+		hp_per_system[system].text = "%d" % GameState.ship.system_hp[system];
 
 
 func get_active_zones() -> Array[GenericTableZone]:
@@ -140,6 +157,10 @@ func _ready() -> void:
 	GameState.system_damaged.connect(on_system_damaged);
 	GameState.system_repaired.connect(on_system_repaired);
 	GameState.system_manned.connect(update_manned_icons);
+	
+	GameState.system_damaged.connect(update_hp_display);
+	GameState.system_repaired.connect(update_hp_display);
+	GameState.new_phase.connect(update_hp_display);
 	
 	green_gradient.gradient = preload("res://assets/green_gradient.tres");
 	red_gradient.gradient = preload("res://assets/red_gradient.tres");

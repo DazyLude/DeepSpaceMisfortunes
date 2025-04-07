@@ -9,10 +9,11 @@ enum TokenType {
 	OTHER,
 }
 
-const nav_token_spawn_location := Vector2(680.0, 500.0);
-const crew_token_spawn_location := Vector2(380.0, 600.0);
-const ingot_token_spawn_location := Vector2(180.0, 600.0);
+const nav_token_spawn_location := Vector2(910.0, 665.0);
+const crew_token_spawn_location := Vector2(595.0, 665.0);
+const ingot_token_spawn_location := Vector2(280.0, 665.0);
 
+const EVENT_POSITION := Vector2(1200, 400)
 
 var active_cards : Dictionary[GenericCard, RefCounted] = {};
 var active_zones : Dictionary[GenericTableZone, GenericCard] = {};
@@ -88,7 +89,7 @@ func picked_card(card: GenericCard) -> void:
 	
 	if card != null:
 		grabbed_offset = card.position - get_local_mouse_position();
-		grabbed_offset.clamp(card.hitbox_shape.shape.size / -2, card.hitbox_shape.shape.size / 2)
+		grabbed_offset.clamp(card.hitbox_shape.shape.size / -2.5, card.hitbox_shape.shape.size / 2.5)
 		picked_card_ref = card;
 		
 		card.fly_with_shadow();
@@ -248,7 +249,7 @@ func spawn_event(event_instance: GenericEvent) -> void:
 	for zone in event_instance.event_zones:
 		add_active_zone(zone);
 	
-	event_instance.position = Vector2(980, 360);
+	event_instance.position = EVENT_POSITION;
 	
 	current_event = event_instance;
 

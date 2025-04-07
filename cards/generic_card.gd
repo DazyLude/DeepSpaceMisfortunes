@@ -38,7 +38,7 @@ func unhover() -> void:
 
 
 func setup_hitbox() -> void:
-	hitbox_shape.shape.size = sprite.get_rect().size * 0.75;
+	hitbox_shape.shape.size = sprite.get_rect().size * 0.85;
 	hitbox.position = sprite.position;
 	
 	hitbox.mouse_entered.connect(hover);

@@ -55,10 +55,21 @@ static func from_two_tokens(token : GenericCard, another : GenericCard) -> Token
 	stack.tokens.push_back(token);
 	stack.tokens.push_back(another);
 	
+	var corcle = Sprite2D.new();
+	corcle.texture = preload("res://assets/graphics/circle.png");
+	corcle.position = Vector2(30, 40);
+	stack.add_child(corcle);
+	
 	stack.card_texture = token.sprite.texture.duplicate();
-	stack.label = Label.new();
-	stack.label.text = "2";
-	stack.add_child(stack.label);
+	var label := Label.new();
+	
+	label.position = Vector2(21, 28);
+	label.size = Vector2(20, 30);
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER;
+	label.text = "2";
+	
+	stack.label = label;
+	stack.add_child(label);
 	
 	token.hide();
 	another.hide();

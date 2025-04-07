@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://biuld8u83bgf4" path="res://cards/generic_card.gd" id="1_ntm07"]
 [ext_resource type="Texture2D" uid="uid://b3o1ns25sybgy" path="res://assets/crewmate_ph.png" id="2_d37jc"]
-[ext_resource type="Texture2D" uid="uid://36uyncikfvfg" path="res://assets/compass.png" id="2_ttq4j"]
+[ext_resource type="Texture2D" uid="uid://ctxondagh21ea" path="res://assets/graphics/navigation.png" id="2_ttq4j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpeyf"]
 

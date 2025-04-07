@@ -9,6 +9,20 @@ enum LimitedType {
 };
 
 
+var event_bg_per_layer : Dictionary = {
+	GameState.HyperspaceDepth.NONE : preload("res://assets/graphics/event.png"),
+	GameState.HyperspaceDepth.SHALLOW : preload("res://assets/graphics/event2.png"),
+	GameState.HyperspaceDepth.NORMAL : preload("res://assets/graphics/event3.png"),
+	GameState.HyperspaceDepth.DEEP : preload("res://assets/graphics/event4.png"),
+};
+
+var slots : Dictionary = {
+	Table.TokenType.CREWMATE: preload("res://assets/graphics/human.png"),
+	Table.TokenType.SHIP_NAVIGATION: preload("res://assets/graphics/nav.png"),
+	Table.TokenType.INGOT: preload("res://assets/graphics/metal.png"),
+};
+
+
 @export var event_text : String = "";
 @export var event_title : String = "";
 @export var event_image : Texture2D = null;
@@ -35,6 +49,7 @@ func reset_event_inputs() -> void:
 
 func setup_event_input(token: Table.TokenType, label: String, stacks := false, limit := 10) -> int:
 	var i = event_zone_types.size();
+	
 	event_zone_types.push_back(token);
 	event_zone_stacks[i] = stacks;
 	event_zone_limits[i] = limit;
@@ -85,6 +100,9 @@ func _ready() -> void:
 	if GameState != null and $LevelHint != null:
 		$LevelHint.text = "EVENT | DEPTH LVL%d" % (GameState.hyper_depth + 1);
 	
+	if GameState != null and $Sprite != null:
+		$Sprite.texture = event_bg_per_layer[GameState.hyper_depth];
+	
 	reset_input_connections();
 	
 	var rows := [$VBoxContainer/EventInputRow1, $VBoxContainer/EventInputRow2, $VBoxContainer/EventInputRow3];
@@ -105,8 +123,11 @@ func _ready() -> void:
 		input.accepts_stacks = event_zone_stacks[i];
 		input.stack_limit = event_zone_limits[i];
 		
-		assert(input != null, "label is null, won't display text");
 		var label = row.get_node("Label") as Label;
+		assert(label != null, "label is null, won't display text");
+		
+		var img = input.get_node("CardSlotImage") as Sprite2D;
+		assert(label != null, "img is null, won't display slot graphic");
 		
 		var on_insert = event_callables[2 * i];
 		var on_takeout = event_callables[2 * i + 1];

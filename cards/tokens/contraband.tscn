@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://y10i41blujxm"]
 
 [ext_resource type="Script" uid="uid://biuld8u83bgf4" path="res://cards/generic_card.gd" id="1_vn38t"]
-[ext_resource type="Texture2D" uid="uid://cd7g1x5scsqka" path="res://assets/ingot_ph.png" id="2_0dlbb"]
+[ext_resource type="Texture2D" uid="uid://cfrd4od16yk3b" path="res://assets/graphics/ingots.png" id="2_0dlbb"]
 [ext_resource type="Texture2D" uid="uid://b3o1ns25sybgy" path="res://assets/crewmate_ph.png" id="2_apbg2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dpeyf"]

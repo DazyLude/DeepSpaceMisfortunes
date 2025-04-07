@@ -57,7 +57,7 @@ static func get_test_pool() -> EventPool:
 		#GlobalEventPool.EventID.SPACE_RAY : 1.0,
 		#GlobalEventPool.EventID.FLUCTUATION_UP : 1.0,
 		#GlobalEventPool.EventID.FLUCTUATION_DOWN : 1.0,
-		#GlobalEventPool.EventID.ALIENS : 1.0,
+		GlobalEventPool.EventID.ALIENS : 1.0,
 		
 		#GlobalEventPool.EventID.SHINY : 1.0,
 		#GlobalEventPool.EventID.TIME_DILATION : 1.0,

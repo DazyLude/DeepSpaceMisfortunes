@@ -1,12 +1,19 @@
-[gd_scene load_steps=12 format=3 uid="uid://cqtida6kfefcr"]
+[gd_scene load_steps=19 format=3 uid="uid://cqtida6kfefcr"]
 
 [ext_resource type="Script" uid="uid://wvcjart1cb28" path="res://scenes/ship.gd" id="1_q631a"]
-[ext_resource type="Texture2D" uid="uid://dk6jbeqflm4vn" path="res://assets/ship_ph.png" id="2_tfsc7"]
+[ext_resource type="Texture2D" uid="uid://dsh2ix3q41cq8" path="res://assets/graphics/ship.png" id="2_3m36u"]
 [ext_resource type="Texture2D" uid="uid://dfcn2fxc1e0wm" path="res://assets/warning_icon.png" id="3_gudjc"]
 [ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="3_tfsc7"]
-[ext_resource type="Texture2D" uid="uid://cgmu16kxwp77h" path="res://assets/astronaut.png" id="5_7j21i"]
-[ext_resource type="Texture2D" uid="uid://ucaxubkfu57c" path="res://assets/shields.png" id="5_gudjc"]
+[ext_resource type="Texture2D" uid="uid://ctfdlfxwx1c8k" path="res://assets/graphics/crewmate.png" id="5_itrim"]
 [ext_resource type="Shader" uid="uid://dk0pff5l0tf3w" path="res://shaders/outline.gdshader" id="6_3m36u"]
+[ext_resource type="Texture2D" uid="uid://cevwwjb3q5s18" path="res://assets/graphics/nav.png" id="7_03y04"]
+[ext_resource type="FontFile" uid="uid://ckbbxbxjxpg5n" path="res://assets/fonts/Teko-Medium.ttf" id="7_48mkp"]
+[ext_resource type="Texture2D" uid="uid://p8t0aixbvgou" path="res://assets/graphics/life.png" id="8_48mkp"]
+[ext_resource type="Texture2D" uid="uid://cbddd36esoxw5" path="res://assets/graphics/circle.png" id="8_tbq4g"]
+[ext_resource type="Texture2D" uid="uid://dhktyeheddf8a" path="res://assets/graphics/hull.png" id="9_tbq4g"]
+[ext_resource type="Texture2D" uid="uid://bfrljpswl6r77" path="res://assets/graphics/pilot.png" id="10_mx31c"]
+[ext_resource type="Texture2D" uid="uid://m7iaeoilyqvp" path="res://assets/graphics/hyper.png" id="11_fs4we"]
+[ext_resource type="Texture2D" uid="uid://doomoi1tkjbj6" path="res://assets/graphics/engines.png" id="12_vbj2c"]
 
 [sub_resource type="Gradient" id="Gradient_3m36u"]
 
@@ -30,14 +37,10 @@ script = ExtResource("1_q631a")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(0, 5.96046e-08)
-texture = ExtResource("2_tfsc7")
-
-[node name="Warning" type="Sprite2D" parent="."]
-position = Vector2(158, -2)
-texture = ExtResource("3_gudjc")
+texture = ExtResource("2_3m36u")
 
 [node name="NavigationSlot" type="Area2D" parent="."]
-position = Vector2(240, -6)
+position = Vector2(250, -1)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -45,20 +48,42 @@ accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Manned" type="Sprite2D" parent="NavigationSlot"]
-position = Vector2(0, -65)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("5_7j21i")
+position = Vector2(0, -50)
+texture = ExtResource("5_itrim")
 
 [node name="Background" type="Sprite2D" parent="NavigationSlot"]
 material = SubResource("ShaderMaterial_itrim")
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("5_gudjc")
+texture = ExtResource("7_03y04")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NavigationSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
 
+[node name="Label" type="Label" parent="NavigationSlot"]
+offset_left = -34.0
+offset_top = 53.0
+offset_right = 35.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 18
+text = "NAVIGATION"
+horizontal_alignment = 1
+
+[node name="Circle" type="Sprite2D" parent="NavigationSlot"]
+position = Vector2(0, 92)
+texture = ExtResource("8_tbq4g")
+
+[node name="HP" type="Label" parent="NavigationSlot"]
+offset_left = -14.0
+offset_top = 76.0
+offset_right = 14.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 23
+text = "1"
+horizontal_alignment = 1
+
 [node name="LifeSupportSlot" type="Area2D" parent="."]
-position = Vector2(157, -6)
+position = Vector2(167, -1)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -66,20 +91,46 @@ accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Manned" type="Sprite2D" parent="LifeSupportSlot"]
-position = Vector2(0, -65)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("5_7j21i")
+position = Vector2(0, -50)
+texture = ExtResource("5_itrim")
 
 [node name="Background" type="Sprite2D" parent="LifeSupportSlot"]
-position = Vector2(0, 5.96046e-08)
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("5_gudjc")
+texture = ExtResource("8_48mkp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LifeSupportSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
 
+[node name="Label" type="Label" parent="LifeSupportSlot"]
+offset_left = -38.0
+offset_top = 53.0
+offset_right = 40.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 18
+text = "LIFE SUPPORT"
+horizontal_alignment = 1
+
+[node name="Circle" type="Sprite2D" parent="LifeSupportSlot"]
+position = Vector2(0, 92)
+texture = ExtResource("8_tbq4g")
+
+[node name="HP" type="Label" parent="LifeSupportSlot"]
+offset_left = -14.0
+offset_top = 76.0
+offset_right = 14.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 23
+text = "1"
+horizontal_alignment = 1
+
+[node name="Warning" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(168, 36)
+texture = ExtResource("3_gudjc")
+
 [node name="InnerHullSlot" type="Area2D" parent="."]
-position = Vector2(74, -7)
+position = Vector2(84, -1)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -87,20 +138,42 @@ accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Manned" type="Sprite2D" parent="InnerHullSlot"]
-position = Vector2(0, -65)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("5_7j21i")
+position = Vector2(0, -50)
+texture = ExtResource("5_itrim")
 
 [node name="Background" type="Sprite2D" parent="InnerHullSlot"]
 position = Vector2(0, 5.96046e-08)
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("5_gudjc")
+texture = ExtResource("9_tbq4g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InnerHullSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
 
+[node name="Label" type="Label" parent="InnerHullSlot"]
+offset_left = -38.0
+offset_top = 53.0
+offset_right = 40.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 18
+text = "INNER HULL"
+horizontal_alignment = 1
+
+[node name="Circle" type="Sprite2D" parent="InnerHullSlot"]
+position = Vector2(0, 92)
+texture = ExtResource("8_tbq4g")
+
+[node name="HP" type="Label" parent="InnerHullSlot"]
+offset_left = -14.0
+offset_top = 76.0
+offset_right = 14.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 23
+text = "1"
+horizontal_alignment = 1
+
 [node name="AutopilotSlot" type="Area2D" parent="."]
-position = Vector2(-10, -7)
+position = Vector2(0, -1)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -108,20 +181,42 @@ accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Manned" type="Sprite2D" parent="AutopilotSlot"]
-position = Vector2(0, -65)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("5_7j21i")
+position = Vector2(0, -50)
+texture = ExtResource("5_itrim")
 
 [node name="Background" type="Sprite2D" parent="AutopilotSlot"]
 position = Vector2(0, 5.96046e-08)
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("5_gudjc")
+texture = ExtResource("10_mx31c")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AutopilotSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
 
+[node name="Label" type="Label" parent="AutopilotSlot"]
+offset_left = -38.0
+offset_top = 53.0
+offset_right = 40.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 18
+text = "AUTOPILOT"
+horizontal_alignment = 1
+
+[node name="Circle" type="Sprite2D" parent="AutopilotSlot"]
+position = Vector2(0, 92)
+texture = ExtResource("8_tbq4g")
+
+[node name="HP" type="Label" parent="AutopilotSlot"]
+offset_left = -14.0
+offset_top = 76.0
+offset_right = 14.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 23
+text = "1"
+horizontal_alignment = 1
+
 [node name="HyperSlot" type="Area2D" parent="."]
-position = Vector2(-93, -7)
+position = Vector2(-83, -1)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -129,20 +224,42 @@ accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Manned" type="Sprite2D" parent="HyperSlot"]
-position = Vector2(0, -65)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("5_7j21i")
+position = Vector2(0, -50)
+texture = ExtResource("5_itrim")
 
 [node name="Background" type="Sprite2D" parent="HyperSlot"]
 position = Vector2(0, 5.96046e-08)
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("5_gudjc")
+texture = ExtResource("11_fs4we")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HyperSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
 
+[node name="Label" type="Label" parent="HyperSlot"]
+offset_left = -38.0
+offset_top = 53.0
+offset_right = 40.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 18
+text = "HYPER DRIVE"
+horizontal_alignment = 1
+
+[node name="Circle" type="Sprite2D" parent="HyperSlot"]
+position = Vector2(0, 92)
+texture = ExtResource("8_tbq4g")
+
+[node name="HP" type="Label" parent="HyperSlot"]
+offset_left = -14.0
+offset_top = 76.0
+offset_right = 14.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 23
+text = "1"
+horizontal_alignment = 1
+
 [node name="EnginesSlot" type="Area2D" parent="."]
-position = Vector2(-175, -7)
+position = Vector2(-165, -1)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -150,20 +267,42 @@ accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Manned" type="Sprite2D" parent="EnginesSlot"]
-position = Vector2(0, -65)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("5_7j21i")
+position = Vector2(0, -50)
+texture = ExtResource("5_itrim")
 
 [node name="Background" type="Sprite2D" parent="EnginesSlot"]
 position = Vector2(0, 5.96046e-08)
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("5_gudjc")
+texture = ExtResource("12_vbj2c")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnginesSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
 
+[node name="Label" type="Label" parent="EnginesSlot"]
+offset_left = -38.0
+offset_top = 53.0
+offset_right = 40.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 18
+text = "ENGINES"
+horizontal_alignment = 1
+
+[node name="Circle" type="Sprite2D" parent="EnginesSlot"]
+position = Vector2(0, 92)
+texture = ExtResource("8_tbq4g")
+
+[node name="HP" type="Label" parent="EnginesSlot"]
+offset_left = -14.0
+offset_top = 76.0
+offset_right = 14.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 23
+text = "1"
+horizontal_alignment = 1
+
 [node name="OuterHullSlot" type="Area2D" parent="."]
-position = Vector2(-259, -7)
+position = Vector2(-249, 0)
 script = ExtResource("3_tfsc7")
 accepted_card_types = Array[int]([0])
 stack_limit = 10
@@ -171,14 +310,36 @@ accepts_stacks = true
 metadata/_custom_type_script = "uid://751up5bfgiqa"
 
 [node name="Manned" type="Sprite2D" parent="OuterHullSlot"]
-position = Vector2(0, -65)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("5_7j21i")
+position = Vector2(0, -50)
+texture = ExtResource("5_itrim")
 
 [node name="Background" type="Sprite2D" parent="OuterHullSlot"]
 position = Vector2(0, 5.96046e-08)
-scale = Vector2(0.75, 0.75)
-texture = ExtResource("5_gudjc")
+texture = ExtResource("9_tbq4g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="OuterHullSlot"]
 shape = SubResource("RectangleShape2D_tfsc7")
+
+[node name="Label" type="Label" parent="OuterHullSlot"]
+offset_left = -38.0
+offset_top = 53.0
+offset_right = 40.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 18
+text = "OUTER HULL"
+horizontal_alignment = 1
+
+[node name="Circle" type="Sprite2D" parent="OuterHullSlot"]
+position = Vector2(0, 92)
+texture = ExtResource("8_tbq4g")
+
+[node name="HP" type="Label" parent="OuterHullSlot"]
+offset_left = -14.0
+offset_top = 76.0
+offset_right = 14.0
+offset_bottom = 110.0
+theme_override_fonts/font = ExtResource("7_48mkp")
+theme_override_font_sizes/font_size = 23
+text = "1"
+horizontal_alignment = 1

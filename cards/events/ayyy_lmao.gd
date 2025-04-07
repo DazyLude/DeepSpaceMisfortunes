@@ -29,9 +29,10 @@ func _prepare() -> void:
 	reset_event_inputs();
 	
 	event_title = "Aliens!";
-	event_text = "These aliens are boarding your ship! They're going to damage your ship!"
+	event_text = "These aliens are trying to board your ship! They're going to damage everything!";
+	event_image = preload("res://assets/graphics/events/ev_ayy.png");
 	
-	var idx = setup_event_input(Table.TokenType.INGOT, "Please don't");
+	var idx = setup_event_input(Table.TokenType.INGOT, "please don't");
 	setup_event_signals(idx, bribed, unbribed);
 	
 	super._ready();

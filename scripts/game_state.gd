@@ -114,9 +114,8 @@ func advance_phase() -> void:
 			play_event(GlobalEventPool.EventID.TUTORIAL_INTRO);
 		
 		RoundPhase.STARTUP:
-			new_event.emit(null);
-			play_event(GlobalEventPool.EventID.MAIN_MENU);
 			active_table.display_hint();
+			return;
 		
 		RoundPhase.ENDGAME when active_table.current_event.is_token_set:
 			new_game();
@@ -163,6 +162,11 @@ func advance_phase() -> void:
 				play_event(GlobalEventPool.EventID.SHIP_ACTION);
 			
 			round_n += 1;
+		
+		RoundPhase.EVENT:
+			ping_tokens.emit(Table.TokenType.SHIP_NAVIGATION);
+			ping_tokens.emit(Table.TokenType.INGOT);
+			return;
 	
 	reset_tokens.call_deferred();
 	new_phase.emit(current_phase);

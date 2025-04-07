@@ -32,7 +32,14 @@ func _remove_crewmate_from_system(card: GenericCard) -> void:
 	GameState.ship.stop_manning(GameState.active_table.active_cards[card]);
 
 
+func update_warning_icon(_p) -> void:
+	$Warning.visible = GameState.life_support_failure;
+
+
 func _ready() -> void:
+	GameState.new_phase.connect(update_warning_icon);
+	$Warning.hide();
+	
 	for zone in get_active_zones():
 		zone.card_recieved.connect(_add_crewmate_to_system.bind(zone));
 		zone.card_lost.connect(_remove_crewmate_from_system);

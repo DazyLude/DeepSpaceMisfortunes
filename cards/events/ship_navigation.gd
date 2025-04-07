@@ -28,10 +28,20 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES):
+	var are_drives_ok = GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES);
+	var is_nav_ok = GameState.ship.is_system_ok(GameStateClass.ShipState.System.NAVIGATION);
+	var is_goal_reached = GameState.travel_distance >= GameState.TRAVEL_GOAL;
+	
+	if not are_drives_ok:
 		event_title = "Hyper Drive is out!";
-		event_text = "You can't manually change the Hyperspace level you're in when Hyper Drive is out of commission."
+		event_text = "You can't manually change the Hyperspace level when Hyper Drive is out of commission."
 		var stay_idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "I guess I'll stay");
+		setup_event_signals(stay_idx, course_chosen.bind(1), course_unchosen);
+	
+	elif not is_nav_ok:
+		event_title = "Navigation is out!";
+		event_text = "You can't manually change the Hyperspace level if your bridge is busted."
+		var stay_idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "I guess I'll fix it");
 		setup_event_signals(stay_idx, course_chosen.bind(1), course_unchosen);
 	
 	else:
@@ -51,6 +61,8 @@ func _prepare() -> void:
 			GameState.HyperspaceDepth.SHALLOW, GameState.HyperspaceDepth.NORMAL:
 				event_title = "Hyperspace";
 				event_text = "You can choose whether to change the current Hyperspace level, or to stay on this one.";
+				if is_goal_reached:
+					event_text += "\nShip's data tells you that you've reached your destination. You now have to leave the Hyperspace."
 				
 				var ascent_idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "Go up one level");
 				setup_event_signals(ascent_idx, course_chosen.bind(0), course_unchosen);
@@ -64,6 +76,9 @@ func _prepare() -> void:
 			GameState.HyperspaceDepth.DEEP:
 				event_title = "Hyperspace Depths";
 				event_text = "It's probably a good idea to go up, if you can.";
+				
+				if is_goal_reached:
+					event_text += "\nShip's data tells you that you've reached your destination. You now have to leave the Hyperspace."
 				
 				var ascent_idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "Go up one level");
 				setup_event_signals(ascent_idx, course_chosen.bind(0), course_unchosen);

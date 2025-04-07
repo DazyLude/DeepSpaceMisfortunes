@@ -19,6 +19,7 @@ func _action() -> void:
 
 func _prepare() -> void:
 	reset_event_inputs();
+	unset_token(null);
 	
 	event_title = "Victory!";
 	event_text = "Congratulations, you've won!\n"

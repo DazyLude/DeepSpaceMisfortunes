@@ -18,6 +18,7 @@ func _prepare() -> void:
 	reset_event_inputs();
 	
 	event_title = "A Fellow Space Pirate";
+	event_image = preload("res://assets/graphics/events/ev_pirate.png");
 	
 	var should_repair = GameState.ship.get_total_damage() > damage_threshold \
 		or not GameState.ship.is_system_ok(GameState.ShipState.System.LIFE_SUPPORT);

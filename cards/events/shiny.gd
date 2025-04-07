@@ -32,4 +32,6 @@ func _prepare() -> void:
 	var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "HAL, do it.");
 	setup_event_signals(idx, do, dond);
 	
+	event_image = preload("res://assets/graphics/events/ev_rich_aster.png");
+	
 	super._ready();

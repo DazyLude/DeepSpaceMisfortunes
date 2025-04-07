@@ -34,7 +34,7 @@ func _prepare() -> void:
 	
 	else:
 		event_title = "Autopilot Greets You";
-		event_text = "\"All systems green, Captain!\" - you hear the autopilot's cheery voice through ship's audio system" ;
+		event_text = "\"All systems green, Captain!\" - you hear the always cheery autopilot's voice through the ship's audio system" ;
 		
 		if are_engines_ok and is_life_support_ok:
 			event_text += "."

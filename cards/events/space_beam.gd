@@ -27,3 +27,4 @@ func _action() -> void:
 func _init() -> void:
 	event_title = "Cosmic Rays!";
 	event_text = "An extremely concentrated beam of high energy particles scorches its way through your ship, burning electric systems.";
+	event_image = preload("res://assets/graphics/events/ev_rays.png");

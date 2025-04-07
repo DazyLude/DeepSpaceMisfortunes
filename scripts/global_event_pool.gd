@@ -7,7 +7,18 @@ enum EventID {
 	
 	# special
 	MAIN_MENU,
-	TUTORIAL,
+	TUTORIAL_INTRO,
+	TUTORIAL_EVENTS,
+	TUTORIAL_TOKENS,
+	TUTORIAL_SYSTEMS,
+	TUTORIAL_DAMAGE_BASIC,
+	TUTORIAL_GAME_PROGRESSION,
+	TUTORIAL_LOSE_CONDITION,
+	TUTORIAL_WIN_CONDITION,
+	TUTORIAL_MANNING,
+	TUTORIAL_DAMAGE_ELECTRIC,
+	TUTORIAL_DAMAGE_NORMAL,
+	TUTORIAL_END,
 	
 	# default gameplay loop events
 	SHIP_NAVIGATION,
@@ -19,9 +30,6 @@ enum EventID {
 	
 	# continuations of other events
 	FRIEND2,
-	TUTORIAL2,
-	TUTORIAL3,
-	TUTORIAL4,
 	
 	# random bad events
 	NOTHING,
@@ -48,10 +56,19 @@ var event_load_params : Dictionary[EventID, String] = {
 	EventID.GENERIC: "res://cards/generic_event.tscn",
 	
 	EventID.MAIN_MENU: "res://cards/events/menu.gd",
-	EventID.TUTORIAL: "res://cards/events/tutorial1.gd",
-	EventID.TUTORIAL2: "res://cards/events/tutorial2.gd",
-	EventID.TUTORIAL3: "res://cards/events/tutorial3.gd",
-	EventID.TUTORIAL4: "res://cards/events/tutorial4.gd",
+	
+	EventID.TUTORIAL_INTRO: "res://cards/events/tutorial.gd",
+	EventID.TUTORIAL_EVENTS: "res://cards/events/tutorial_events.gd",
+	EventID.TUTORIAL_TOKENS: "res://cards/events/tutorial_tokens.gd",
+	EventID.TUTORIAL_SYSTEMS: "res://cards/events/tutorial_systems.gd",
+	EventID.TUTORIAL_DAMAGE_BASIC: "res://cards/events/tutorial_damage_basic.gd",
+	EventID.TUTORIAL_GAME_PROGRESSION: "res://cards/events/tutorial_progression.gd",
+	EventID.TUTORIAL_LOSE_CONDITION: "res://cards/events/tutorial_lose_condition.gd",
+	EventID.TUTORIAL_WIN_CONDITION: "res://cards/events/tutorial_win_condition.gd",
+	EventID.TUTORIAL_MANNING: "res://cards/events/tutorial_manning.gd",
+	EventID.TUTORIAL_DAMAGE_ELECTRIC: "res://cards/events/tutorial_electric_damage.gd",
+	EventID.TUTORIAL_DAMAGE_NORMAL: "res://cards/events/tutorial_physical_damage.gd",
+	EventID.TUTORIAL_END: "res://cards/events/tutorial_wrap_up.gd",
 	
 	EventID.SHIP_NAVIGATION: "res://cards/events/ship_navigation.gd",
 	EventID.PROGRESS_REPORT: "res://cards/events/ship_progress.gd",

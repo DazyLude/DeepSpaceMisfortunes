@@ -113,7 +113,7 @@ func advance_phase() -> void:
 			active_table.hide_hint();
 			current_phase = RoundPhase.TUTORIAL;
 			new_event.emit(null);
-			play_event(GlobalEventPool.EventID.TUTORIAL);
+			play_event(GlobalEventPool.EventID.TUTORIAL_INTRO);
 		
 		RoundPhase.STARTUP:
 			new_event.emit(null);

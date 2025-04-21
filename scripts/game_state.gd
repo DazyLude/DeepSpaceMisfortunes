@@ -122,6 +122,11 @@ func advance_phase() -> void:
 			new_event.emit(null);
 			clear_tokens.emit();
 		
+		RoundPhase.ENDGAME when active_table.current_event.is_token_set2:
+			go_to_menu(active_table);
+			new_event.emit(null);
+			clear_tokens.emit();
+		
 		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == HyperspaceDepth.NONE:
 			clear_tokens.emit();
 			play_event(GlobalEventPool.EventID.VICTORY);
@@ -289,7 +294,7 @@ class ShipState extends RefCounted:
 	
 	func get_random_working_system() -> System:
 		var systems = system_hp.keys().filter(is_system_ok);
-		return GameState.rng.randi_range(0, systems.size() - 1) as System;
+		return systems[GameState.rng.randi_range(0, systems.size() - 1)];
 	
 	
 	func take_damage_to_random_system(damage_type: DamageType, value: int) -> void:

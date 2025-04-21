@@ -114,12 +114,16 @@ func advance_phase() -> void:
 			play_event(GlobalEventPool.EventID.TUTORIAL_INTRO);
 		
 		RoundPhase.STARTUP:
-			new_event.emit(null);
-			play_event(GlobalEventPool.EventID.MAIN_MENU);
 			active_table.display_hint();
+			return;
 		
 		RoundPhase.ENDGAME when active_table.current_event.is_token_set:
 			new_game();
+			new_event.emit(null);
+			clear_tokens.emit();
+		
+		RoundPhase.ENDGAME when active_table.current_event.is_token_set2:
+			go_to_menu(active_table);
 			new_event.emit(null);
 			clear_tokens.emit();
 		
@@ -163,6 +167,11 @@ func advance_phase() -> void:
 				play_event(GlobalEventPool.EventID.SHIP_ACTION);
 			
 			round_n += 1;
+		
+		RoundPhase.EVENT:
+			ping_tokens.emit(Table.TokenType.SHIP_NAVIGATION);
+			ping_tokens.emit(Table.TokenType.INGOT);
+			return;
 	
 	reset_tokens.call_deferred();
 	new_phase.emit(current_phase);
@@ -285,7 +294,7 @@ class ShipState extends RefCounted:
 	
 	func get_random_working_system() -> System:
 		var systems = system_hp.keys().filter(is_system_ok);
-		return GameState.rng.randi_range(0, systems.size() - 1) as System;
+		return systems[GameState.rng.randi_range(0, systems.size() - 1)];
 	
 	
 	func take_damage_to_random_system(damage_type: DamageType, value: int) -> void:

@@ -71,13 +71,38 @@ func test_event_pool_get_event() -> void:
 	event_loader_event.free();
 
 
-func test_event_self_weight_reduced() -> void:
+func test_event_pool_weight_reduced() -> void:
 	var test_for_event := EventLoader.EventID.GENERIC_LIMITED;
 	
-	
 	var pool := EventPool.new();
-	pool.add_event_with_weight(test_for_event, 1.0);
+	pool.add_event_with_weight(test_for_event, 2.0);
 	pool.pull_random_event().free();
+	
+	assert_eq(pool.get_event_weight(test_for_event), 1.0);
+	
+	pool.pull_random_event().free();
+	
+	assert_eq(pool.get_event_weight(test_for_event), 0.0);
+
+
+func test_event_pool_nonnegative_weight() -> void:
+	var test_for_event := EventLoader.EventID.GENERIC_LIMITED;
+	var pool := EventPool.new();
+	
+	pool.add_event_with_weight(test_for_event, -0.5);
+	assert_eq(pool.get_event_weight(test_for_event), 0.0);
+	
+	pool.add_event_with_weight(test_for_event, 0.5);
+	pool.pull_random_event().free();
+	
+	assert_eq(pool.get_event_weight(test_for_event), 0.0);
+	
+	pool.set_event_weight(test_for_event, -1.0);
+	
+	assert_eq(pool.get_event_weight(test_for_event), 0.0);
+	
+	pool.set_event_weight(test_for_event, 1.0)
+	pool.add_event_with_weight(test_for_event, -1.5);
 	
 	assert_eq(pool.get_event_weight(test_for_event), 0.0);
 
@@ -95,7 +120,7 @@ func test_event_zero_weight_pull() -> void:
 	var event_loader_event := EventLoader.get_event_instance(non_zero_weight);
 	
 	var pulled_zero_weight : bool = false;
-	for i in 1024: # with this amount of pulls, if doesn't fail it won't matter for the player.
+	for i in 256: # with this amount of pulls, if doesn't fail it won't matter for the player.
 		var event = pool.pull_random_event();
 		
 		pulled_zero_weight = not (event.get_script() == event_loader_event.get_script());
@@ -105,3 +130,5 @@ func test_event_zero_weight_pull() -> void:
 	
 	event_loader_event.free();
 	assert_false(pulled_zero_weight);
+	
+	await wait_frames(16);

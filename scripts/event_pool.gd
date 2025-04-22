@@ -9,11 +9,11 @@ var weights : Array[float];
 func add_event_with_weight(event_id: EventLoader.EventID, weight: float) -> void:
 	if events.has(event_id):
 		var idx = events.find(event_id);
-		weights[idx] += weight;
+		weights[idx] = max(0.0, weights[idx] + weight);
 		return;
 	
 	events.push_back(event_id);
-	weights.push_back(weight);
+	weights.push_back(max(0.0, weight));
 
 
 
@@ -30,14 +30,14 @@ func set_event_weight(event_id: EventLoader.EventID, new_weight: float) -> void:
 	var event_idx = events.find(event_id);
 	
 	if event_idx != -1:
-		weights[event_idx] = new_weight;
+		weights[event_idx] = max(new_weight, 0.0);
 
 
 func reduce_limited_events_weight(event_id: EventLoader.EventID) -> void:
 	var weight = self.get_event_weight(event_id);
 	
 	if weight >= 0.0:
-		self.set_event_weight(event_id, weight - 1.0);
+		self.set_event_weight(event_id, max(0.0, weight - 1.0));
 
 
 func pull_random_event() -> GenericEvent:

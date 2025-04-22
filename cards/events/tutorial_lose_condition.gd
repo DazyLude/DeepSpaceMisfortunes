@@ -11,6 +11,6 @@ func _prepare() -> void:
 	event_title = "Tutorial: Losing";
 	event_text = "You lose the game, if the Life Support is broken at the beginning of the Autopilot phase twice in a row.";
 	
-	GameState.interrupt_phase_sequence = GameState.play_event.bind(GlobalEventPool.EventID.TUTORIAL_WIN_CONDITION);
+	GameState.interrupt_phase_sequence = GameState.play_event.bind(EventLoader.EventID.TUTORIAL_WIN_CONDITION);
 	
 	super._ready();

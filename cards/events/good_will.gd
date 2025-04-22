@@ -8,10 +8,6 @@ func _action() -> void:
 	GameState.ship.full_repair();
 
 
-func _init() -> void:
-	is_consumed = LimitedType.LIMITED_GLOBALLY;
-
-
 func _prepare() -> void:
 	reset_event_inputs();
 	

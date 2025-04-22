@@ -5,10 +5,6 @@ func _action() -> void:
 	pass;
 
 
-func _init() -> void:
-	is_consumed = LimitedType.LIMITED_GLOBALLY;
-
-
 func _prepare() -> void:
 	reset_event_inputs();
 	
@@ -18,6 +14,6 @@ func _prepare() -> void:
 		+ "You share a couple of stories with a bottle of space-rum. He's just finished a successful haul.";
 	event_image = preload("res://assets/graphics/events/ev_pirate.png");
 	
-	GameState.interrupt_phase_sequence = GameState.play_event.bind(GlobalEventPool.EventID.FRIEND2);
+	GameState.interrupt_phase_sequence = GameState.play_event.bind(EventLoader.EventID.FRIEND2);
 	
 	super._ready();

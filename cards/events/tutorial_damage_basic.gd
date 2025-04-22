@@ -14,10 +14,10 @@ func go_next() -> void:
 	block = false;
 	
 	if damage_left == 0:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_GAME_PROGRESSION);
+		GameState.play_event.call_deferred(EventLoader.EventID.TUTORIAL_GAME_PROGRESSION);
 	else:
 		GameState.ship.full_repair();
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_DAMAGE_BASIC);
+		GameState.play_event.call_deferred(EventLoader.EventID.TUTORIAL_DAMAGE_BASIC);
 		GameState.ship.reset_crew();
 
 

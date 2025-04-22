@@ -29,11 +29,11 @@ func _can_play() -> bool:
 
 func _go_next() -> void:
 	if gave_bribe:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.COSMOCOP2);
+		GameState.play_event.call_deferred(EventLoader.EventID.COSMOCOP2);
 	elif went_with:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.COSMOCOP3);
+		GameState.play_event.call_deferred(EventLoader.EventID.COSMOCOP3);
 	else:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.COSMOCOP);
+		GameState.play_event.call_deferred(EventLoader.EventID.COSMOCOP);
 
 
 

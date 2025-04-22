@@ -4,8 +4,7 @@ class_name GenericEvent
 
 enum LimitedType {
 	NOT_LIMITED,
-	LIMITED_PER_LAYER,
-	LIMITED_GLOBALLY,
+	LIMITED,
 };
 
 
@@ -78,7 +77,7 @@ func _action() -> void:
 	push_warning("Placeholder event action played. Overload it.");
 
 
-## called every time the scene instance is requested via GlobalEventPool
+## called every time the scene instance is requested via EventLoader
 func _prepare() -> void:
 	pass;
 

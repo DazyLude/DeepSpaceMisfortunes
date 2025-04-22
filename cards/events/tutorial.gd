@@ -15,6 +15,6 @@ func _prepare() -> void:
 		+ "First of all, at any stage of the game, you need to press the button in the bottom right corner of the screen to progress.\n"\
 		+ "Do it right now! :)";
 	
-	GameState.interrupt_phase_sequence = GameState.play_event.bind(GlobalEventPool.EventID.TUTORIAL_EVENTS);
+	GameState.interrupt_phase_sequence = GameState.play_event.bind(EventLoader.EventID.TUTORIAL_EVENTS);
 	
 	super._ready();

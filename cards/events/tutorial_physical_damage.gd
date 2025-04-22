@@ -13,6 +13,6 @@ func _prepare() -> void:
 	event_title = "Normal Damage";
 	event_text = "I threw a large asteroid at your ships Life Support. Physical sources of damage have to penetrate the hull to deal damage, but if they do, they will damage both the hull, and the targeted system.";
 	
-	GameState.interrupt_phase_sequence = GameState.play_event.bind(GlobalEventPool.EventID.TUTORIAL_END);
+	GameState.interrupt_phase_sequence = GameState.play_event.bind(EventLoader.EventID.TUTORIAL_END);
 	
 	super._ready();

@@ -111,7 +111,7 @@ func advance_phase() -> void:
 		RoundPhase.STARTUP when active_table.current_event.tutorial_selected:
 			current_phase = RoundPhase.TUTORIAL;
 			new_event.emit(null);
-			play_event(GlobalEventPool.EventID.TUTORIAL_INTRO);
+			play_event(EventLoader.EventID.TUTORIAL_INTRO);
 		
 		RoundPhase.STARTUP:
 			active_table.display_hint();
@@ -129,7 +129,7 @@ func advance_phase() -> void:
 		
 		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == HyperspaceDepth.NONE:
 			clear_tokens.emit();
-			play_event(GlobalEventPool.EventID.VICTORY);
+			play_event(EventLoader.EventID.VICTORY);
 		
 		_ when should_interrupt:
 			interrupt_phase_sequence.call_deferred();
@@ -138,13 +138,13 @@ func advance_phase() -> void:
 		RoundPhase.SHIP_ACTION, RoundPhase.GAME_START:
 			current_phase = RoundPhase.PREPARATION;
 			ship.reset_crew();
-			play_event(GlobalEventPool.EventID.SHIP_NAVIGATION);
+			play_event(EventLoader.EventID.SHIP_NAVIGATION);
 		
 		RoundPhase.PREPARATION when active_table.current_event._can_play():
 			current_phase = RoundPhase.EXECUTION;
 			
 			ship.repair_systems();
-			play_event(GlobalEventPool.EventID.PROGRESS_REPORT);
+			play_event(EventLoader.EventID.PROGRESS_REPORT);
 		
 		RoundPhase.PREPARATION:
 			ping_tokens.emit(Table.TokenType.SHIP_NAVIGATION);
@@ -158,13 +158,13 @@ func advance_phase() -> void:
 			current_phase = RoundPhase.SHIP_ACTION;
 			
 			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
-				play_event(GlobalEventPool.EventID.GAMEOVER);
+				play_event(EventLoader.EventID.GAMEOVER);
 			elif not ship.is_system_ok(ShipState.System.LIFE_SUPPORT):
 				life_support_failure = true;
-				play_event(GlobalEventPool.EventID.SHIP_ACTION);
+				play_event(EventLoader.EventID.SHIP_ACTION);
 			else:
 				life_support_failure = false;
-				play_event(GlobalEventPool.EventID.SHIP_ACTION);
+				play_event(EventLoader.EventID.SHIP_ACTION);
 			
 			round_n += 1;
 		
@@ -177,8 +177,8 @@ func advance_phase() -> void:
 	new_phase.emit(current_phase);
 
 
-func play_event(id: GlobalEventPool.EventID) -> void:
-	new_event.emit(GlobalEventPool.get_event_instance(id));
+func play_event(id: EventLoader.EventID) -> void:
+	new_event.emit(EventLoader.get_event_instance(id));
 
 
 func go_to_menu(table: Table) -> void:
@@ -187,7 +187,7 @@ func go_to_menu(table: Table) -> void:
 	
 	active_table = table;
 	current_phase = RoundPhase.STARTUP;
-	play_event.call_deferred(GlobalEventPool.EventID.MAIN_MENU);
+	play_event.call_deferred(EventLoader.EventID.MAIN_MENU);
 	reset_tokens.call_deferred();
 
 

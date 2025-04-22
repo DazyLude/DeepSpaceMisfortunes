@@ -1,9 +1,9 @@
-extends Node
+class_name EventLoader;
 
 
-## loads and instantiates GenericEvent scenes
 enum EventID {
 	GENERIC,
+	GENERIC_LIMITED,
 	
 	# special
 	MAIN_MENU,
@@ -55,8 +55,9 @@ enum EventID {
 };
 
 
-var event_load_params : Dictionary[EventID, String] = {
+const event_load_params : Dictionary[EventID, String] = {
 	EventID.GENERIC: "res://cards/generic_event.tscn",
+	EventID.GENERIC_LIMITED: "res://cards/generic_limited_event.gd",
 	
 	EventID.MAIN_MENU: "res://cards/events/menu.gd",
 	
@@ -102,34 +103,53 @@ var event_load_params : Dictionary[EventID, String] = {
 };
 
 
-var event_instances : Dictionary[EventID, GenericEvent];
+static func get_event_instance(event_id: EventID) -> GenericEvent:
+	var path = event_load_params.get(event_id, "");
+	var event : GenericEvent = null;
+	
+	if ResourceLoader.exists(path):
+		match ResourceLoader.load(path):
+			var event_scene when event_scene is PackedScene:
+				event = load_from_packed_scene(event_scene);
+			
+			var event_script when event_script is Script:
+				event = load_from_script(event_script);
+	
+	if event == null:
+		push_error("event is null");
+	
+	return event;
 
 
-func get_event_instance(id: EventID) -> GenericEvent:
-	var instance := event_instances.get(id, null) as GenericEvent;
-	return instance;
+static func load_from_packed_scene(event_scene: PackedScene) -> GenericEvent:
+	if event_scene == null:
+		push_error("event_scene is null"); 
+		return null;
+	
+	var event = event_scene.instantiate();
+	
+	if not event is GenericEvent:
+		event.free();
+		push_error("resource is not a generic event");
+		return null;
+
+	return event;
 
 
-func _init() -> void:
-	for event_id in EventID.values():
-		var path = event_load_params.get(event_id, "");
-		if ResourceLoader.exists(path):
-			match ResourceLoader.load(path):
-				var event_scene when event_scene is PackedScene:
-					if event_scene == null:
-						push_error("resource is not a scene: \"%s\" for id \"%s\"", [path, EventID.keys()[event_id]]); 
-						continue;
-					
-					var event = event_scene.instantiate() as GenericEvent;
-					
-					if event_scene == null:
-						push_error("resource is not a generic event: \"%s\" for id \"%s\"", [path, EventID.keys()[event_id]]);
-						continue; 
-					
-					event_instances[event_id] = event;
-				
-				var event_script when event_script is Script:
-					var scene : Node2D = ResourceLoader.load("res://cards/generic_event.tscn").instantiate();
-					scene.set_script(event_script);
-					
-					event_instances[event_id] = scene;
+static func load_from_script(event_script: Script) -> GenericEvent:
+	var scene : Node2D = ResourceLoader.load("res://cards/generic_event.tscn").instantiate();
+	scene.set_script(event_script);
+	
+	return scene;
+
+
+static func load_all() -> Dictionary[EventID, GenericEvent]:
+	var event_instances : Dictionary[EventID, GenericEvent];
+	
+	var tested_events := EventID.values();
+	
+	for event_id in tested_events:
+		var event_name = EventID.keys()[event_id];
+		event_instances[event_id] = get_event_instance(event_id);
+	
+	return event_instances;

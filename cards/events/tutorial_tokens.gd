@@ -22,9 +22,9 @@ func unset_nav(_c) -> void:
 
 func go_next() -> void:
 	if nav_set and ingot_set:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_SYSTEMS);
+		GameState.play_event.call_deferred(EventLoader.EventID.TUTORIAL_SYSTEMS);
 	else:
-		GameState.play_event.call_deferred(GlobalEventPool.EventID.TUTORIAL_TOKENS);
+		GameState.play_event.call_deferred(EventLoader.EventID.TUTORIAL_TOKENS);
 		
 		if not ingot_set: GameState.ping_tokens.emit.call_deferred(Table.TokenType.INGOT);
 		if not nav_set: GameState.ping_tokens.emit.call_deferred(Table.TokenType.SHIP_NAVIGATION);

@@ -30,13 +30,13 @@ func _prepare() -> void:
 	
 	block = false;
 	
-	GameState.ship = GameState.ShipState.new();
+	GameState.ship = ShipState.new();
 	GameState.ingot_count = 0;
 	
 	GameState.ship.ships_crew.clear();
-	GameState.ship.ships_crew[GameState.Crewmate.new()] = GameState.ShipState.System.OTHER;
-	GameState.ship.ships_crew[GameState.Crewmate.new()] = GameState.ShipState.System.OTHER;
-	GameState.ship.take_physical_damage(GameState.ShipState.System.OUTER_HULL, 2);
+	GameState.ship.ships_crew[ShipState.Crewmate.new()] = -1;
+	GameState.ship.ships_crew[ShipState.Crewmate.new()] = -1;
+	GameState.ship.take_physical_damage(0, 2);
 	
 	GameState.reset_tokens();
 	

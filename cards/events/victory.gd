@@ -36,10 +36,10 @@ func _prepare() -> void:
 	
 	GameState.current_phase = GameState.RoundPhase.ENDGAME;
 	
-	var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "start new game");
+	var idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "start new game");
 	setup_event_signals(idx, set_token, unset_token);
 	
-	var idx2 = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "to the menu");
+	var idx2 = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "to the menu");
 	setup_event_signals(idx2, set_token2, unset_token);
 	
 	super._ready();

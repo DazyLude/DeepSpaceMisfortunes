@@ -7,7 +7,7 @@ signal card_lost(GenericCard);
 
 
 
-@export var accepted_card_types : Array[Table.TokenType] = [];
+@export var accepted_card_types : Array[GameState.TokenType] = [];
 
 
 func _can_accept_card(card: GenericCard, table: Table) -> bool:

@@ -2,18 +2,18 @@ extends GenericEvent
 
 
 func _action() -> void:
-	var is_autopilot_ok := GameState.ship.is_system_ok(GameStateClass.ShipState.System.AUTOPILOT);
-	var is_engine_ok := GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES);
-	var is_hyper_drive_ok :=  GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES);
-	var is_life_support_ok := GameState.ship.is_system_ok(GameStateClass.ShipState.System.LIFE_SUPPORT);
+	var is_autopilot_ok := GameState.ship.is_role_ok(ShipState.SystemRole.AUTOPILOT);
+	var is_engine_ok := GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES);
+	var is_hyper_drive_ok :=  GameState.ship.is_role_ok(ShipState.SystemRole.HYPERDRIVE);
+	var is_life_support_ok := GameState.ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT);
 	
 	if not is_autopilot_ok:
 		return;
 	
 	if not is_hyper_drive_ok:
-		GameState.ship.repair_system(GameStateClass.ShipState.System.HYPER_ENGINES);
+		GameState.ship.repair_system(ShipState.SystemRole.HYPERDRIVE);
 	elif not is_engine_ok:
-		GameState.ship.repair_system(GameStateClass.ShipState.System.ENGINES);
+		GameState.ship.repair_system(ShipState.SystemRole.ENGINES);
 	elif not is_life_support_ok:
 		if GameState.hyper_depth > 0:
 			GameState.hyper_depth -= 1;
@@ -22,11 +22,11 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	var is_autopilot_ok := GameState.ship.is_system_ok(GameStateClass.ShipState.System.AUTOPILOT);
-	var are_engines_ok :=  GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES) \
-		and GameState.ship.is_system_ok(GameStateClass.ShipState.System.HYPER_ENGINES);
+	var is_autopilot_ok := GameState.ship.is_role_ok(ShipState.SystemRole.AUTOPILOT);
+	var are_engines_ok :=  GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES) \
+		and GameState.ship.is_role_ok(ShipState.SystemRole.HYPERDRIVE);
 	
-	var is_life_support_ok := GameState.ship.is_system_ok(GameStateClass.ShipState.System.LIFE_SUPPORT);
+	var is_life_support_ok := GameState.ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT);
 	
 	if not is_autopilot_ok:
 		event_title = "Autopilot Is Out!";

@@ -6,7 +6,7 @@ const damage_threshold : int = 10;
 
 func _action() -> void:
 	var should_repair = GameState.ship.get_total_damage() > damage_threshold \
-		or not GameState.ship.is_system_ok(GameState.ShipState.System.LIFE_SUPPORT);
+		or not GameState.ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT);
 	
 	if should_repair:
 		GameState.ship.full_repair();
@@ -21,7 +21,7 @@ func _prepare() -> void:
 	event_image = preload("res://assets/graphics/events/ev_pirate.png");
 	
 	var should_repair = GameState.ship.get_total_damage() > damage_threshold \
-		or not GameState.ship.is_system_ok(GameState.ShipState.System.LIFE_SUPPORT);
+		or not GameState.ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT);
 	
 	if should_repair:
 		event_text = "He decides to help you by fixing your ship.";

@@ -25,14 +25,14 @@ func _action() -> void:
 		GameState.HyperspaceDepth.DEEP:
 			damage = 6;
 	
-	var target_system_1 = GameState.ship.get_random_working_system();
+	var target_system_1 = GameState.ship.get_random_working_system_slot();
 	var damage_1 = damage;
-	var target_system_2 = GameState.ship.get_random_working_system();
+	var target_system_2 = GameState.ship.get_random_working_system_slot();
 	var damage_2 = damage;
 	
-	if GameState.ship.is_system_manned(target_system_1):
+	if GameState.ship.is_system_slot_manned(target_system_1):
 		damage_1 -= 1;
-	if GameState.ship.is_system_manned(target_system_2):
+	if GameState.ship.is_system_slot_manned(target_system_2):
 		damage_2 -= 1;
 	
 	GameState.ship.take_electric_damage(target_system_1, damage_1);
@@ -47,9 +47,9 @@ func _prepare() -> void:
 	
 	did = false;
 	
-	var is_hyperdrive_ok = GameState.ship.is_system_ok(GameState.ShipState.System.HYPER_ENGINES);
-	var is_navigation_ok_and_manned = GameState.ship.is_system_ok(GameState.ShipState.System.NAVIGATION)\
-		and GameState.ship.is_system_manned(GameState.ShipState.System.NAVIGATION);
+	var is_hyperdrive_ok = GameState.ship.is_role_ok(ShipState.SystemRole.HYPERDRIVE);
+	var is_navigation_ok_and_manned = GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION)\
+		and GameState.ship.is_role_manned(ShipState.SystemRole.NAVIGATION);
 	
 	match GameState.hyper_depth:
 		GameState.HyperspaceDepth.SHALLOW:
@@ -71,5 +71,5 @@ func _prepare() -> void:
 	if is_hyperdrive_ok and is_navigation_ok_and_manned:
 		event_text += " You can attempt to stay where you are.";
 		
-		var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "fight it");
+		var idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "fight it");
 		setup_event_signals(idx, do, dond);

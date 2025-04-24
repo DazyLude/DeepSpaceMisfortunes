@@ -31,10 +31,10 @@ func _prepare() -> void:
 		+ "Your goal is to carry a contraband cargo of 10 admantine ingots "\
 		+ "through the unforgiving cold vastness of Space.\nGood luck!"
 	
-	var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "start a new game");
+	var idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "start a new game");
 	setup_event_signals(idx, set_token, unset_token);
 	
-	var idx2 = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "play the tutorial");
+	var idx2 = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "play the tutorial");
 	setup_event_signals(idx2, set_tutorial_token, unset_token);
 	
 	super._ready();

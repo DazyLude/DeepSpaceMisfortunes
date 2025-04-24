@@ -25,8 +25,8 @@ void vertex() {
 }
 
 vec4 sample_texture_safe(sampler2D tex, vec2 uv) {
-	return (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) 
-		? vec4(0.0) 
+	return (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+		? vec4(0.0)
 		: texture(tex, uv);
 }
 

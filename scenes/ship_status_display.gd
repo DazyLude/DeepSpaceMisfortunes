@@ -8,7 +8,7 @@ func update_ship_status(_d: GameState.RoundPhase) -> void:
 	var text = "";
 	
 	for ship_system_i in GameState.ship.system_hp:
-		var system_name = GameState.ShipState.System.keys()[ship_system_i];
+		var system_name = ShipState.SystemRole.keys()[ship_system_i];
 		var system_hp := GameState.ship.system_hp[ship_system_i];
 		
 		text += "%s: %d\n" % [system_name, system_hp];

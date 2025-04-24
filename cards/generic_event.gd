@@ -16,9 +16,9 @@ var event_bg_per_layer : Dictionary = {
 };
 
 var slots : Dictionary = {
-	Table.TokenType.CREWMATE: preload("res://assets/graphics/human.png"),
-	Table.TokenType.SHIP_NAVIGATION: preload("res://assets/graphics/nav.png"),
-	Table.TokenType.INGOT: preload("res://assets/graphics/metal.png"),
+	GameState.TokenType.CREWMATE: preload("res://assets/graphics/human.png"),
+	GameState.TokenType.SHIP_NAVIGATION: preload("res://assets/graphics/nav.png"),
+	GameState.TokenType.INGOT: preload("res://assets/graphics/metal.png"),
 };
 
 
@@ -31,7 +31,7 @@ var slots : Dictionary = {
 	$VBoxContainer/EventInputRow2/EventZone,
 	$VBoxContainer/EventInputRow3/EventZone
 ];
-@export var event_zone_types : Array[Table.TokenType] = [];
+@export var event_zone_types : Array[GameState.TokenType] = [];
 @export var event_zone_stacks : Array[bool] = [false, false, false];
 @export var event_zone_limits : Array[int] = [10, 10, 10];
 @export var event_zone_labels : Array[String] = ["option 1", "option 2", "option 3"];
@@ -46,7 +46,7 @@ func reset_event_inputs() -> void:
 	event_zone_types.clear();
 
 
-func setup_event_input(token: Table.TokenType, label: String, stacks := false, limit := 10) -> int:
+func setup_event_input(token: GameState.TokenType, label: String, stacks := false, limit := 10) -> int:
 	var i = event_zone_types.size();
 	
 	event_zone_types.push_back(token);
@@ -67,6 +67,22 @@ func reset_input_connections() -> void:
 		callable_signal_pair[1].disconnect(callable_signal_pair[0]);
 	
 	callable_reset.clear();
+
+
+func get_inputs_test_iterator() -> Array[Dictionary]:
+	var iterator : Array[Dictionary] = [];
+	
+	# empty inputs
+	iterator.push_back({"prep_times": 0, "before_idx": -1, "after_idx": -1})
+	
+	for idx in event_zone_types.size():
+		var stack_limit = event_zone_limits[idx] if event_zone_stacks[idx] else 1;
+		for count in stack_limit:
+			iterator.push_back(
+				{"prep_times": count + 1, "before_idx": idx * 2, "after_idx": idx * 2 + 1}
+			);
+	
+	return iterator;
 
 
 func _can_play() -> bool:

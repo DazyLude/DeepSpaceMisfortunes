@@ -14,9 +14,9 @@ func _action() -> void:
 		GameState.HyperspaceDepth.DEEP:
 			damage = 12;
 	
-	var target_system = GameState.ship.get_random_working_system();
+	var target_system = GameState.ship.get_random_working_system_slot();
 	
-	if GameState.ship.is_system_manned(target_system):
+	if GameState.ship.is_role_manned(target_system):
 		damage -= 2;
 	
 	damage = maxi(0, damage);

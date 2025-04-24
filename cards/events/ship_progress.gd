@@ -4,10 +4,10 @@ extends GenericEvent
 func _action() -> void:
 	var speed : float = GameState.get_speed();
 	
-	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES):
+	if not GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		speed = 0;
 	
-	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.NAVIGATION):
+	if not GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION):
 		speed /= 2;
 	
 	GameState.travel_distance += speed;
@@ -20,12 +20,12 @@ func _prepare() -> void:
 	
 	event_image = preload("res://assets/graphics/events/ev_progress.png");
 	
-	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES):
+	if not GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		event_image = preload("res://assets/graphics/events/ev_notravel.png");
 		event_title = "Engines Are Out!";
 		event_text = "Your progress is halted when the heart of your ship is standing still."
 	
-	elif not GameState.ship.is_system_ok(GameStateClass.ShipState.System.NAVIGATION):
+	elif not GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION):
 		event_title = "Navigation Is Out!";
 		event_text = "Your engines are pushing your ship in a direction, but not necessarily in the right one."
 	

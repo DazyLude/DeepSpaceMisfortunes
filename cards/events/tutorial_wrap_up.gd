@@ -8,7 +8,7 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	GameState.ship.ships_crew[GameState.Crewmate.new()] = GameState.ShipState.System.OTHER;
+	GameState.ship.ships_crew[ShipState.Crewmate.new()] = -1;
 	GameState.reset_tokens();
 	
 	event_title = "Tutorial: End";

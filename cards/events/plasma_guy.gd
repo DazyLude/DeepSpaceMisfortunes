@@ -14,10 +14,10 @@ func _action() -> void:
 		GameState.HyperspaceDepth.DEEP:
 			damage = 12;
 	
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.ELECTRIC, damage / 4);
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.ELECTRIC, damage / 4);
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage / 4);
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage / 4);
+	for i in 4:
+		GameState.ship.take_electric_damage(
+			GameState.ship.get_random_non_zero_hp_slot(), damage / 4
+		);
 
 
 func _init() -> void:

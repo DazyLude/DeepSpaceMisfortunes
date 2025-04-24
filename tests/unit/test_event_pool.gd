@@ -11,7 +11,8 @@ func test_event_loader_load_all() -> void:
 	assert_true(all_static_events.values().all(ne_null));
 	
 	for event in all_static_events.values():
-		event.free();
+		if event != null:
+			event.free();
 	
 	# this test sometimes affects orphan count without this await
 	
@@ -20,7 +21,52 @@ func test_event_loader_load_all() -> void:
 	#print_orphan_nodes();
 	
 	# probably connected to https://github.com/bitwes/Gut/issues/690
+	
+	assert_no_new_orphans();
 	await wait_frames(16);
+
+
+# the following test is made for code coverage by the compiler
+# it also produces an ungodly amount of orphans
+
+#func test_run_all_events() -> void:
+	#GameState.new_game();
+	#var all_static_events := EventLoader.load_all();
+	#
+	#var iterators : Array = [];
+	#
+	#for event_id in all_static_events:
+		#var event = all_static_events[event_id];
+		#var test_inputs_iterator : Array[Dictionary];
+		#
+		#if event != null:
+			#test_inputs_iterator = event.get_inputs_test_iterator();
+			#event.free();
+		#else:
+			#test_inputs_iterator = [];
+		#
+		#iterators.push_back([event_id, test_inputs_iterator]);
+	#
+	#
+	#for iterator in iterators:
+		#for iterable in iterator[1]:
+			#var fresh_event = EventLoader.get_event_instance(iterator[0]);
+			## prepare
+			#fresh_event._prepare();
+			#
+			#for i in iterable["prep_times"]:
+				#fresh_event.event_callables[iterable["before_idx"]].call();
+			#
+			## reset
+			#for i in iterable["prep_times"]:
+				#fresh_event.event_callables[iterable["after_idx"]].call();
+			#
+			## run
+			#if fresh_event._can_play():
+				#fresh_event._action();
+			#
+			#fresh_event.free();
+			#assert_no_new_orphans();
 
 
 func test_event_pool_add_event() -> void:

@@ -1,15 +1,15 @@
 extends Node2D
 
 
-const backgrounds_per_layer : Dictionary[GameStateClass.HyperspaceDepth, Texture2D] = {
-	GameStateClass.HyperspaceDepth.NONE: preload("res://assets/background/layer_1.png"),  
-	GameStateClass.HyperspaceDepth.SHALLOW: preload("res://assets/background/layer_2.png"),
-	GameStateClass.HyperspaceDepth.NORMAL: preload("res://assets/background/layer_3.png"), 
-	GameStateClass.HyperspaceDepth.DEEP: preload("res://assets/background/layer_4.png"),
+const backgrounds_per_layer : Dictionary[GameState.HyperspaceDepth, Texture2D] = {
+	GameState.HyperspaceDepth.NONE: preload("res://assets/background/layer_1.png"),  
+	GameState.HyperspaceDepth.SHALLOW: preload("res://assets/background/layer_2.png"),
+	GameState.HyperspaceDepth.NORMAL: preload("res://assets/background/layer_3.png"), 
+	GameState.HyperspaceDepth.DEEP: preload("res://assets/background/layer_4.png"),
 };
 
 
-var displayed_depth : GameStateClass.HyperspaceDepth;
+var displayed_depth : GameState.HyperspaceDepth;
 var idle_tween : Tween = null;
 var transition_tween : Tween = null;
 var screen_size : Vector2;

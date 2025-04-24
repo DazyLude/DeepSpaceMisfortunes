@@ -4,7 +4,7 @@ extends GenericEvent
 func _action() -> void:
 	var speed : float = GameState.get_speed();
 	
-	if not GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES):
+	if not GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		speed = 0;
 	
 	GameState.travel_distance += speed;
@@ -19,7 +19,7 @@ func _prepare() -> void:
 	event_image = preload("res://assets/graphics/events/ev_time.png");
 	
 	
-	if GameState.ship.is_system_ok(GameStateClass.ShipState.System.ENGINES):
+	if GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		event_text += " But at least you got closer to your destination!"
 	
 	GameState.interrupt_phase_sequence = func():

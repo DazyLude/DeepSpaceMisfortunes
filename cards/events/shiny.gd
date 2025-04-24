@@ -29,7 +29,7 @@ func _prepare() -> void:
 	event_text = "Your ship's scanner picks up a strange signal. The adamantine you're transporting, "\
 		+ "the asteroid's core is basically made from it! "\
 		+ "You need, however, to slam your ship into the asteroid to get to it... "
-	var idx = setup_event_input(Table.TokenType.SHIP_NAVIGATION, "HAL, do it.");
+	var idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "HAL, do it.");
 	setup_event_signals(idx, do, dond);
 	
 	event_image = preload("res://assets/graphics/events/ev_rich_aster.png");

@@ -14,15 +14,15 @@ func _action() -> void:
 		GameState.HyperspaceDepth.DEEP:
 			damage = 8;
 	
-	var is_navigation_ok_and_manned = GameState.ship.is_system_manned(GameStateClass.ShipState.System.NAVIGATION) \
-		and GameState.ship.is_system_ok(GameStateClass.ShipState.System.NAVIGATION);
+	var is_navigation_ok_and_manned = GameState.ship.is_role_manned(ShipState.SystemRole.NAVIGATION) \
+		and GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION);
 	
 	if is_navigation_ok_and_manned:
 		damage -= 1;
 	
 	damage = maxi(0, damage);
 	
-	GameState.ship.take_damage_to_random_system(GameStateClass.ShipState.DamageType.PHYSICAL, damage);
+	GameState.ship.take_physical_damage(GameState.ship.get_random_non_zero_hp_slot(), damage);
 
 
 func _init() -> void:

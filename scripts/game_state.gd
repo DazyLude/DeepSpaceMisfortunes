@@ -1,5 +1,4 @@
 extends Node
-class_name GameStateClass
 
 
 signal new_phase(round_phase);
@@ -10,8 +9,8 @@ signal clear_tokens;
 signal new_token(TokenType, RefCounted);
 signal ping_tokens(TokenType);
 
-signal system_repaired(System);
-signal system_damaged(System);
+signal system_repaired(int);
+signal system_damaged(int);
 signal system_manned;
 
 signal ship_reset;
@@ -41,6 +40,14 @@ enum RoundPhase {
 };
 
 
+enum TokenType {
+	CREWMATE,
+	INGOT,
+	SHIP_NAVIGATION,
+	OTHER,
+}
+
+
 const TRAVEL_GOAL : float = 22.0;
 const GAMEOVER_PENALTY : int = 30;
 
@@ -66,13 +73,13 @@ var life_support_failure : bool = false;
 
 
 func get_score() -> int:
-	return GameState.ingot_count * 3 - GameState.round_n;
+	return self.ingot_count * 3 - self.round_n;
 
 
 func get_speed() -> float:
 	var speed : float;
 	
-	match GameState.hyper_depth:
+	match self.hyper_depth:
 		GameState.HyperspaceDepth.NONE:
 			speed = 0.1;
 		GameState.HyperspaceDepth.SHALLOW:
@@ -89,13 +96,13 @@ func reset_tokens() -> void:
 	clear_tokens.emit();
 	
 	for crewmate in ship.ships_crew: # idle crewmembers
-		if ship.ships_crew[crewmate] == ShipState.System.OTHER:
-			new_token.emit(Table.TokenType.CREWMATE, crewmate);
+		if ship.ships_crew[crewmate] == -1:
+			new_token.emit(GameState.TokenType.CREWMATE, crewmate);
 	
 	for ingot_i in ingot_count:
-		new_token.emit(Table.TokenType.INGOT, null);
+		new_token.emit(GameState.TokenType.INGOT, null);
 	
-	new_token.emit(Table.TokenType.SHIP_NAVIGATION, null);
+	new_token.emit(GameState.TokenType.SHIP_NAVIGATION, null);
 
 
 func advance_phase() -> void:
@@ -117,12 +124,12 @@ func advance_phase() -> void:
 			active_table.display_hint();
 			return;
 		
-		RoundPhase.ENDGAME when active_table.current_event.is_token_set:
+		RoundPhase.ENDGAME when active_table and active_table.current_event and active_table.current_event.is_token_set:
 			new_game();
 			new_event.emit(null);
 			clear_tokens.emit();
 		
-		RoundPhase.ENDGAME when active_table.current_event.is_token_set2:
+		RoundPhase.ENDGAME when active_table and active_table.current_event and active_table.current_event.is_token_set2:
 			go_to_menu(active_table);
 			new_event.emit(null);
 			clear_tokens.emit();
@@ -147,7 +154,7 @@ func advance_phase() -> void:
 			play_event(EventLoader.EventID.PROGRESS_REPORT);
 		
 		RoundPhase.PREPARATION:
-			ping_tokens.emit(Table.TokenType.SHIP_NAVIGATION);
+			ping_tokens.emit(GameState.TokenType.SHIP_NAVIGATION);
 			return;
 		
 		RoundPhase.EXECUTION:
@@ -157,9 +164,9 @@ func advance_phase() -> void:
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
 			
-			if not ship.is_system_ok(ShipState.System.LIFE_SUPPORT) and life_support_failure:
+			if not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT) and life_support_failure:
 				play_event(EventLoader.EventID.GAMEOVER);
-			elif not ship.is_system_ok(ShipState.System.LIFE_SUPPORT):
+			elif not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT):
 				life_support_failure = true;
 				play_event(EventLoader.EventID.SHIP_ACTION);
 			else:
@@ -169,8 +176,8 @@ func advance_phase() -> void:
 			round_n += 1;
 		
 		RoundPhase.EVENT:
-			ping_tokens.emit(Table.TokenType.SHIP_NAVIGATION);
-			ping_tokens.emit(Table.TokenType.INGOT);
+			ping_tokens.emit(GameState.TokenType.SHIP_NAVIGATION);
+			ping_tokens.emit(GameState.TokenType.INGOT);
 			return;
 	
 	reset_tokens.call_deferred();
@@ -193,6 +200,14 @@ func go_to_menu(table: Table) -> void:
 
 func new_game() -> void:
 	ship = ShipState.new();
+	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("OuterHull"));
+	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Hyperdrive"));
+	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Engines"));
+	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Autopilot"));
+	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("InnerHull"));
+	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("LifeSupport"));
+	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Navigation"));
+	
 	travel_distance = 0.0;
 	hyper_depth = HyperspaceDepth.NONE;
 	current_phase = RoundPhase.GAME_START;
@@ -213,182 +228,17 @@ func new_game() -> void:
 	advance_phase.call_deferred();
 
 
-class ShipState extends RefCounted:
-	enum System {
-		LIFE_SUPPORT,
-		NAVIGATION,
-		INNER_HULL,
-		ENGINES,
-		HYPER_ENGINES,
-		AUTOPILOT,
-		OUTER_HULL,
-		OTHER,
-	};
-	
-	enum DamageType {
-		PHYSICAL,
-		ELECTRIC,
-	};
-	
-	const default_crew_count : int = 3;
-	const default_hp : Dictionary[System, int] = {
-		System.LIFE_SUPPORT: 1,
-		System.NAVIGATION: 1,
-		System.INNER_HULL: 3,
-		System.ENGINES: 1,
-		System.HYPER_ENGINES: 1,
-		System.AUTOPILOT: 1,
-		System.OUTER_HULL: 5,
-	};
-	
-	var system_hp : Dictionary[System, int] = {};
-	var ships_crew : Dictionary[Crewmate, System] = {};
-	
-	
-	func get_total_damage() -> int:
-		var total : int = 0;
-		
-		for system in default_hp:
-			total += default_hp[system] - system_hp[system];
-		
-		return total;
-	
-	
-	func take_physical_damage(system: System, damage: int) -> void:
-		match system:
-			_ when system_hp[System.OUTER_HULL] > 0:
-				var hull_hp = system_hp[System.OUTER_HULL];
-				if hull_hp > damage:
-					system_hp[System.OUTER_HULL] -= damage;
-					GameState.system_damaged.emit(System.OUTER_HULL);
-				else:
-					var new_damage = damage - hull_hp;
-					system_hp[System.OUTER_HULL] = 0;
-					GameState.system_damaged.emit(System.OUTER_HULL);
-					take_physical_damage(system, damage);
-			
-			System.LIFE_SUPPORT, System.NAVIGATION when system_hp[System.INNER_HULL] > 0:
-				var hull_hp = system_hp[System.INNER_HULL];
-				if hull_hp > damage:
-					system_hp[System.INNER_HULL] -= damage;
-					GameState.system_damaged.emit(System.INNER_HULL);
-				elif hull_hp > 0:
-					damage -= hull_hp;
-					system_hp[System.INNER_HULL] = 0;
-					GameState.system_damaged.emit(System.INNER_HULL);
-					take_physical_damage(system, damage);
-			_:
-				system_hp[system] -= damage;
-				GameState.system_damaged.emit(system);
-	
-	
-	func take_electric_damage(system: System, damage: int) -> void:
-		match system:
-			System.LIFE_SUPPORT, System.NAVIGATION when is_system_ok(System.INNER_HULL):
-				system_hp[System.INNER_HULL] -= damage;
-				GameState.system_damaged.emit(System.INNER_HULL);
-			_:
-				system_hp[system] -= damage;
-				GameState.system_damaged.emit(system);
-	
-	
-	func get_random_working_system() -> System:
-		var systems = system_hp.keys().filter(is_system_ok);
-		return systems[GameState.rng.randi_range(0, systems.size() - 1)];
-	
-	
-	func take_damage_to_random_system(damage_type: DamageType, value: int) -> void:
-		var system : System = get_random_working_system();
-		
-		match damage_type:
-			DamageType.PHYSICAL:
-				take_physical_damage(system, value);
-			DamageType.ELECTRIC:
-				take_electric_damage(system, value);
-	
-	
-	func repair_system(system: System, to_full: bool = false) -> void:
-		if not system_hp.has(system):
-			return;
-		
-		if to_full:
-			system_hp[system] = default_hp[system];
-		
-		else:
-			if system_hp[system] < 0:
-				system_hp[system] += 1;
-			
-			system_hp[system] += 1;
-			system_hp[system] = mini(system_hp[system], default_hp[system]);
-		
-		GameState.system_repaired.emit(system);
-	
-	
-	func repair_systems() -> void:
-		for crewmate in ships_crew:
-			repair_system(ships_crew[crewmate]);
-	
-	
-	func full_repair() -> void:
-		for system in System.values():
-			repair_system(system, true);
-	
-	
-	func reset_crew() -> void:
-		for mate in ships_crew:
-			ships_crew[mate] = System.OTHER;
-		
-		GameState.system_manned.emit();
-	
-	
-	func man_system(mate: Crewmate, system: System) -> void:
-		if mate in ships_crew:
-			ships_crew[mate] = system;
-		else:
-			push_error("impostor amongus");
-		
-		GameState.system_manned.emit();
-	
-	
-	func stop_manning(mate: Crewmate) -> void:
-		if mate in ships_crew:
-			ships_crew[mate] = System.OTHER;
-		else:
-			push_error("impostor amongus");
-		
-		GameState.system_manned.emit();
-	
-	
-	func is_system_ok(system: System) -> bool:
-		return system_hp[system] > 0;
-	
-	
-	func is_system_manned(system: System) -> bool:
-		return ships_crew.values().any(func(s) -> bool: return s == system);
-	
-	
-	func _init() -> void:
-		system_hp = default_hp.duplicate();
-		
-		for i in default_crew_count:
-			ships_crew[Crewmate.new()] = System.OTHER;
-
-
-class Crewmate extends RefCounted:
-	pass;
-
-
 class OtherToken extends RefCounted:
-	var token_type : Table.TokenType;
+	var token_type : GameState.TokenType;
 	
 	
 	static func get_nav_token() -> OtherToken:
 		var token = new();
-		token.token_type = Table.TokenType.SHIP_NAVIGATION;
+		token.token_type = GameState.TokenType.SHIP_NAVIGATION;
 		return token;
 	
 	
 	static func get_ingot_token() -> OtherToken:
 		var token = new();
-		token.token_type = Table.TokenType.INGOT;
+		token.token_type = GameState.TokenType.INGOT;
 		return token;

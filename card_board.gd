@@ -2,12 +2,7 @@ extends Node2D
 class_name Table
 
 
-enum TokenType {
-	CREWMATE,
-	INGOT,
-	SHIP_NAVIGATION,
-	OTHER,
-}
+
 
 const nav_token_spawn_location := Vector2(910.0, 665.0);
 const crew_token_spawn_location := Vector2(375.0, 560.0);
@@ -28,14 +23,14 @@ var grace : bool = false;
 var GRACE_PERIOD : float = 0.3;
 
 
-func get_card_token_type(card: GenericCard) -> TokenType:
+func get_card_token_type(card: GenericCard) -> GameState.TokenType:
 	match active_cards.get(card, null):
-		var crew when crew is GameState.Crewmate:
-			return TokenType.CREWMATE;
+		var crew when crew is ShipState.Crewmate:
+			return GameState.TokenType.CREWMATE;
 		var other_token when other_token is GameState.OtherToken:
 			return other_token.token_type; 
 		_:
-			return TokenType.OTHER;
+			return GameState.TokenType.OTHER;
 
 
 func zone_collision_check(card: GenericCard, zone: GenericTableZone) -> bool:
@@ -170,21 +165,21 @@ func dropped_card(card: GenericCard) -> void:
 	picked_card_ref = null;
 
 
-func spawn_token(token_type: TokenType, token_data: RefCounted = null) -> void:
+func spawn_token(token_type: GameState.TokenType, token_data: RefCounted = null) -> void:
 	var token : GenericCard;
 	var ph_token_data : RefCounted;
 	var where : Vector2;
 	
 	match token_type:
-		TokenType.CREWMATE:
+		GameState.TokenType.CREWMATE:
 			token = load("res://cards/tokens/crewmate.tscn").instantiate();
-			ph_token_data = GameState.Crewmate.new();
+			ph_token_data = ShipState.Crewmate.new();
 			where = crew_token_spawn_location;
-		TokenType.INGOT:
+		GameState.TokenType.INGOT:
 			token = load("res://cards/tokens/contraband.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_ingot_token();
 			where = ingot_token_spawn_location;
-		TokenType.SHIP_NAVIGATION:
+		GameState.TokenType.SHIP_NAVIGATION:
 			token = load("res://cards/tokens/ship_navigation.tscn").instantiate();
 			ph_token_data = GameState.OtherToken.get_nav_token();
 			where = nav_token_spawn_location;
@@ -226,7 +221,7 @@ func despawn_all_tokens() -> void:
 		active_zones[zone] = null;
 
 
-func shake_tokens(token_type: TokenType) -> void:
+func shake_tokens(token_type: GameState.TokenType) -> void:
 	for card in self.active_cards.keys():
 		if (get_card_token_type(card) == token_type):
 			card.shake();
@@ -275,7 +270,7 @@ func display_hint() -> void:
 		return;
 	
 	hint_counter += 1;
-	shake_tokens.call_deferred(TokenType.SHIP_NAVIGATION);
+	shake_tokens.call_deferred(GameState.TokenType.SHIP_NAVIGATION);
 
 
 

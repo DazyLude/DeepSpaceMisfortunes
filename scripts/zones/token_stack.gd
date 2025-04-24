@@ -9,7 +9,7 @@ var tokens : Array[GenericCard] = [];
 var label : Label = null;
 
 
-func get_token_type(table: Table) -> Table.TokenType:
+func get_token_type(table: Table) -> GameState.TokenType:
 	return table.get_card_token_type(tokens[0]);
 
 

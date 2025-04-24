@@ -18,9 +18,9 @@ func _action() -> void:
 		GameState.ingot_count -= 1;
 	else:
 		var damage = 4; # x2
-		var target_system = GameState.ship.get_random_working_system();
+		var target_system = GameState.ship.get_random_working_system_slot();
 		GameState.ship.take_electric_damage(target_system, damage);
-		target_system = GameState.ship.get_random_working_system();
+		target_system = GameState.ship.get_random_working_system_slot();
 		GameState.ship.take_physical_damage(target_system, damage);
 	
 	bribe = false;
@@ -33,7 +33,7 @@ func _prepare() -> void:
 	event_text = "These aliens are trying to board your ship! They're going to damage everything!";
 	event_image = preload("res://assets/graphics/events/ev_ayy.png");
 	
-	var idx = setup_event_input(Table.TokenType.INGOT, "please don't");
+	var idx = setup_event_input(GameState.TokenType.INGOT, "please don't");
 	setup_event_signals(idx, bribed, unbribed);
 	
 	super._ready();

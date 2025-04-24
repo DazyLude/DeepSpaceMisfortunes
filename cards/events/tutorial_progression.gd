@@ -8,7 +8,7 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	GameState.ship = GameState.ShipState.new();
+	GameState.ship = ShipState.new();
 	GameState.new_phase.emit(GameState.current_phase);
 	GameState.reset_tokens();
 	

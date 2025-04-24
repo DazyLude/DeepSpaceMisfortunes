@@ -95,9 +95,8 @@ func get_speed() -> float:
 func reset_tokens() -> void:
 	clear_tokens.emit();
 	
-	for crewmate in ship.ships_crew: # idle crewmembers
-		if ship.ships_crew[crewmate] == -1:
-			new_token.emit(GameState.TokenType.CREWMATE, crewmate);
+	for crewmate in ship.get_free_crewmates():
+		new_token.emit(GameState.TokenType.CREWMATE, crewmate);
 	
 	for ingot_i in ingot_count:
 		new_token.emit(GameState.TokenType.INGOT, null);
@@ -190,7 +189,6 @@ func play_event(id: EventLoader.EventID) -> void:
 
 func go_to_menu(table: Table) -> void:
 	ship = ShipState.new();
-	ship.ships_crew.clear();
 	
 	active_table = table;
 	current_phase = RoundPhase.STARTUP;

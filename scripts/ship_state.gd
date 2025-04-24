@@ -31,6 +31,7 @@ enum DamageType {
 
 const default_crew_count : int = 3;
 const autorepair_strength : int = 1;
+const FREE_CREW_SLOT = -1;
 
 
 var system_slots : Array[ShipSystem] = [];
@@ -130,7 +131,7 @@ func get_random_non_zero_hp_slot() -> int:
 			system_idxs.push_back(idx);
 	
 	if system_idxs.is_empty():
-		return 0;
+		return FREE_CREW_SLOT;
 	
 	return system_idxs[rng_ref.randi_range(0, system_idxs.size() - 1)];
 
@@ -169,7 +170,7 @@ func full_repair() -> void:
 
 func reset_crew() -> void:
 	for mate in ships_crew:
-		ships_crew[mate] = 0;
+		ships_crew[mate] = FREE_CREW_SLOT;
 	
 	system_manned.emit();
 
@@ -185,7 +186,7 @@ func man_system(mate: Crewmate, system_slot: int) -> void:
 
 func stop_manning(mate: Crewmate) -> void:
 	if mate in ships_crew:
-		ships_crew[mate] = -1;
+		ships_crew[mate] = FREE_CREW_SLOT;
 	else:
 		push_error("impostor amongus");
 	
@@ -220,15 +221,22 @@ func is_system_slot_manned(system_slot: int) -> bool:
 
 ## adds a system to the ships innermost slot
 func add_system_to_ship_inside(system: ShipSystem) -> void:
-	system_slots.push_back(system);
+	if not system_slots.has(system):
+		system_slots.push_back(system);
 
 ## adds a system to the ships outermost slot
 func add_system_to_ship_outside(system: ShipSystem) -> void:
-	system_slots.push_front(system);
+	if not system_slots.has(system):
+		system_slots.push_front(system);
 
 ## adds a system to the ships outermost slot
 func add_system_to_ship_at(system: ShipSystem, slot: int) -> void:
-	system_slots.insert(slot, system);
+	if not system_slots.has(system):
+		system_slots.insert(clampi(slot, 0, system_slots.size()), system);
+
+## adds a system to the ships outermost slot
+func remove_system_from_ship_at(slot: int) -> void:
+	system_slots.remove_at(clampi(slot, 0, system_slots.size()));
 
 
 func get_system_by_slot(slot: int) -> ShipSystem:
@@ -243,9 +251,19 @@ func get_system_by_slot(slot: int) -> ShipSystem:
 	return requested_system_ref;
 
 
+func get_free_crewmates() -> Array[Crewmate]:
+	var crew : Array[Crewmate] = [];
+	
+	for crewmate in ships_crew:
+		if ships_crew[crewmate] == FREE_CREW_SLOT:
+			crew.push_back(crewmate);
+	
+	return crew;
+
+
 func _init() -> void:
 	for i in default_crew_count:
-		ships_crew[Crewmate.new()] = -1;
+		ships_crew[Crewmate.new()] = FREE_CREW_SLOT;
 
 
 class ShipSystem extends RefCounted:

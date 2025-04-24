@@ -43,7 +43,7 @@ var red_gradient = GradientTexture1D.new();
 
 func update_hp_display(_s) -> void:
 	for system_slot in hp_per_system_slot:
-		hp_per_system_slot[system_slot].text = "%d" % GameState.ship.get_system_by_slot(system_slot);
+		hp_per_system_slot[system_slot].text = "%d" % GameState.ship.get_system_by_slot(system_slot).hp;
 
 
 func get_active_zones() -> Array[GenericTableZone]:

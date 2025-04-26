@@ -134,20 +134,118 @@ func test_damaging_and_getting_systems() -> void:
 
 
 func test_physical_damage() -> void:
-	pass;
+	var ship = ShipState.new();
+	
+	var system_1 = ShipState.ShipSystem.new(5, 3);
+	system_1.add_role(ShipState.SystemRole.ARMOR);
+	ship.add_system_to_ship_inside(system_1);
+	
+	var system_2 = ShipState.ShipSystem.new(1, 1);
+	system_2.add_role(ShipState.SystemRole.ENGINES);
+	ship.add_system_to_ship_inside(system_2);
+	
+	var system_3 = ShipState.ShipSystem.new(5, 1);
+	system_3.add_role(ShipState.SystemRole.ARMOR);
+	ship.add_system_to_ship_inside(system_3);
+	
+	var system_4 = ShipState.ShipSystem.new(1, 1);
+	system_4.add_role(ShipState.SystemRole.LIFE_SUPPORT);
+	ship.add_system_to_ship_inside(system_4);
+	
+	ship.take_physical_damage(3, 1);
+	assert_eq(ship.get_total_damage(), 1);
+	assert_true(ship.is_role_ok(ShipState.SystemRole.ENGINES));
+	assert_true(ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT));
+	
+	ship.take_physical_damage(3, 10);
+	assert_eq(ship.get_total_damage(), 9); # 3 + 5 + 1
+	assert_true(ship.is_role_ok(ShipState.SystemRole.ENGINES));
+	assert_false(ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT));
 
 
 func test_electrical_damage() -> void:
-	pass;
-
-
-func test_total_damage() -> void:
-	pass;
+	var ship = ShipState.new();
+	
+	var system_1 = ShipState.ShipSystem.new(5, 1);
+	system_1.add_role(ShipState.SystemRole.SHIELD);
+	ship.add_system_to_ship_inside(system_1);
+	
+	var system_2 = ShipState.ShipSystem.new(1, 1);
+	system_2.add_role(ShipState.SystemRole.ENGINES);
+	ship.add_system_to_ship_inside(system_2);
+	
+	var system_3 = ShipState.ShipSystem.new(1, 1);
+	system_3.add_role(ShipState.SystemRole.LIFE_SUPPORT);
+	ship.add_system_to_ship_inside(system_3);
+	
+	ship.take_electric_damage(2, 1);
+	assert_eq(ship.get_total_damage(), 1);
+	assert_true(ship.is_role_ok(ShipState.SystemRole.ENGINES));
+	assert_true(ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT));
+	
+	ship.take_electric_damage(2, 10);
+	assert_eq(ship.get_total_damage(), 5); # 5
+	assert_true(ship.is_role_ok(ShipState.SystemRole.ENGINES));
+	assert_true(ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT));
+	
+	ship.take_electric_damage(2, 10);
+	assert_eq(ship.get_total_damage(), 6); # 5 + 1
+	assert_true(ship.is_role_ok(ShipState.SystemRole.ENGINES));
+	assert_false(ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT));
 
 
 func test_repair_full() -> void:
-	pass;
+	var ship = ShipState.new();
+	
+	var system_1 = ShipState.ShipSystem.new(5, 1);
+	system_1.add_role(ShipState.SystemRole.SHIELD);
+	ship.add_system_to_ship_inside(system_1);
+	
+	var system_2 = ShipState.ShipSystem.new(5, 1);
+	system_2.add_role(ShipState.SystemRole.ARMOR);
+	ship.add_system_to_ship_inside(system_2);
+	
+	var system_3 = ShipState.ShipSystem.new(1, 1);
+	system_3.add_role(ShipState.SystemRole.ENGINES);
+	ship.add_system_to_ship_inside(system_3);
+	
+	ship.take_electric_damage(2, 10);
+	ship.take_physical_damage(2, 10);
+	assert_eq(ship.get_total_damage(), 11);
+	
+	ship.full_repair();
+	assert_eq(ship.get_total_damage(), 0);
 
 
 func test_manning_and_normal_repair() -> void:
-	pass;
+	var ship = ShipState.new();
+	
+	var system_1 = ShipState.ShipSystem.new(5, 1);
+	system_1.add_role(ShipState.SystemRole.SHIELD);
+	system_1.add_role(ShipState.SystemRole.AUTO_REPAIR);
+	ship.add_system_to_ship_inside(system_1);
+	
+	var system_2 = ShipState.ShipSystem.new(5, 1);
+	system_2.add_role(ShipState.SystemRole.ARMOR);
+	system_1.add_role(ShipState.SystemRole.EASY_REPAIR);
+	ship.add_system_to_ship_inside(system_2);
+	
+	var system_3 = ShipState.ShipSystem.new(1, 1);
+	system_3.add_role(ShipState.SystemRole.ENGINES);
+	ship.add_system_to_ship_inside(system_3);
+	
+	ship.take_electric_damage(2, 10);
+	ship.take_physical_damage(2, 10);
+	
+	var slackers = ship.get_free_crewmates();
+	assert_true(slackers.size() >= 2);
+	var crewmate_1 = slackers[0];
+	var crewmate_2 = slackers[1];
+	
+	ship.man_system(crewmate_1, 1)
+	ship.man_system(crewmate_2, 2)
+	
+	assert_eq(ship.get_free_crewmates().size(), slackers.size() - 2);
+	ship.repair_systems();
+	
+	assert_eq(ship.get_total_damage(), 7); # 11 - 1 - 1 - 2

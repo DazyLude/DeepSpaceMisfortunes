@@ -220,23 +220,31 @@ func is_system_slot_manned(system_slot: int) -> bool:
 
 
 ## adds a system to the ships innermost slot
-func add_system_to_ship_inside(system: ShipSystem) -> void:
+func add_system_to_ship_inside(system: ShipSystem) -> ShipState:
 	if not system_slots.has(system):
 		system_slots.push_back(system);
+	
+	return self;
 
 ## adds a system to the ships outermost slot
-func add_system_to_ship_outside(system: ShipSystem) -> void:
+func add_system_to_ship_outside(system: ShipSystem) -> ShipState:
 	if not system_slots.has(system):
 		system_slots.push_front(system);
+	
+	return self;
 
 ## adds a system to the ships outermost slot
-func add_system_to_ship_at(system: ShipSystem, slot: int) -> void:
+func add_system_to_ship_at(system: ShipSystem, slot: int) -> ShipState:
 	if not system_slots.has(system):
 		system_slots.insert(clampi(slot, 0, system_slots.size()), system);
+	
+	return self;
 
 ## adds a system to the ships outermost slot
-func remove_system_from_ship_at(slot: int) -> void:
+func remove_system_from_ship_at(slot: int) -> ShipState:
 	system_slots.remove_at(clampi(slot, 0, system_slots.size()));
+	
+	return self;
 
 
 func get_system_by_slot(slot: int) -> ShipSystem:
@@ -261,9 +269,15 @@ func get_free_crewmates() -> Array[Crewmate]:
 	return crew;
 
 
+func add_crewmate(crewmate: Crewmate) -> ShipState:
+	ships_crew[crewmate] = FREE_CREW_SLOT;
+	
+	return self;
+
+
 func _init() -> void:
 	for i in default_crew_count:
-		ships_crew[Crewmate.new()] = FREE_CREW_SLOT;
+		add_crewmate(Crewmate.new());
 
 
 class ShipSystem extends RefCounted:

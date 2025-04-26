@@ -197,14 +197,7 @@ func go_to_menu(table: Table) -> void:
 
 
 func new_game() -> void:
-	ship = ShipState.new();
-	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("OuterHull"));
-	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Hyperdrive"));
-	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Engines"));
-	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Autopilot"));
-	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("InnerHull"));
-	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("LifeSupport"));
-	ship.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Navigation"));
+	ship = ShipLibrary.get_ship_by_name("Standard");
 	
 	travel_distance = 0.0;
 	hyper_depth = HyperspaceDepth.NONE;

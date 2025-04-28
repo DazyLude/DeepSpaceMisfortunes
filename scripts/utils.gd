@@ -24,7 +24,7 @@ static func expect_objects_properties_equal(object_a: Object, object_b: Object) 
 			return Result.wrap_err("different property names");
 	
 	# check property values
-	# objects and collections (arrays and dictionaries) are not checked 
+	# objects and collections (arrays and dictionaries) are not checked
 	for property in properties_a:
 		var value1 = object_a.get(property);
 		var value2 = object_b.get(property);

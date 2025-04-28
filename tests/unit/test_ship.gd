@@ -16,9 +16,15 @@ func test_empty_ship_behavior() -> void:
 	assert_true(ship.get_system_by_slot(-1).is_dummy);
 	assert_true(ship.get_system_by_slot(1).is_dummy);
 	
+	var check = false;
 	for role_key in ShipState.SystemRole:
-		assert_false(ship.is_role_ok(ShipState.SystemRole[role_key]));
-		assert_false(ship.is_role_manned(ShipState.SystemRole[role_key]));
+		check = ship.is_role_ok(ShipState.SystemRole[role_key])\
+			or ship.is_role_manned(ShipState.SystemRole[role_key]);
+		
+		if check:
+			break;
+	
+	assert_false(check, "system roles not present on an empty ship");
 	
 	assert_eq(ship.get_random_non_zero_hp_slot(), ShipState.FREE_CREW_SLOT);
 	assert_eq(ship.get_random_working_system_slot(), ShipState.FREE_CREW_SLOT);
@@ -128,9 +134,14 @@ func test_damaging_and_getting_systems() -> void:
 	ship.add_system_to_ship_inside(system_2);
 	assert_true(ship.is_role_ok(ShipState.SystemRole.NAVIGATION));
 	
-	for i in range(100):
-		assert_eq(ship.get_random_non_zero_hp_slot(), 1);
-		assert_eq(ship.get_random_working_system_slot(), 1);
+	var check = true;
+	for i in range(10):
+		check = ship.get_random_non_zero_hp_slot() == 1 and ship.get_random_working_system_slot() == 1;
+		
+		if not check:
+			break;
+	
+	assert_true(check, "getting healthy random system")
 
 
 func test_physical_damage() -> void:

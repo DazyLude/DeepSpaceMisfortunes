@@ -275,6 +275,18 @@ func add_crewmate(crewmate: Crewmate) -> ShipState:
 	return self;
 
 
+func clone() -> ShipState:
+	var new_ship := ShipState.new();
+	
+	for system in system_slots:
+		new_ship.add_system_to_ship_inside(system.clone());
+	
+	for crewmate in ships_crew:
+		new_ship.add_crewmate(crewmate.clone());
+	
+	return new_ship;
+
+
 func _init() -> void:
 	for i in default_crew_count:
 		add_crewmate(Crewmate.new());
@@ -293,7 +305,6 @@ class ShipSystem extends RefCounted:
 	
 	## used by "dummy" systems for debugging purposes
 	var is_dummy : bool = false;
-	
 	
 	var name : String = "";
 	
@@ -327,6 +338,19 @@ class ShipSystem extends RefCounted:
 		return self;
 	
 	
+	func clone() -> ShipSystem:
+		var cloned_system = ShipSystem.new(self.max_hp, self.functional_hp);
+		cloned_system.hp = self.hp;
+		cloned_system.roles = self.roles.duplicate(true);
+		cloned_system.is_dummy = self.is_dummy;
+		cloned_system.name = self.name;
+		cloned_system.full_texture = self.full_texture;
+		cloned_system.damaged_texture = self.damaged_texture;
+		cloned_system.broken_texture = self.broken_texture;
+		
+		return cloned_system;
+	
+	
 	func _init(max: int, functional: int) -> void:
 		if max <= 0:
 			push_error("system's maximum hp is non positive. Returning the \"default\" system");
@@ -345,3 +369,10 @@ class ShipSystem extends RefCounted:
 
 class Crewmate extends RefCounted:
 	var repair_strength : int = 1;
+	
+	
+	func clone() -> Crewmate:
+		var new_crewmate := Crewmate.new();
+		new_crewmate.repair_strength = self.repair_strength;
+		
+		return new_crewmate;

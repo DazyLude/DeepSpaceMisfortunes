@@ -16,7 +16,7 @@ static var library : Dictionary[String, ShipState] = {
 
 static func get_ship_by_name(system_name: String) -> ShipState:
 	var ship : ShipState = library.get(system_name, ShipState.ShipSystem.get_dummy());
-	return ship;
+	return ship.clone();
 
 
 func _init() -> void:

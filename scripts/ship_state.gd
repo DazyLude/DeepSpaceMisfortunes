@@ -69,14 +69,14 @@ func take_physical_damage(slot: int, damage: int) -> void:
 	for armor_idx in outer_armor_slots:
 		var armor = get_system_by_slot(armor_idx);
 		
-		var max_taken_damage = clampi(armor.hp - armor.functional_hp + 1, 0, armor.hp);
+		var max_absorbed_damage = clampi(armor.hp - armor.functional_hp + 1, 0, armor.hp);
 		
-		if remaining_damage - max_taken_damage > 0:
-			armor.hp -= max_taken_damage;
+		if remaining_damage - max_absorbed_damage > 0:
+			armor.hp -= max_absorbed_damage;
 		else:
 			armor.hp -= remaining_damage;
 		
-		remaining_damage -= max_taken_damage;
+		remaining_damage -= max_absorbed_damage;
 		system_damaged.emit(armor_idx);
 		
 		if remaining_damage <= 0:
@@ -275,6 +275,12 @@ func add_crewmate(crewmate: Crewmate) -> ShipState:
 	return self;
 
 
+func set_rng_ref(ref: RandomNumberGenerator) -> ShipState:
+	rng_ref = ref;
+	
+	return self;
+
+
 func clone() -> ShipState:
 	var new_ship := ShipState.new();
 	
@@ -283,6 +289,8 @@ func clone() -> ShipState:
 	
 	for crewmate in ships_crew:
 		new_ship.add_crewmate(crewmate.clone());
+	
+	new_ship.rng_ref = self.rng_ref;
 	
 	return new_ship;
 
@@ -351,13 +359,13 @@ class ShipSystem extends RefCounted:
 		return cloned_system;
 	
 	
-	func _init(max: int, functional: int) -> void:
-		if max <= 0:
+	func _init(maximum: int, functional: int) -> void:
+		if maximum <= 0:
 			push_error("system's maximum hp is non positive. Returning the \"default\" system");
 			return;
 		
-		max_hp = max;
-		hp = max;
+		max_hp = maximum;
+		hp = maximum;
 		functional_hp = functional;
 		
 		if functional_hp > max_hp:

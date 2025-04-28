@@ -16,7 +16,7 @@ func _action() -> void:
 		GameState.ship.repair_system(ShipState.SystemRole.ENGINES);
 	elif not is_life_support_ok:
 		if GameState.hyper_depth > 0:
-			GameState.hyper_depth -= 1;
+			GameState.hyper_depth = (GameState.hyper_depth - 1) as MapState.HyperspaceDepth;
 
 
 func _prepare() -> void:

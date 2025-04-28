@@ -149,7 +149,6 @@ static func load_all() -> Dictionary[EventID, GenericEvent]:
 	var tested_events := EventID.values();
 	
 	for event_id in tested_events:
-		var event_name = EventID.keys()[event_id];
 		event_instances[event_id] = get_event_instance(event_id);
 	
 	return event_instances;

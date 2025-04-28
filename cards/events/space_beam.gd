@@ -5,13 +5,13 @@ func _action() -> void:
 	var damage : int;
 	
 	match GameState.hyper_depth:
-		GameState.HyperspaceDepth.NONE:
+		MapState.HyperspaceDepth.NONE:
 			damage = 1;
-		GameState.HyperspaceDepth.SHALLOW:
+		MapState.HyperspaceDepth.SHALLOW:
 			damage = 1;
-		GameState.HyperspaceDepth.NORMAL:
+		MapState.HyperspaceDepth.NORMAL:
 			damage = 2;
-		GameState.HyperspaceDepth.DEEP:
+		MapState.HyperspaceDepth.DEEP:
 			damage = 5;
 	
 	var target_system = GameState.ship.get_random_working_system_slot();

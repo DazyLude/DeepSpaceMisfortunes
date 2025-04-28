@@ -61,15 +61,15 @@ static func from_two_tokens(token : GenericCard, another : GenericCard) -> Token
 	stack.add_child(corcle);
 	
 	stack.card_texture = token.sprite.texture.duplicate();
-	var label := Label.new();
+	var _label := Label.new();
 	
-	label.position = Vector2(21, 28);
-	label.size = Vector2(20, 30);
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER;
-	label.text = "2";
+	_label.position = Vector2(21, 28);
+	_label.size = Vector2(20, 30);
+	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER;
+	_label.text = "2";
 	
-	stack.label = label;
-	stack.add_child(label);
+	stack.label = _label;
+	stack.add_child(_label);
 	
 	token.hide();
 	another.hide();

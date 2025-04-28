@@ -2,8 +2,6 @@ extends GenericEvent
 
 
 func _action() -> void:
-	var speed : float = GameState.get_speed();
-	
 	GameState.round_n -= 3;
 	GameState.ship.full_repair();
 

@@ -15,13 +15,13 @@ func _action() -> void:
 	var damage : int;
 	
 	match GameState.hyper_depth:
-		GameState.HyperspaceDepth.NONE:
+		MapState.HyperspaceDepth.NONE:
 			damage = 1;
-		GameState.HyperspaceDepth.SHALLOW:
+		MapState.HyperspaceDepth.SHALLOW:
 			damage = 1;
-		GameState.HyperspaceDepth.NORMAL:
+		MapState.HyperspaceDepth.NORMAL:
 			damage = 3;
-		GameState.HyperspaceDepth.DEEP:
+		MapState.HyperspaceDepth.DEEP:
 			damage = 6;
 	
 	var target_system_1 = GameState.ship.get_random_working_system_slot();
@@ -39,7 +39,7 @@ func _action() -> void:
 	GameState.ship.take_electric_damage(target_system_2, damage_2);
 	
 	if GameState.hyper_depth < 3 and not did:
-		GameState.hyper_depth += 1;
+		GameState.hyper_depth = (GameState.hyper_depth + 1) as MapState.HyperspaceDepth;
 
 
 func _prepare() -> void:
@@ -52,11 +52,11 @@ func _prepare() -> void:
 		and GameState.ship.is_role_manned(ShipState.SystemRole.NAVIGATION);
 	
 	match GameState.hyper_depth:
-		GameState.HyperspaceDepth.SHALLOW:
+		MapState.HyperspaceDepth.SHALLOW:
 			event_image = preload("res://assets/graphics/events/ev_batat1.png");
-		GameState.HyperspaceDepth.NORMAL:
+		MapState.HyperspaceDepth.NORMAL:
 			event_image = preload("res://assets/graphics/events/ev_batat2.png");
-		GameState.HyperspaceDepth.DEEP:
+		MapState.HyperspaceDepth.DEEP:
 			event_image = preload("res://assets/graphics/events/ev_batat3.png");
 	
 	event_title = "Hyperspace Fluctuation";

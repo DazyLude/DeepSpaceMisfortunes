@@ -127,7 +127,7 @@ func dropped_card(card: GenericCard) -> void:
 					if zone is EventZone:
 						zone._card_accepted(card, self);
 				
-				var another_card when is_same_type and not zone.accepts_stacks:
+				var _another_card when is_same_type and not zone.accepts_stacks:
 					picked_card_ref = null;
 					return;
 				

@@ -135,10 +135,10 @@ static func get_pool_from_weights(event_weights: Dictionary[EventLoader.EventID,
 	return pool;
 
 
-static func get_rigged_pool(weights: Array) -> RiggedPool:
+static func get_rigged_pool(_weights: Array) -> RiggedPool:
 	var pool := RiggedPool.new();
 	
-	for event_id in weights:
+	for event_id in _weights:
 		var weight = 1.0;
 		pool.add_event_with_weight(event_id, weight);
 	

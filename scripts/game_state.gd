@@ -19,14 +19,6 @@ signal gameover(int);
 signal victory(int);
 
 
-enum HyperspaceDepth {
-	NONE,
-	SHALLOW,
-	NORMAL,
-	DEEP,
-};
-
-
 enum RoundPhase {
 	STARTUP,
 	TUTORIAL,
@@ -57,7 +49,7 @@ var rng := RandomNumberGenerator.new();
 
 var ship : ShipState;
 var travel_distance : float;
-var hyper_depth : HyperspaceDepth;
+var hyper_depth : MapState.HyperspaceDepth;
 var current_phase : RoundPhase;
 var round_n : int = 0;
 var score : int = 0;
@@ -66,7 +58,7 @@ var ingot_count : int = 0;
 var active_table : Table = null;
 
 
-var event_pools : Dictionary[HyperspaceDepth, EventPool] = {};
+var event_pools : Dictionary[MapState.HyperspaceDepth, EventPool] = {};
 var interrupt_phase_sequence = null;
 
 var life_support_failure : bool = false;
@@ -80,13 +72,13 @@ func get_speed() -> float:
 	var speed : float;
 	
 	match self.hyper_depth:
-		GameState.HyperspaceDepth.NONE:
+		MapState.HyperspaceDepth.NONE:
 			speed = 0.1;
-		GameState.HyperspaceDepth.SHALLOW:
+		MapState.HyperspaceDepth.SHALLOW:
 			speed = 0.5;
-		GameState.HyperspaceDepth.NORMAL:
+		MapState.HyperspaceDepth.NORMAL:
 			speed = 2.0;
-		GameState.HyperspaceDepth.DEEP:
+		MapState.HyperspaceDepth.DEEP:
 			speed = 5.0;
 	
 	return speed;
@@ -133,7 +125,7 @@ func advance_phase() -> void:
 			new_event.emit(null);
 			clear_tokens.emit();
 		
-		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == HyperspaceDepth.NONE:
+		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == MapState.HyperspaceDepth.NONE:
 			clear_tokens.emit();
 			play_event(EventLoader.EventID.VICTORY);
 		
@@ -200,7 +192,7 @@ func new_game() -> void:
 	ship = ShipLibrary.get_ship_by_name("Standard");
 	
 	travel_distance = 0.0;
-	hyper_depth = HyperspaceDepth.NONE;
+	hyper_depth = MapState.HyperspaceDepth.NONE;
 	current_phase = RoundPhase.GAME_START;
 	round_n = 0;
 	score = 0;
@@ -208,10 +200,10 @@ func new_game() -> void:
 	life_support_failure = false;
 	interrupt_phase_sequence = null;
 	
-	event_pools[HyperspaceDepth.NONE] = EventPool.get_space_pool();
-	event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
-	event_pools[HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
-	event_pools[HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
+	event_pools[MapState.HyperspaceDepth.NONE] = EventPool.get_space_pool();
+	event_pools[MapState.HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
+	event_pools[MapState.HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
+	event_pools[MapState.HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
 	
 	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
 	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();

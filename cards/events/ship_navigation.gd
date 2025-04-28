@@ -20,8 +20,10 @@ func _action() -> void:
 	if course == -1:
 		return;
 	
-	GameState.hyper_depth += course - 1;
-	GameState.hyper_depth = clampi(GameState.hyper_depth, 0, 3);
+	var depth_value := GameState.hyper_depth as int + course - 1;
+	depth_value = clampi(depth_value, 0, 3);
+	
+	GameState.hyper_depth = depth_value as MapState.HyperspaceDepth;
 	course = -1;
 
 
@@ -50,7 +52,7 @@ func _prepare() -> void:
 		event_image = preload("res://assets/graphics/events/ev_navigat.png");
 		event_title = "Choose Ship's Course";
 		match GameState.hyper_depth:
-			GameState.HyperspaceDepth.NONE:
+			MapState.HyperspaceDepth.NONE:
 				event_text = "You can choose whether to stay on the safe surface of the normal Space, "\
 					+ "or to descend into the waters of Hyperspace. "\
 					+ "The deeper you are - the faster you travel, but the dangers of Space are more extreme as well.";
@@ -61,7 +63,7 @@ func _prepare() -> void:
 				var descent_idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "Go deeper");
 				setup_event_signals(descent_idx, course_chosen.bind(2), course_unchosen);
 			
-			GameState.HyperspaceDepth.SHALLOW, GameState.HyperspaceDepth.NORMAL:
+			MapState.HyperspaceDepth.SHALLOW, MapState.HyperspaceDepth.NORMAL:
 				event_title = "Hyperspace";
 				
 				if is_goal_reached:
@@ -78,7 +80,7 @@ func _prepare() -> void:
 				var descent_idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "Go deeper");
 				setup_event_signals(descent_idx, course_chosen.bind(2), course_unchosen);
 			
-			GameState.HyperspaceDepth.DEEP:
+			MapState.HyperspaceDepth.DEEP:
 				event_title = "Hyperspace Depths";
 				event_text = "It's probably a good idea to go up, if you can.";
 				

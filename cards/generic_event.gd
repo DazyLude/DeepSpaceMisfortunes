@@ -9,10 +9,10 @@ enum LimitedType {
 
 
 var event_bg_per_layer : Dictionary = {
-	GameState.HyperspaceDepth.NONE : preload("res://assets/graphics/event.png"),
-	GameState.HyperspaceDepth.SHALLOW : preload("res://assets/graphics/event2.png"),
-	GameState.HyperspaceDepth.NORMAL : preload("res://assets/graphics/event3.png"),
-	GameState.HyperspaceDepth.DEEP : preload("res://assets/graphics/event4.png"),
+	MapState.HyperspaceDepth.NONE : preload("res://assets/graphics/event.png"),
+	MapState.HyperspaceDepth.SHALLOW : preload("res://assets/graphics/event2.png"),
+	MapState.HyperspaceDepth.NORMAL : preload("res://assets/graphics/event3.png"),
+	MapState.HyperspaceDepth.DEEP : preload("res://assets/graphics/event4.png"),
 };
 
 var slots : Dictionary = {

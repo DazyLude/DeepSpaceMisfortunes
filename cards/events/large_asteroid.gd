@@ -5,13 +5,13 @@ func _action() -> void:
 	var damage : int;
 	
 	match GameState.hyper_depth:
-		GameState.HyperspaceDepth.NONE:
+		MapState.HyperspaceDepth.NONE:
 			damage = 2;
-		GameState.HyperspaceDepth.SHALLOW:
+		MapState.HyperspaceDepth.SHALLOW:
 			damage = 3;
-		GameState.HyperspaceDepth.NORMAL:
+		MapState.HyperspaceDepth.NORMAL:
 			damage = 6;
-		GameState.HyperspaceDepth.DEEP:
+		MapState.HyperspaceDepth.DEEP:
 			damage = 10;
 	
 	var is_navigation_ok_and_manned = GameState.ship.is_role_manned(ShipState.SystemRole.NAVIGATION) \

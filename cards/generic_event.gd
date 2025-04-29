@@ -102,11 +102,11 @@ func _ready() -> void:
 	if event_image != null and $EventImage != null:
 		$EventImage.texture = event_image;
 	
-	if GameState != null and $LevelHint != null:
-		$LevelHint.text = "EVENT | DEPTH LVL%d" % (GameState.hyper_depth + 1);
+	if GameState != null and GameState.map != null and $LevelHint != null:
+		$LevelHint.text = "EVENT | DEPTH LVL%d" % (GameState.map.layer + 1);
 	
-	if GameState != null and $Sprite != null:
-		$Sprite.texture = event_bg_per_layer[GameState.hyper_depth];
+	if GameState != null and GameState.map != null and $Sprite != null:
+		$Sprite.texture = event_bg_per_layer[GameState.map.layer];
 	
 	reset_input_connections();
 	

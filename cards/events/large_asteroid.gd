@@ -4,7 +4,7 @@ extends GenericEvent
 func _action() -> void:
 	var damage : int;
 	
-	match GameState.hyper_depth:
+	match GameState.map.layer:
 		MapState.HyperspaceDepth.NONE:
 			damage = 2;
 		MapState.HyperspaceDepth.SHALLOW:

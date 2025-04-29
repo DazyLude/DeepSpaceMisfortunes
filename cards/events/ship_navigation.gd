@@ -20,10 +20,12 @@ func _action() -> void:
 	if course == -1:
 		return;
 	
-	var depth_value := GameState.hyper_depth as int + course - 1;
+	var depth_value := GameState.map.layer as int + course - 1;
 	depth_value = clampi(depth_value, 0, 3);
 	
-	GameState.hyper_depth = depth_value as MapState.HyperspaceDepth;
+	var move_command = MapState.MovementCommand.new(0, 0, depth_value);
+	GameState.map.free_move(move_command);
+	
 	course = -1;
 
 
@@ -32,7 +34,7 @@ func _prepare() -> void:
 	
 	var are_drives_ok = GameState.ship.is_role_ok(ShipState.SystemRole.HYPERDRIVE);
 	var is_nav_ok = GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION);
-	var is_goal_reached = GameState.travel_distance >= GameState.TRAVEL_GOAL;
+	var is_goal_reached = GameState.map.position >= GameState.TRAVEL_GOAL;
 	
 	if not are_drives_ok:
 		event_image = preload("res://assets/graphics/events/ev_navigat_crossed.png");
@@ -51,7 +53,7 @@ func _prepare() -> void:
 	else:
 		event_image = preload("res://assets/graphics/events/ev_navigat.png");
 		event_title = "Choose Ship's Course";
-		match GameState.hyper_depth:
+		match GameState.map.layer:
 			MapState.HyperspaceDepth.NONE:
 				event_text = "You can choose whether to stay on the safe surface of the normal Space, "\
 					+ "or to descend into the waters of Hyperspace. "\

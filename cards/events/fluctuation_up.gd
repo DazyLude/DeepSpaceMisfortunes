@@ -15,7 +15,7 @@ func dond(_card) -> void:
 func _action() -> void:
 	var damage : int;
 	
-	match GameState.hyper_depth:
+	match GameState.map.layer:
 		MapState.HyperspaceDepth.NONE:
 			damage = 1;
 		MapState.HyperspaceDepth.SHALLOW:
@@ -38,8 +38,11 @@ func _action() -> void:
 	GameState.ship.take_electric_damage(target_system_1, damage_1);
 	GameState.ship.take_electric_damage(target_system_2, damage_2);
 	
-	if GameState.hyper_depth > 0 and not did:
-		GameState.hyper_depth = (GameState.hyper_depth - 1) as MapState.HyperspaceDepth;
+	if GameState.map.layer > 0 and not did:
+		var depth_value := GameState.map.layer as int - 1;
+		depth_value = clampi(depth_value, 0, 3);
+		var move_command = MapState.MovementCommand.new(0, 0, depth_value);
+		GameState.map.free_move(move_command);
 
 
 func _prepare() -> void:
@@ -51,7 +54,7 @@ func _prepare() -> void:
 	var is_navigation_ok_and_manned = GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION)\
 		and GameState.ship.is_role_manned(ShipState.SystemRole.NAVIGATION);
 	
-	match GameState.hyper_depth:
+	match GameState.map.layer:
 		MapState.HyperspaceDepth.SHALLOW:
 			event_image = preload("res://assets/graphics/events/ev_batat1.png");
 		MapState.HyperspaceDepth.NORMAL:
@@ -63,7 +66,7 @@ func _prepare() -> void:
 	event_text = "A Space-Time fluctuation of Hyperspace causes a system overload. "\
 		+ "It also tries to push you out of Hyperspace";
 	
-	if GameState.hyper_depth == MapState.HyperspaceDepth.DEEP:
+	if GameState.map.layer == MapState.HyperspaceDepth.DEEP:
 		event_text += ", back to the world where you belong.";
 	else:
 		event_text += ".";

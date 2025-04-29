@@ -16,26 +16,27 @@ var screen_size : Vector2;
 
 
 func transition(_d) -> void:
-	if displayed_depth == GameState.hyper_depth:
+	if displayed_depth == GameState.map.layer:
 		return;
+	
 	if transition_tween:
 		transition_tween.kill();
 	transition_tween = create_tween();
 	
-	$Background.material.set_shader_parameter(&"second_texture", backgrounds_per_layer[GameState.hyper_depth]);
-	$BackgroundNext.material.set_shader_parameter(&"second_texture", backgrounds_per_layer[GameState.hyper_depth]);
+	$Background.material.set_shader_parameter(&"second_texture", backgrounds_per_layer[GameState.map.layer]);
+	$BackgroundNext.material.set_shader_parameter(&"second_texture", backgrounds_per_layer[GameState.map.layer]);
 	
 	transition_tween.parallel().tween_property($Background.material, "shader_parameter/threshold", 1.0, 1.0);
 	transition_tween.parallel().tween_property($BackgroundNext.material, "shader_parameter/threshold", 1.0, 1.0);
 	transition_tween.tween_callback(func():
-		$Background.texture = backgrounds_per_layer[GameState.hyper_depth];
-		$BackgroundNext.texture = backgrounds_per_layer[GameState.hyper_depth];
+		$Background.texture = backgrounds_per_layer[GameState.map.layer];
+		$BackgroundNext.texture = backgrounds_per_layer[GameState.map.layer];
 	);
 	
 	$Background.material.set_shader_parameter(&"threshold", 0.0);
 	$BackgroundNext.material.set_shader_parameter(&"threshold", 0.0);
 
-	displayed_depth = GameState.hyper_depth;
+	displayed_depth = GameState.map.layer;
 
 
 func setup_scale() -> void:

@@ -15,8 +15,11 @@ func _action() -> void:
 	elif not is_engine_ok:
 		GameState.ship.repair_system(ShipState.SystemRole.ENGINES);
 	elif not is_life_support_ok:
-		if GameState.hyper_depth > 0:
-			GameState.hyper_depth = (GameState.hyper_depth - 1) as MapState.HyperspaceDepth;
+		if GameState.map.layer > 0:
+			var depth_value := GameState.map.layer as int - 1;
+			depth_value = clampi(depth_value, 0, 3);
+			var move_command = MapState.MovementCommand.new(0, 0, depth_value);
+			GameState.map.free_move(move_command);
 
 
 func _prepare() -> void:

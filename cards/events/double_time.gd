@@ -7,7 +7,8 @@ func _action() -> void:
 	if not GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		speed = 0;
 	
-	GameState.travel_distance += speed;
+	var move_command = MapState.MovementCommand.new(speed, 1, GameState.map.layer);
+	GameState.map.free_move(move_command);
 
 
 func _prepare() -> void:
@@ -23,7 +24,7 @@ func _prepare() -> void:
 		event_text += " But at least you got closer to your destination!"
 	
 	GameState.interrupt_phase_sequence = func():
-		var event = GameState.event_pools[GameState.hyper_depth].pull_random_event();
+		var event = GameState.map.pull_random_event().unwrap();
 		GameState.new_event.emit(event);
 	
 	super._ready();

@@ -8,7 +8,7 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	GameState.travel_distance = GameState.TRAVEL_GOAL / 2.0;
+	GameState.map.position = GameState.TRAVEL_GOAL / 2.0;
 	GameState.new_phase.emit(GameState.current_phase);
 	
 	event_title = "Tutorial: Winning";

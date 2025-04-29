@@ -5,8 +5,8 @@ const damage_threshold : int = 10;
 
 
 func _action() -> void:
-	GameState.travel_distance -= 3.0;
-	GameState.travel_distance = maxf(GameState.travel_distance, 0.0);
+	var move_command = MapState.MovementCommand.new(-3.0, 1, GameState.map.layer);
+	GameState.map.free_move(move_command);
 
 
 func _prepare() -> void:

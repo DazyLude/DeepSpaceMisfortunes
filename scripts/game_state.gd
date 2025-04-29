@@ -48,10 +48,11 @@ var rng := RandomNumberGenerator.new();
 
 
 var ship : ShipState;
-var travel_distance : float;
-var hyper_depth : MapState.HyperspaceDepth;
+var map : MapState;
+
+var global_round : int = 0;
 var current_phase : RoundPhase;
-var round_n : int = 0;
+
 var score : int = 0;
 var ingot_count : int = 0;
 
@@ -65,13 +66,13 @@ var life_support_failure : bool = false;
 
 
 func get_score() -> int:
-	return self.ingot_count * 3 - self.round_n;
+	return self.ingot_count * 3 - self.global_round;
 
 
 func get_speed() -> float:
 	var speed : float;
 	
-	match self.hyper_depth:
+	match self.map.layer:
 		MapState.HyperspaceDepth.NONE:
 			speed = 0.1;
 		MapState.HyperspaceDepth.SHALLOW:
@@ -125,7 +126,7 @@ func advance_phase() -> void:
 			new_event.emit(null);
 			clear_tokens.emit();
 		
-		_ when travel_distance >= TRAVEL_GOAL and hyper_depth == MapState.HyperspaceDepth.NONE:
+		_ when map.is_at_finish_wrong_layer():
 			clear_tokens.emit();
 			play_event(EventLoader.EventID.VICTORY);
 		
@@ -150,7 +151,7 @@ func advance_phase() -> void:
 		
 		RoundPhase.EXECUTION:
 			current_phase = RoundPhase.EVENT;
-			new_event.emit(event_pools[hyper_depth].pull_random_event());
+			new_event.emit(map.pull_random_event().unwrap());
 		
 		RoundPhase.EVENT when active_table.current_event._can_play():
 			current_phase = RoundPhase.SHIP_ACTION;
@@ -164,7 +165,8 @@ func advance_phase() -> void:
 				life_support_failure = false;
 				play_event(EventLoader.EventID.SHIP_ACTION);
 			
-			round_n += 1;
+			map.advance_rounds();
+			global_round += 1;
 		
 		RoundPhase.EVENT:
 			ping_tokens.emit(GameState.TokenType.SHIP_NAVIGATION);
@@ -181,6 +183,7 @@ func play_event(id: EventLoader.EventID) -> void:
 
 func go_to_menu(table: Table) -> void:
 	ship = ShipState.new();
+	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
 	
 	active_table = table;
 	current_phase = RoundPhase.STARTUP;
@@ -190,20 +193,18 @@ func go_to_menu(table: Table) -> void:
 
 func new_game() -> void:
 	ship = ShipLibrary.get_ship_by_name("Standard");
+	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
+	map.add_pool(MapState.HyperspaceDepth.NONE, PoolLibrary.get_event_pool_by_name("Space"));
+	map.add_pool(MapState.HyperspaceDepth.SHALLOW, PoolLibrary.get_event_pool_by_name("Shallow"));
+	map.add_pool(MapState.HyperspaceDepth.NORMAL, PoolLibrary.get_event_pool_by_name("Normal"));
+	map.add_pool(MapState.HyperspaceDepth.DEEP, PoolLibrary.get_event_pool_by_name("Deep"));
 	
-	travel_distance = 0.0;
-	hyper_depth = MapState.HyperspaceDepth.NONE;
 	current_phase = RoundPhase.GAME_START;
-	round_n = 0;
+	global_round = 0;
 	score = 0;
 	ingot_count = 10;
 	life_support_failure = false;
 	interrupt_phase_sequence = null;
-	
-	event_pools[MapState.HyperspaceDepth.NONE] = PoolLibrary.get_event_pool_by_name("Space");
-	event_pools[MapState.HyperspaceDepth.SHALLOW] = PoolLibrary.get_event_pool_by_name("Shallow");
-	event_pools[MapState.HyperspaceDepth.NORMAL] = PoolLibrary.get_event_pool_by_name("Normal");
-	event_pools[MapState.HyperspaceDepth.DEEP] = PoolLibrary.get_event_pool_by_name("Deep");
 	
 	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
 	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();

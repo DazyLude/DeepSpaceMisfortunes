@@ -15,9 +15,9 @@ func _advance(_dummy) -> void:
 	var distance;
 	
 	if predict:
-		distance = min(GameState.TRAVEL_GOAL, GameState.travel_distance + GameState.get_speed());
+		distance = min(GameState.TRAVEL_GOAL, GameState.map.position + GameState.get_speed());
 	else:
-		distance = min(GameState.TRAVEL_GOAL, GameState.travel_distance);
+		distance = min(GameState.TRAVEL_GOAL, GameState.map.position);
 	
 	var progress = distance / GameState.TRAVEL_GOAL;
 	tween.tween_property(self, "position",

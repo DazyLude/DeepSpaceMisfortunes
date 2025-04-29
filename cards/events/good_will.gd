@@ -2,7 +2,7 @@ extends GenericEvent
 
 
 func _action() -> void:
-	GameState.round_n -= 3;
+	GameState.global_round -= 3;
 	GameState.ship.full_repair();
 
 

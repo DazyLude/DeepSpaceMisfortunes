@@ -10,13 +10,14 @@ func _action() -> void:
 	if not GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION):
 		speed /= 2;
 	
-	GameState.travel_distance += speed;
+	var move_command = MapState.MovementCommand.new(speed, 1, GameState.map.layer);
+	GameState.map.free_move(move_command);
 
 
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	var is_goal_reached = GameState.travel_distance >= GameState.TRAVEL_GOAL;
+	var is_goal_reached = GameState.map.position >= GameState.TRAVEL_GOAL;
 	
 	event_image = preload("res://assets/graphics/events/ev_progress.png");
 	

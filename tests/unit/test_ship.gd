@@ -9,7 +9,7 @@ func test_ship_creation() -> void:
 func test_empty_ship_behavior() -> void:
 	var ship = ShipState.new();
 	
-	assert_eq(ship.get_free_crewmates().size(), ShipState.default_crew_count);
+	assert_eq(ship.get_free_crewmates().size(), 0);
 	assert_eq(ship.get_total_damage(), 0);
 	
 	assert_true(ship.get_system_by_slot(0).is_dummy);
@@ -18,9 +18,13 @@ func test_empty_ship_behavior() -> void:
 	
 	var check = false;
 	for role_key in ShipState.SystemRole:
-		check = ship.is_role_ok(ShipState.SystemRole[role_key])\
-			or ship.is_role_manned(ShipState.SystemRole[role_key]);
+		var role = ShipState.SystemRole[role_key];
 		
+		var role_ok_or_manned = ship.is_role_ok(role) or ship.is_role_manned(role); # false
+		var role_has_no_broken_slot = ship.get_broken_system_slot_of_a_role(role) \
+			== ShipState.FREE_CREW_SLOT; # true
+		
+		check = role_ok_or_manned or not role_has_no_broken_slot;
 		if check:
 			break;
 	
@@ -32,15 +36,19 @@ func test_empty_ship_behavior() -> void:
 
 func test_crew_manning_and_resetting() -> void:
 	var ship = ShipState.new();
+	const crew_count = 3;
+	
+	for i in crew_count:
+		ship.add_crewmate(ShipState.Crewmate.new());
 	
 	ship.reset_crew();
-	assert_eq(ship.get_free_crewmates().size(), ShipState.default_crew_count);
+	assert_eq(ship.get_free_crewmates().size(), crew_count);
 	
 	ship.man_system(ship.get_free_crewmates()[0], 0);
-	assert_eq(ship.get_free_crewmates().size(), ShipState.default_crew_count - 1);
+	assert_eq(ship.get_free_crewmates().size(), crew_count - 1);
 	
 	ship.reset_crew();
-	assert_eq(ship.get_free_crewmates().size(), ShipState.default_crew_count);
+	assert_eq(ship.get_free_crewmates().size(), crew_count);
 
 
 func test_adding_systems() -> void:
@@ -130,6 +138,7 @@ func test_damaging_and_getting_systems() -> void:
 	ship.add_system_to_ship_inside(system_1);
 	ship.take_physical_damage(0, 1);
 	assert_false(ship.is_role_ok(ShipState.SystemRole.ENGINES));
+	assert_eq(ship.get_broken_system_slot_of_a_role(ShipState.SystemRole.ENGINES), 0);
 	
 	ship.add_system_to_ship_inside(system_2);
 	assert_true(ship.is_role_ok(ShipState.SystemRole.NAVIGATION));
@@ -230,6 +239,10 @@ func test_repair_full() -> void:
 
 func test_manning_and_normal_repair() -> void:
 	var ship = ShipState.new();
+	const crew_count = 3;
+	
+	for i in crew_count:
+		ship.add_crewmate(ShipState.Crewmate.new());
 	
 	var system_1 = ShipState.ShipSystem.new(5, 1);
 	system_1.add_role(ShipState.SystemRole.SHIELD);

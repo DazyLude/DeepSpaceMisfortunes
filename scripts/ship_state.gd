@@ -29,7 +29,6 @@ enum DamageType {
 };
 
 
-const default_crew_count : int = 3;
 const autorepair_strength : int = 1;
 const FREE_CREW_SLOT = -1;
 
@@ -199,6 +198,30 @@ func is_system_of_a_role(system: ShipSystem, role: SystemRole) -> bool:
 
 func is_system_ok(system: ShipSystem) -> bool:
 	return system.hp > 0 and system.hp >= system.functional_hp;
+
+
+func is_system_not_ok(system: ShipSystem) -> bool:
+	return not is_system_ok(system);
+
+
+func get_broken_system_slot_of_a_role(role: SystemRole) -> int:
+	var system_idxs := [];
+	
+	for idx in system_slots.size():
+		var system_ref = get_system_by_slot(idx);
+		if is_system_of_a_role(system_ref, role) and is_system_not_ok(system_ref):
+			system_idxs.push_back(idx);
+	
+	if system_idxs.size() == 0:
+		return FREE_CREW_SLOT;
+	
+	return system_idxs.pop_back();
+
+
+func has_role(role: SystemRole) -> bool:
+	var systems_of_a_role := system_slots.filter(is_system_of_a_role.bind(role));
+	
+	return systems_of_a_role.size() > 0;
 
 
 func is_role_ok(role: SystemRole) -> bool:

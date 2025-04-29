@@ -3,23 +3,37 @@ extends GenericEvent
 
 func _action() -> void:
 	var is_autopilot_ok := GameState.ship.is_role_ok(ShipState.SystemRole.AUTOPILOT);
+	
+	var is_engine_there := GameState.ship.has_role(ShipState.SystemRole.ENGINES);
 	var is_engine_ok := GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES);
+	
+	var is_hyper_drive_there := GameState.ship.has_role(ShipState.SystemRole.HYPERDRIVE);
 	var is_hyper_drive_ok :=  GameState.ship.is_role_ok(ShipState.SystemRole.HYPERDRIVE);
+	
+	var is_life_support_there := GameState.ship.has_role(ShipState.SystemRole.LIFE_SUPPORT);
 	var is_life_support_ok := GameState.ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT);
 	
-	if not is_autopilot_ok:
-		return;
-	
-	if not is_hyper_drive_ok:
-		GameState.ship.repair_system(ShipState.SystemRole.HYPERDRIVE);
-	elif not is_engine_ok:
-		GameState.ship.repair_system(ShipState.SystemRole.ENGINES);
-	elif not is_life_support_ok:
-		if GameState.map.layer > 0:
-			var depth_value := GameState.map.layer as int - 1;
-			depth_value = clampi(depth_value, 0, 3);
-			var move_command = MapState.MovementCommand.new(0, 0, depth_value);
-			GameState.map.free_move(move_command);
+	match is_autopilot_ok:
+		true when is_hyper_drive_there and not is_hyper_drive_ok:
+			var slot = GameState.ship.get_broken_system_slot_of_a_role(
+				ShipState.SystemRole.HYPERDRIVE
+			);
+			var strength = GameState.ship.autorepair_strength;
+			GameState.ship.repair_system_in_a_slot(slot, strength);
+			
+		true when is_engine_there and not is_engine_ok:
+			var slot = GameState.ship.get_broken_system_slot_of_a_role(
+				ShipState.SystemRole.ENGINES
+			);
+			var strength = GameState.ship.autorepair_strength;
+			GameState.ship.repair_system_in_a_slot(slot, strength);
+			
+		true when is_life_support_there and not is_life_support_ok:
+			if GameState.map.layer > 0:
+				var depth_value := GameState.map.layer as int - 1;
+				depth_value = clampi(depth_value, 0, 3);
+				var move_command = MapState.MovementCommand.new(0, 0, depth_value);
+				GameState.map.free_move(move_command);
 
 
 func _prepare() -> void:

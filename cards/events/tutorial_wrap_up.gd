@@ -14,6 +14,6 @@ func _prepare() -> void:
 	event_title = "Tutorial: End";
 	event_text = "That's it for the main stuff. Have fun :)";
 	
-	GameState.interrupt_phase_sequence = GameState.go_to_menu.bind(GameState.active_table);
+	GameState.callable_queue.push_back(GameState.go_to_menu.bind(GameState.active_table));
 	
 	super._ready();

@@ -10,7 +10,6 @@ func go_next() -> void:
 	GameState.ship.repair_systems();
 	var damage_left = GameState.ship.get_total_damage();
 	
-	await get_tree().create_timer(2.0).timeout;
 	block = false;
 	
 	if damage_left == 0:
@@ -43,6 +42,6 @@ func _prepare() -> void:
 	event_title = "Tutorial: Damage";
 	event_text = "I've thrown an asteroid at you ship, to damage it. Whatever I was aiming at, the hull blocked it. Now you can repair it.\nTo repair the system, put a crewmember in it. If the system is severely damaged, you can use more than one crew member, and they will work together.\nRepair the outer hull to full hp to continue.";
 	
-	GameState.interrupt_phase_sequence = go_next;
+	GameState.callable_queue.push_back(go_next);
 	
 	super._ready();

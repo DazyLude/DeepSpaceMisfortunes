@@ -1,32 +1,22 @@
 extends GenericEvent
 
 
-var course : int = -1;
-
-
 func course_chosen(_card, which: int) -> void:
-	course = which;
+	if which == -1:
+		GameState.move_command = null;
+	
+	var depth_value := GameState.map.layer as int + which - 1;
+	depth_value = clampi(depth_value, 0, 3);
+	
+	GameState.move_command = MapState.MovementCommand.new(GameState.get_speed(), 1, depth_value);
 
 
 func course_unchosen(_card) -> void:
-	course = -1;
-
-
-func _can_play() -> bool:
-	return course != -1;
+	course_chosen(_card, -1);
 
 
 func _action() -> void:
-	if course == -1:
-		return;
-	
-	var depth_value := GameState.map.layer as int + course - 1;
-	depth_value = clampi(depth_value, 0, 3);
-	
-	var move_command = MapState.MovementCommand.new(0, 0, depth_value);
-	GameState.map.free_move(move_command);
-	
-	course = -1;
+	pass;
 
 
 func _prepare() -> void:

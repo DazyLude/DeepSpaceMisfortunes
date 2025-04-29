@@ -22,13 +22,12 @@ signal victory(int);
 enum RoundPhase {
 	STARTUP,
 	TUTORIAL,
-	
-	GAME_START,
-	PREPARATION,
-	EXECUTION,
-	EVENT,
-	SHIP_ACTION,
 	ENDGAME,
+	GAME_START,
+	
+	REPAIRS,
+	NAVIGATION,
+	PLAY_EVENTS_QUEUE,
 };
 
 
@@ -58,9 +57,9 @@ var ingot_count : int = 0;
 
 var active_table : Table = null;
 
-
-var event_pools : Dictionary[MapState.HyperspaceDepth, EventPool] = {};
-var interrupt_phase_sequence = null;
+var move_command : MapState.MovementCommand = null;
+var event_queue : Array[EventLoader.EventID] = [];
+var callable_queue : Array[Callable] = [];
 
 var life_support_failure : bool = false;
 
@@ -98,10 +97,13 @@ func reset_tokens() -> void:
 
 
 func advance_phase() -> void:
-	var should_interrupt : bool = interrupt_phase_sequence != null \
-		and typeof(interrupt_phase_sequence) == TYPE_CALLABLE;
-	
 	match current_phase:
+		_ when not callable_queue.is_empty():
+			callable_queue.pop_front().call();
+		
+		_ when not event_queue.is_empty():
+			play_event(event_queue.pop_front());
+		
 		RoundPhase.STARTUP when active_table.current_event.new_game_selected:
 			new_game();
 			new_event.emit(null);
@@ -126,55 +128,50 @@ func advance_phase() -> void:
 			new_event.emit(null);
 			clear_tokens.emit();
 		
-		_ when map.is_at_finish_wrong_layer():
-			clear_tokens.emit();
-			play_event(EventLoader.EventID.VICTORY);
-		
-		_ when should_interrupt:
-			interrupt_phase_sequence.call_deferred();
-			interrupt_phase_sequence = null;
-		
-		RoundPhase.SHIP_ACTION, RoundPhase.GAME_START:
-			current_phase = RoundPhase.PREPARATION;
-			ship.reset_crew();
-			play_event(EventLoader.EventID.SHIP_NAVIGATION);
-		
-		RoundPhase.PREPARATION when active_table.current_event._can_play():
-			current_phase = RoundPhase.EXECUTION;
-			
-			ship.repair_systems();
-			play_event(EventLoader.EventID.PROGRESS_REPORT);
-		
-		RoundPhase.PREPARATION:
-			ping_tokens.emit(GameState.TokenType.SHIP_NAVIGATION);
-			return;
-		
-		RoundPhase.EXECUTION:
-			current_phase = RoundPhase.EVENT;
-			new_event.emit(map.pull_random_event().unwrap());
-		
-		RoundPhase.EVENT when active_table.current_event._can_play():
-			current_phase = RoundPhase.SHIP_ACTION;
-			
-			if not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT) and life_support_failure:
-				play_event(EventLoader.EventID.GAMEOVER);
-			elif not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT):
-				life_support_failure = true;
-				play_event(EventLoader.EventID.SHIP_ACTION);
-			else:
-				life_support_failure = false;
-				play_event(EventLoader.EventID.SHIP_ACTION);
-			
+		RoundPhase.PLAY_EVENTS_QUEUE, RoundPhase.GAME_START:
 			map.advance_rounds();
 			global_round += 1;
+			current_phase = RoundPhase.REPAIRS;
+			run_repairs_phase();
 		
-		RoundPhase.EVENT:
-			ping_tokens.emit(GameState.TokenType.SHIP_NAVIGATION);
-			ping_tokens.emit(GameState.TokenType.INGOT);
-			return;
+		RoundPhase.REPAIRS:
+			current_phase = RoundPhase.NAVIGATION;
+			run_navigation_phase();
+		
+		RoundPhase.NAVIGATION:
+			current_phase = RoundPhase.PLAY_EVENTS_QUEUE;
+			run_events_phase();
 	
 	reset_tokens.call_deferred();
 	new_phase.emit(current_phase);
+
+
+func run_repairs_phase() -> void:
+	ship.reset_crew();
+	play_event(EventLoader.EventID.ASSIGN_REPAIRS);
+
+
+func run_navigation_phase() -> void:
+	self.move_command = null;
+	play_event(EventLoader.EventID.SHIP_NAVIGATION);
+
+
+func run_events_phase() -> void:
+	ship.repair_systems();
+	
+	if not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT) and life_support_failure:
+		play_event(EventLoader.EventID.GAMEOVER);
+	elif not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT):
+		life_support_failure = true;
+	
+	var scheduled_events := map.move_and_draw_scheduled_events(self.move_command);
+	
+	if ship.is_role_ok(ShipState.SystemRole.AUTOPILOT):
+		scheduled_events.push_front(EventLoader.EventID.SHIP_ACTION);
+	
+	var random_event = map.pull_random_event();
+	if random_event.is_ok():
+		new_event.emit(random_event.unwrap());
 
 
 func play_event(id: EventLoader.EventID) -> void:
@@ -187,27 +184,27 @@ func go_to_menu(table: Table) -> void:
 	
 	active_table = table;
 	current_phase = RoundPhase.STARTUP;
+	
 	play_event.call_deferred(EventLoader.EventID.MAIN_MENU);
 	reset_tokens.call_deferred();
 
 
 func new_game() -> void:
 	ship = ShipLibrary.get_ship_by_name("Standard");
+	ship.rng_ref = self.rng;
+	
 	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
 	map.add_pool(MapState.HyperspaceDepth.NONE, PoolLibrary.get_event_pool_by_name("Space"));
 	map.add_pool(MapState.HyperspaceDepth.SHALLOW, PoolLibrary.get_event_pool_by_name("Shallow"));
 	map.add_pool(MapState.HyperspaceDepth.NORMAL, PoolLibrary.get_event_pool_by_name("Normal"));
 	map.add_pool(MapState.HyperspaceDepth.DEEP, PoolLibrary.get_event_pool_by_name("Deep"));
+	map.rng_ref = self.rng;
 	
 	current_phase = RoundPhase.GAME_START;
 	global_round = 0;
 	score = 0;
 	ingot_count = 10;
 	life_support_failure = false;
-	interrupt_phase_sequence = null;
-	
-	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
-	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();
 	
 	advance_phase.call_deferred();
 

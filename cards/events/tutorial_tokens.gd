@@ -52,6 +52,6 @@ func _prepare() -> void:
 	var idx2 = setup_event_input(GameState.TokenType.INGOT, "put ingot here");
 	setup_event_signals(idx2, set_ingot, unset_ingot);
 	
-	GameState.interrupt_phase_sequence = go_next;
+	GameState.callable_queue.push_back(go_next);
 	
 	super._ready();

@@ -119,6 +119,9 @@ func _init(starting_layer: HyperspaceDepth, run_distance: float) -> void:
 	self.enter_layer = starting_layer;
 	self.position = 0.0;
 	self.start_to_finish_distance = run_distance;
+	
+	for layer in HyperspaceDepth.values():
+		layers_event_schedule[layer] = EventSchedule.new();
 
 
 class MovementCommand extends RefCounted:

@@ -54,6 +54,6 @@ func _prepare() -> void:
 	var idx2 = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "go with him");
 	setup_event_signals(idx2, leave, dond);
 	
-	GameState.interrupt_phase_sequence = _go_next;
+	GameState.callable_queue.push_back(_go_next);
 	
 	super._ready();

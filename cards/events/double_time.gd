@@ -23,8 +23,10 @@ func _prepare() -> void:
 	if GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		event_text += " But at least you got closer to your destination!"
 	
-	GameState.interrupt_phase_sequence = func():
-		var event = GameState.map.pull_random_event().unwrap();
-		GameState.new_event.emit(event);
+	GameState.callable_queue.push_back(
+		func():
+			var event = GameState.map.pull_random_event().unwrap();
+			GameState.new_event.emit(event);
+	);
 	
 	super._ready();

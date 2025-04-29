@@ -21,7 +21,11 @@ enum EventID {
 	TUTORIAL_END,
 	
 	# default gameplay loop events
+	ASSIGN_REPAIRS,
 	SHIP_NAVIGATION,
+	
+	NO_EVENTS,
+	
 	PROGRESS_REPORT,
 	SHIP_ACTION,
 	
@@ -75,8 +79,11 @@ const event_load_params : Dictionary[EventID, String] = {
 	EventID.TUTORIAL_END: "res://cards/events/tutorial_wrap_up.gd",
 	
 	EventID.SHIP_NAVIGATION: "res://cards/events/ship_navigation.gd",
+	EventID.ASSIGN_REPAIRS: "",
+	
 	EventID.PROGRESS_REPORT: "res://cards/events/ship_progress.gd",
 	EventID.SHIP_ACTION: "res://cards/events/ship_action.gd",
+	EventID.NO_EVENTS: "",
 	
 	EventID.GAMEOVER: "res://cards/events/gameover.gd",
 	EventID.VICTORY: "res://cards/events/victory.gd",

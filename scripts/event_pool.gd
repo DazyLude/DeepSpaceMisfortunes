@@ -2,6 +2,12 @@ extends RefCounted
 class_name EventPool
 
 
+enum EventLimitType {
+	NOT_LIMITED,
+	LIMITED,
+}
+
+
 var events : Array[EventLoader.EventID];
 var weights : Array[float];
 
@@ -40,7 +46,7 @@ func reduce_limited_events_weight(event_id: EventLoader.EventID) -> void:
 		self.set_event_weight(event_id, max(0.0, weight - 1.0));
 
 
-func pull_random_event(rng_ref: RandomNumberGenerator = null) -> GenericEvent:
+func pull_random_event(rng_ref: RandomNumberGenerator = null) -> Node2D:
 	if rng_ref == null:
 		push_warning(
 			"Creating placeholder random number generator.\n",
@@ -50,10 +56,10 @@ func pull_random_event(rng_ref: RandomNumberGenerator = null) -> GenericEvent:
 	var event_idx := rng_ref.rand_weighted(weights);
 	var event_id := events[event_idx];
 	
-	var event = EventLoader.get_event_instance(event_id);
+	var event := EventLoader.get_event_instance(event_id);
 	
-	match event.is_consumed:
-		GenericEvent.LimitedType.LIMITED:
+	match event.get(&"is_consumed"):
+		EventLimitType.LIMITED:
 			self.reduce_limited_events_weight(event_id);
 	
 	return event;

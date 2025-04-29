@@ -3,7 +3,7 @@ extends Node
 
 signal new_phase(round_phase);
 
-signal new_event(GenericEvent);
+signal new_event(Node2D);
 
 signal clear_tokens;
 signal new_token(TokenType, RefCounted);

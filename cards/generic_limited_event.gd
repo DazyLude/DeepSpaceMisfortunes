@@ -2,4 +2,4 @@ extends GenericEvent
 
 
 func _init() -> void:
-	is_consumed = LimitedType.LIMITED;
+	is_consumed = EventPool.EventLimitType.LIMITED;

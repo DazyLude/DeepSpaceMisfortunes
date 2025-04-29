@@ -2,12 +2,6 @@ extends Node2D
 class_name GenericEvent
 
 
-enum LimitedType {
-	NOT_LIMITED,
-	LIMITED,
-};
-
-
 var event_bg_per_layer : Dictionary = {
 	MapState.HyperspaceDepth.NONE : preload("res://assets/graphics/event.png"),
 	MapState.HyperspaceDepth.SHALLOW : preload("res://assets/graphics/event2.png"),
@@ -39,7 +33,7 @@ var slots : Dictionary = {
 var event_callables : Array = [null, null, null, null, null, null];
 var callable_reset : Array = [];
 
-var is_consumed : LimitedType = LimitedType.NOT_LIMITED;
+var is_consumed : EventPool.EventLimitType = EventPool.EventLimitType.NOT_LIMITED;
 
 
 func reset_event_inputs() -> void:

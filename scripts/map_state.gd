@@ -11,7 +11,7 @@ enum HyperspaceDepth {
 };
 
 
-var round : int;
+var round_n : int;
 var layer : HyperspaceDepth;
 var position : float;
 
@@ -60,15 +60,15 @@ func should_draw_roaming_then_roam(marker: MapMarker, by: float) -> bool:
 
 
 func should_draw_stationary(
-	marker: MapMarker,
-	travel_from: float,
-	travel_to: float,
+	_marker: MapMarker,
+	_travel_from: float,
+	_travel_to: float,
 ) -> bool:
 	return false;
 
 
 func advance_rounds() -> void:
-	round += 1;
+	round_n += 1;
 
 
 func free_move(move_by: MovementCommand) -> void:
@@ -86,8 +86,8 @@ func move_and_draw_scheduled_events(move_by: MovementCommand) -> Array[EventLoad
 	
 	free_move(move_by);
 	
-	events.append_array(layers_event_schedule[layer].get_rounds_schedule(round));
-	events.append_array(global_event_schedule.get_rounds_schedule(round));
+	events.append_array(layers_event_schedule[layer].get_rounds_schedule(round_n));
+	events.append_array(global_event_schedule.get_rounds_schedule(round_n));
 	
 	return events;
 
@@ -107,21 +107,21 @@ func pull_random_event() -> Result:
 	return Result.wrap_ok(event);
 
 
-func add_pool(layer: HyperspaceDepth, pool: EventPool) -> MapState:
-	layer_pools[layer] = pool;
+func add_pool(new_layer: HyperspaceDepth, pool: EventPool) -> MapState:
+	layer_pools[new_layer] = pool;
 	
 	return self; 
 
 
 func _init(starting_layer: HyperspaceDepth, run_distance: float) -> void:
-	self.round = 0;
+	self.round_n = 0;
 	self.layer = starting_layer;
 	self.enter_layer = starting_layer;
 	self.position = 0.0;
 	self.start_to_finish_distance = run_distance;
 	
-	for layer in HyperspaceDepth.values():
-		layers_event_schedule[layer] = EventSchedule.new();
+	for i_layer in HyperspaceDepth.values():
+		layers_event_schedule[i_layer] = EventSchedule.new();
 
 
 class MovementCommand extends RefCounted:
@@ -172,19 +172,19 @@ class MapMarker extends RefCounted:
 			else:
 				self._to = to;
 			
-			self.__encounter_probability = clampf(encounter_probability, 0.0, 1.0);
+			self._encounter_probability = clampf(encounter_probability, 0.0, 1.0);
 
 ## a simple object to bypass nested typed collection limitation
 class EventSchedule extends RefCounted:
 	var _schedule : Dictionary[int, Array];
 	
 	
-	func get_rounds_schedule(round: int) -> Array[EventLoader.EventID]:
-		return Array(_schedule.get_or_add(round, []), TYPE_INT, &"", null);
+	func get_rounds_schedule(round_n: int) -> Array[EventLoader.EventID]:
+		return Array(_schedule.get_or_add(round_n, []), TYPE_INT, &"", null);
 	
 	
-	func add_event(round: int, event: EventLoader.EventID) -> void:
-		_schedule.get_or_add(round, []).push_back(event);
+	func add_event(round_n: int, event: EventLoader.EventID) -> void:
+		_schedule.get_or_add(round_n, []).push_back(event);
 
 
 class MapEffect extends RefCounted:

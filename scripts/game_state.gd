@@ -200,10 +200,10 @@ func new_game() -> void:
 	life_support_failure = false;
 	interrupt_phase_sequence = null;
 	
-	event_pools[MapState.HyperspaceDepth.NONE] = EventPool.get_space_pool();
-	event_pools[MapState.HyperspaceDepth.SHALLOW] = EventPool.get_shallow_pool();
-	event_pools[MapState.HyperspaceDepth.NORMAL] = EventPool.get_normal_pool();
-	event_pools[MapState.HyperspaceDepth.DEEP] = EventPool.get_deep_pool();
+	event_pools[MapState.HyperspaceDepth.NONE] = PoolLibrary.get_event_pool_by_name("Space");
+	event_pools[MapState.HyperspaceDepth.SHALLOW] = PoolLibrary.get_event_pool_by_name("Shallow");
+	event_pools[MapState.HyperspaceDepth.NORMAL] = PoolLibrary.get_event_pool_by_name("Normal");
+	event_pools[MapState.HyperspaceDepth.DEEP] = PoolLibrary.get_event_pool_by_name("Deep");
 	
 	#event_pools[HyperspaceDepth.NONE] = EventPool.get_test_pool();
 	#event_pools[HyperspaceDepth.SHALLOW] = EventPool.get_test_pool();

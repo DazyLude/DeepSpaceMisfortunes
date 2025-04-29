@@ -2,17 +2,26 @@ extends GutTest
 
 
 func library_routine(keys : Array, getter : Callable) -> void:
+	var diff_object_check : bool = true;
+	var same_values_check : bool = true;
+	var comparison_error : String = "";
+	
 	for key in keys:
-		var system_a = getter.call(key);
-		var system_b = getter.call(key);
+		var prototype_a = getter.call(key);
+		var prototype_b = getter.call(key);
 		
-		assert_false(system_a == system_b, "library returns different objects");
-		var comparison := Utils.expect_objects_properties_equal(system_a, system_b);
+		diff_object_check = not (prototype_a == prototype_b);
 		
-		if comparison.is_ok():
-			assert_true(comparison.unwrap(), "which have same property values");
-		else:
-			assert_true(false, comparison.get_error());
+		var comparison := Utils.expect_objects_properties_equal(prototype_a, prototype_b);
+		if not comparison.is_ok():
+			same_values_check = false;
+			comparison_error = comparison.get_error();
+		
+		if not (diff_object_check and same_values_check):
+			break;
+	
+	assert_true(diff_object_check, "library returns different objects");
+	assert_true(same_values_check, "which have same property values: " + comparison_error);
 
 
 func test_ship_systems_library() -> void:
@@ -21,3 +30,7 @@ func test_ship_systems_library() -> void:
 
 func test_ship_library() -> void:
 	library_routine(ShipLibrary.library.keys(), ShipLibrary.get_ship_by_name);
+
+
+func test_pool_library() -> void:
+	library_routine(PoolLibrary.library.keys(), PoolLibrary.get_event_pool_by_name);

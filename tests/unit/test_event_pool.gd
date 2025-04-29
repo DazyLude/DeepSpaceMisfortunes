@@ -5,8 +5,19 @@ func ne_null(value: Variant) -> bool:
 	return value != null;
 
 
-func test_event_loader_load_all() -> void:
-	var all_static_events := EventLoader.load_all();
+func load_all_events() -> Dictionary[EventLoader.EventID, Node2D]:
+	var event_instances : Dictionary[EventLoader.EventID, Node2D];
+	
+	var tested_events := EventLoader.EventID.values();
+	
+	for event_id in tested_events:
+		event_instances[event_id] = EventLoader.get_event_instance(event_id);
+	
+	return event_instances;
+
+
+func test_load_all() -> void:
+	var all_static_events := load_all_events();
 	
 	assert_true(all_static_events.values().all(ne_null));
 	
@@ -28,10 +39,9 @@ func test_event_loader_load_all() -> void:
 
 # the following test is made for code coverage by the compiler
 # it also produces an ungodly amount of orphans
-
 #func test_run_all_events() -> void:
 	#GameState.new_game();
-	#var all_static_events := EventLoader.load_all();
+	#var all_static_events := load_all_events();
 	#
 	#var iterators : Array = [];
 	#
@@ -122,11 +132,11 @@ func test_event_pool_weight_reduced() -> void:
 	
 	var pool := EventPool.new();
 	pool.add_event_with_weight(test_for_event, 2.0);
-	pool.pull_random_event().free();
+	pool.pull_random_event(RandomNumberGenerator.new()).free();
 	
 	assert_eq(pool.get_event_weight(test_for_event), 1.0);
 	
-	pool.pull_random_event().free();
+	pool.pull_random_event(RandomNumberGenerator.new()).free();
 	
 	assert_eq(pool.get_event_weight(test_for_event), 0.0);
 
@@ -139,7 +149,7 @@ func test_event_pool_nonnegative_weight() -> void:
 	assert_eq(pool.get_event_weight(test_for_event), 0.0);
 	
 	pool.add_event_with_weight(test_for_event, 0.5);
-	pool.pull_random_event().free();
+	pool.pull_random_event(RandomNumberGenerator.new()).free();
 	
 	assert_eq(pool.get_event_weight(test_for_event), 0.0);
 	
@@ -167,7 +177,7 @@ func test_event_zero_weight_pull() -> void:
 	
 	var pulled_zero_weight : bool = false;
 	for i in 256: # with this amount of pulls, if doesn't fail it won't matter for the player.
-		var event = pool.pull_random_event();
+		var event = pool.pull_random_event(RandomNumberGenerator.new());
 		
 		pulled_zero_weight = not (event.get_script() == event_loader_event.get_script());
 		if pulled_zero_weight: break;

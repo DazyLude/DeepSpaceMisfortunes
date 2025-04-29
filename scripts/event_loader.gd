@@ -103,9 +103,9 @@ const event_load_params : Dictionary[EventID, String] = {
 };
 
 
-static func get_event_instance(event_id: EventID) -> GenericEvent:
+static func get_event_instance(event_id: EventID) -> Node2D:
 	var path = event_load_params.get(event_id, "");
-	var event : GenericEvent = null;
+	var event : Node2D = null;
 	
 	if ResourceLoader.exists(path):
 		match ResourceLoader.load(path):
@@ -121,34 +121,23 @@ static func get_event_instance(event_id: EventID) -> GenericEvent:
 	return event;
 
 
-static func load_from_packed_scene(event_scene: PackedScene) -> GenericEvent:
+static func load_from_packed_scene(event_scene: PackedScene) -> Node2D:
 	if event_scene == null:
 		push_error("event_scene is null"); 
 		return null;
 	
 	var event = event_scene.instantiate();
 	
-	if not event is GenericEvent:
+	if not event is Node2D:
 		event.free();
-		push_error("resource is not a generic event");
+		push_error("resource is not a Node2D");
 		return null;
 
 	return event;
 
 
-static func load_from_script(event_script: Script) -> GenericEvent:
+static func load_from_script(event_script: Script) -> Node2D:
 	var scene : Node2D = ResourceLoader.load("res://cards/generic_event.tscn").instantiate();
 	scene.set_script(event_script);
 	
 	return scene;
-
-
-static func load_all() -> Dictionary[EventID, GenericEvent]:
-	var event_instances : Dictionary[EventID, GenericEvent];
-	
-	var tested_events := EventID.values();
-	
-	for event_id in tested_events:
-		event_instances[event_id] = get_event_instance(event_id);
-	
-	return event_instances;

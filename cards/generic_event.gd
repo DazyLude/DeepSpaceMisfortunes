@@ -1,4 +1,4 @@
-extends GenericCard
+extends Node2D
 class_name GenericEvent
 
 
@@ -96,10 +96,6 @@ func _action() -> void:
 ## called every time the scene instance is requested via EventLoader
 func _prepare() -> void:
 	pass;
-
-
-func _init() -> void:
-	can_have_shadow = false;
 
 
 func _ready() -> void:

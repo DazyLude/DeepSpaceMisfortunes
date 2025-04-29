@@ -40,8 +40,14 @@ func reduce_limited_events_weight(event_id: EventLoader.EventID) -> void:
 		self.set_event_weight(event_id, max(0.0, weight - 1.0));
 
 
-func pull_random_event() -> GenericEvent:
-	var event_idx := GameState.rng.rand_weighted(weights);
+func pull_random_event(rng_ref: RandomNumberGenerator = null) -> GenericEvent:
+	if rng_ref == null:
+		push_warning(
+			"Creating placeholder random number generator.\n",
+		);
+		rng_ref = RandomNumberGenerator.new();
+	
+	var event_idx := rng_ref.rand_weighted(weights);
 	var event_id := events[event_idx];
 	
 	var event = EventLoader.get_event_instance(event_id);

@@ -10,12 +10,15 @@ static var library : Dictionary[String, ShipState] = {
 		.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Autopilot"))
 		.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("InnerHull"))
 		.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("LifeSupport"))
-		.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Navigation")),
+		.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Navigation"))
+		.add_crewmate(ShipState.Crewmate.new())
+		.add_crewmate(ShipState.Crewmate.new())
+		.add_crewmate(ShipState.Crewmate.new()),
 }
 
 
 static func get_ship_by_name(system_name: String) -> ShipState:
-	var ship : ShipState = library.get(system_name, ShipState.ShipSystem.get_dummy());
+	var ship : ShipState = library.get(system_name, ShipState.new());
 	return ship.clone();
 
 

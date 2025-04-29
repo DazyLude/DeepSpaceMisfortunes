@@ -295,11 +295,6 @@ func clone() -> ShipState:
 	return new_ship;
 
 
-func _init() -> void:
-	for i in default_crew_count:
-		add_crewmate(Crewmate.new());
-
-
 class ShipSystem extends RefCounted:
 	var hp : int = 0;
 	var max_hp : int = 0;

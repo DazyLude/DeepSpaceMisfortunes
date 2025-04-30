@@ -9,8 +9,8 @@ var zone_to_system_slot : Dictionary[GenericTableZone, int] = {
 	$EnginesSlot: 2,
 	$AutopilotSlot: 3,
 	$InnerHullSlot: 4,
-	$NavigationSlot: 5,
-	$LifeSupportSlot: 6,
+	$LifeSupportSlot: 5,
+	$NavigationSlot: 6,
 };
 
 @onready
@@ -31,8 +31,8 @@ var hp_per_system_slot : Dictionary[int, Node] = {
 	2: $EnginesSlot/HP,
 	3: $AutopilotSlot/HP,
 	4: $InnerHullSlot/HP, 
-	5: $NavigationSlot/HP,
-	6: $LifeSupportSlot/HP,
+	5: $LifeSupportSlot/HP,
+	6: $NavigationSlot/HP,
 }
 
 

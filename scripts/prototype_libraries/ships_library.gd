@@ -13,7 +13,8 @@ static var library : Dictionary[String, ShipState] = {
 		.add_system_to_ship_inside(ShipSystemLibrary.get_ship_system_by_name("Navigation"))
 		.add_crewmate(ShipState.Crewmate.new())
 		.add_crewmate(ShipState.Crewmate.new())
-		.add_crewmate(ShipState.Crewmate.new()),
+		.add_crewmate(ShipState.Crewmate.new())
+		.set_renderer(preload("res://scenes/scene_elements/ship.tscn")),
 }
 
 

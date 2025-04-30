@@ -11,16 +11,11 @@ signal new_phase(round_phase);
 # (multiple table nodes may cause issues as well with dangling pointers)
 # that picks up this reference, and then frees it when the event is over.
 signal new_event(Node2D);
+signal new_ship(ShipState);
 
 signal clear_tokens;
 signal new_token(TokenType, RefCounted);
 signal ping_tokens(TokenType);
-
-signal system_repaired(int);
-signal system_damaged(int);
-signal system_manned;
-
-signal ship_reset;
 
 signal gameover(int);
 signal victory(int);
@@ -196,6 +191,7 @@ func go_to_menu() -> void:
 func new_game() -> void:
 	ship = ShipLibrary.get_ship_by_name("Standard");
 	ship.rng_ref = self.rng;
+	new_ship.emit(ship);
 	
 	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
 	map.add_pool(MapState.HyperspaceDepth.NONE, PoolLibrary.get_event_pool_by_name("Space"));

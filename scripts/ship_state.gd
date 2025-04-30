@@ -45,6 +45,15 @@ var rng_ref : RandomNumberGenerator = null :
 		return rng_ref;
 
 
+var renderer_scene : PackedScene = null;
+
+
+func set_renderer(scene: PackedScene) -> ShipState:
+	renderer_scene = scene;
+	
+	return self;
+
+
 func get_total_damage() -> int:
 	var total : int = 0;
 	
@@ -313,6 +322,7 @@ func clone() -> ShipState:
 	for crewmate in ships_crew:
 		new_ship.add_crewmate(crewmate.clone());
 	
+	new_ship.renderer_scene = self.renderer_scene;
 	new_ship.rng_ref = self.rng_ref;
 	
 	return new_ship;

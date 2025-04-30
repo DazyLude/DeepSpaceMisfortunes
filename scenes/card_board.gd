@@ -15,6 +15,7 @@ var active_zones : Dictionary[GenericTableZone, GenericCard] = {};
 var token_stacks : Array[TokenStack] = [];
 
 var current_event : GenericEvent = null;
+var ship : Ship = null;
 
 var picked_card_ref : GenericCard = null;
 var grabbed_offset := Vector2();
@@ -263,6 +264,24 @@ func despawn_event() -> void:
 		current_event = null;
 
 
+func spawn_ship(ship_state: ShipState) -> void:
+	despawn_ship()
+	
+	ship = ship_state.renderer_scene.instantiate();
+	
+	if ship != null:
+		ship.position = Vector2(420.0, 400.0);
+		$Ship.add_child(ship);
+		for zone in ship.get_active_zones():
+			add_active_zone(zone);
+
+
+func despawn_ship() -> void:
+	if ship != null:
+		$Ship.remove_child(ship);
+		ship.queue_free();
+
+
 func try_to_advance_phase() -> void:
 	if not grace:
 		GameState.advance_phase();
@@ -279,13 +298,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func _ready() -> void:
 	GameState.go_to_menu();
 	
-	var ship : Ship = $Ship;
-	for zone in ship.get_active_zones():
-		add_active_zone(zone);
-	
 	$Button.pressed.connect(try_to_advance_phase);
 	
 	GameState.new_event.connect(spawn_event);
+	GameState.new_ship.connect(spawn_ship);
 	GameState.new_token.connect(spawn_token);
+	
 	GameState.clear_tokens.connect(despawn_all_tokens);
 	GameState.ping_tokens.connect(shake_tokens, CONNECT_DEFERRED);

@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://cjfjsxsu1ecg2"]
+[gd_scene load_steps=8 format=3 uid="uid://cjfjsxsu1ecg2"]
 
 [ext_resource type="Script" uid="uid://bygc27tiilr0t" path="res://scenes/card_board.gd" id="1_qs8yt"]
-[ext_resource type="PackedScene" uid="uid://cqtida6kfefcr" path="res://scenes/scene_elements/ship.tscn" id="2_mpg2q"]
 [ext_resource type="Texture2D" uid="uid://b5h4gcq38ua8j" path="res://assets/graphics/CONTINUE1.png" id="3_7wiys"]
 [ext_resource type="PackedScene" uid="uid://l6x1r2h3ia8x" path="res://scenes/scene_elements/progress_bar.tscn" id="3_o0c05"]
 [ext_resource type="Texture2D" uid="uid://drnpvp8rxg2tu" path="res://assets/graphics/CONTINUE2.png" id="4_p0b01"]
@@ -12,8 +11,7 @@
 [node name="CardBoard" type="Node2D"]
 script = ExtResource("1_qs8yt")
 
-[node name="Ship" parent="." instance=ExtResource("2_mpg2q")]
-position = Vector2(420, 400)
+[node name="Ship" type="Node2D" parent="."]
 
 [node name="Events" type="Node2D" parent="."]
 

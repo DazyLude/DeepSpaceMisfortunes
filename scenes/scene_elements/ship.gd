@@ -162,12 +162,12 @@ func _ready() -> void:
 	GameState.new_phase.connect(update_warning_icon);
 	$Warning.hide();
 	
-	GameState.system_damaged.connect(on_system_damaged);
-	GameState.system_repaired.connect(on_system_repaired);
-	GameState.system_manned.connect(update_manned_icons);
+	GameState.ship.system_damaged.connect(on_system_damaged);
+	GameState.ship.system_repaired.connect(on_system_repaired);
+	GameState.ship.system_manned.connect(update_manned_icons);
 	
-	GameState.system_damaged.connect(update_hp_display);
-	GameState.system_repaired.connect(update_hp_display);
+	GameState.ship.system_damaged.connect(update_hp_display);
+	GameState.ship.system_repaired.connect(update_hp_display);
 	GameState.new_phase.connect(update_hp_display);
 	
 	green_gradient.gradient = preload("res://assets/green_gradient.tres");

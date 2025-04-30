@@ -3,25 +3,25 @@ class_name ShipSystemLibrary
 
 
 static var library : Dictionary[String, ShipState.ShipSystem] = {
-	"Navigation": ShipState.ShipSystem.new(1, 1)
+	"Navigation": ShipState.ShipSystem.new(3, 3)
 		.set_name("navigation_system")
 		.add_role(ShipState.SystemRole.NAVIGATION),
-	"LifeSupport": ShipState.ShipSystem.new(1, 1)
+	"LifeSupport": ShipState.ShipSystem.new(3, 3)
 		.set_name("lifesupport_system")
 		.add_role(ShipState.SystemRole.LIFE_SUPPORT),
-	"Autopilot": ShipState.ShipSystem.new(1, 1)
+	"Autopilot": ShipState.ShipSystem.new(4, 4)
 		.set_name("autopilot_system")
 		.add_role(ShipState.SystemRole.AUTOPILOT),
-	"Engines": ShipState.ShipSystem.new(1, 1)
+	"Engines": ShipState.ShipSystem.new(3, 3)
 		.set_name("engines_system")
 		.add_role(ShipState.SystemRole.ENGINES),
-	"Hyperdrive": ShipState.ShipSystem.new(1, 1)
+	"Hyperdrive": ShipState.ShipSystem.new(3, 3)
 		.set_name("hyperdrive_system")
 		.add_role(ShipState.SystemRole.HYPERDRIVE),
-	"OuterHull": ShipState.ShipSystem.new(5, 1)
+	"OuterHull": ShipState.ShipSystem.new(8, 1)
 		.set_name("outer_hull_system")
 		.add_role(ShipState.SystemRole.ARMOR),
-	"InnerHull": ShipState.ShipSystem.new(3, 1)
+	"InnerHull": ShipState.ShipSystem.new(5, 1)
 		.set_name("inner_hull_system")
 		.add_role(ShipState.SystemRole.ARMOR)
 		.add_role(ShipState.SystemRole.SHIELD),

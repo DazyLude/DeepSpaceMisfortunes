@@ -8,8 +8,6 @@ func _action() -> void:
 func _prepare() -> void:
 	reset_event_inputs();
 	
-	var is_goal_reached = GameState.map.position >= GameState.map.start_to_finish_distance;
-	
 	event_image = preload("res://assets/graphics/events/ev_progress.png");
 	
 	if not GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):

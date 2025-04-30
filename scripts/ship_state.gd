@@ -66,6 +66,8 @@ func get_total_damage() -> int:
 ## physical damage targets a slot, and the outer systems with "ARMOR" role adsorb the damage they can.
 ## physical damage pierces the ship until it reaches the targeted system, or is depleted on the way.
 func take_physical_damage(slot: int, damage: int) -> void:
+	print("physical %d to %s" % [damage, get_system_by_slot(slot).name]);
+	
 	var outer_armor_slots : Array[int] = [];
 	for idx in slot:
 		var outer_system = get_system_by_slot(idx);
@@ -102,6 +104,8 @@ func take_physical_damage(slot: int, damage: int) -> void:
 
 ## electric damage targets a slot, but is blocked by the outermost system with "SHIELD" role
 func take_electric_damage(slot: int, damage: int) -> void:
+	print("electric %d to %s" % [damage, get_system_by_slot(slot).name]);
+	
 	var damaged_slot = slot;
 	
 	for idx in slot:

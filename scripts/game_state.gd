@@ -13,6 +13,7 @@ signal new_phase(round_phase);
 signal new_event(Node2D);
 signal new_ship(ShipState);
 signal new_move_command;
+signal new_map;
 
 signal clear_tokens;
 signal new_token(TokenType, RefCounted);
@@ -185,7 +186,7 @@ func play_event(id: EventLoader.EventID) -> void:
 
 func go_to_menu() -> void:
 	new_ship.emit(null);
-	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
+	new_map.emit();
 	
 	current_phase = RoundPhase.PLAY_EVENTS_QUEUE;
 	
@@ -204,8 +205,10 @@ func new_game() -> void:
 	map.add_pool(MapState.HyperspaceDepth.NORMAL, PoolLibrary.get_event_pool_by_name("Normal"));
 	map.add_pool(MapState.HyperspaceDepth.DEEP, PoolLibrary.get_event_pool_by_name("Deep"));
 	map.rng_ref = self.rng;
-	
 	map.add_exit(MapState.HyperspaceDepth.NONE, EventLoader.EventID.VICTORY);
+	
+	new_map.emit();
+	
 	
 	current_phase = RoundPhase.PLAY_EVENTS_QUEUE;
 	global_round = 0;

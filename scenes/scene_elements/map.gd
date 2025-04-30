@@ -1,13 +1,13 @@
 extends Control
 
 @onready
-var minimized_ship := $MinimizedDisplay/ShipProgressIcon;
+var minimized_ship := $MinimizedDisplay/Ship/ProgressIcon;
 @onready
-var minimized_predictor := $MinimizedDisplay/ShipPredictIcon;
+var minimized_predictor := $MinimizedDisplay/Ship/PredictIcon;
 @onready
-var maximized_ship := $MaximizedDisplay/ShipProgressIcon;
+var maximized_ship := $MaximizedDisplay/Ship/ProgressIcon;
 @onready
-var maximized_predictor := $MaximizedDisplay/ShipPredictIcon;
+var maximized_predictor := $MaximizedDisplay/Ship/PredictIcon;
 
 var positions_per_layer : Dictionary = {
 	MapState.HyperspaceDepth.NONE: [Vector2(0.0, 5.0), Vector2(415.0, 5.0)],
@@ -18,7 +18,16 @@ var positions_per_layer : Dictionary = {
 }
 
 
-func move_ship_markers(_dummy = null) -> void:
+func render_exit_markers() -> void:
+	for marker in GameState.map.exit_points:
+		marker.sprite
+
+
+func update_ship_markers(_dummy = null) -> void:
+	self.visible = not GameState.map == null;
+	if GameState.map == null:
+		return;
+	
 	maximized_ship.start_pos = positions_per_layer[GameState.map.layer][0];
 	maximized_ship.end_pos = positions_per_layer[GameState.map.layer][1];
 	
@@ -38,5 +47,6 @@ func move_ship_markers(_dummy = null) -> void:
 
 
 func _ready() -> void:
-	GameState.new_move_command.connect(move_ship_markers);
-	GameState.new_phase.connect(move_ship_markers);
+	GameState.new_move_command.connect(update_ship_markers);
+	GameState.new_phase.connect(update_ship_markers);
+	GameState.new_map.connect(update_ship_markers);

@@ -29,7 +29,12 @@ offset_right = 447.0
 offset_bottom = 40.0
 texture = ExtResource("1_eu8db")
 
-[node name="ShipPredictIcon" type="TextureRect" parent="MinimizedDisplay"]
+[node name="Ship" type="Control" parent="MinimizedDisplay"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PredictIcon" type="TextureRect" parent="MinimizedDisplay/Ship"]
 material = SubResource("ShaderMaterial_tumid")
 layout_mode = 0
 offset_top = 5.0
@@ -40,7 +45,7 @@ expand_mode = 3
 script = ExtResource("2_8un81")
 predict = true
 
-[node name="ShipProgressIcon" type="TextureRect" parent="MinimizedDisplay"]
+[node name="ProgressIcon" type="TextureRect" parent="MinimizedDisplay/Ship"]
 layout_mode = 0
 offset_top = 5.0
 offset_right = 30.0
@@ -86,7 +91,12 @@ offset_right = 447.0
 offset_bottom = 137.0
 texture = ExtResource("1_eu8db")
 
-[node name="ShipPredictIcon" type="TextureRect" parent="MaximizedDisplay"]
+[node name="Ship" type="Control" parent="MaximizedDisplay"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PredictIcon" type="TextureRect" parent="MaximizedDisplay/Ship"]
 material = SubResource("ShaderMaterial_tumid")
 layout_mode = 0
 offset_top = 5.0
@@ -97,7 +107,7 @@ expand_mode = 3
 script = ExtResource("2_8un81")
 predict = true
 
-[node name="ShipProgressIcon" type="TextureRect" parent="MaximizedDisplay"]
+[node name="ProgressIcon" type="TextureRect" parent="MaximizedDisplay/Ship"]
 layout_mode = 0
 offset_top = 5.0
 offset_right = 30.0

@@ -6,10 +6,10 @@ static var library : Dictionary[String, ShipState.ShipSystem] = {
 	"Navigation": ShipState.ShipSystem.new(3, 3)
 		.set_name("navigation_system")
 		.add_role(ShipState.SystemRole.NAVIGATION),
-	"LifeSupport": ShipState.ShipSystem.new(3, 3)
+	"LifeSupport": ShipState.ShipSystem.new(4, 4)
 		.set_name("lifesupport_system")
 		.add_role(ShipState.SystemRole.LIFE_SUPPORT),
-	"Autopilot": ShipState.ShipSystem.new(4, 4)
+	"Autopilot": ShipState.ShipSystem.new(3, 3)
 		.set_name("autopilot_system")
 		.add_role(ShipState.SystemRole.AUTOPILOT),
 	"Engines": ShipState.ShipSystem.new(3, 3)

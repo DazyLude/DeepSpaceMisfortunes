@@ -267,6 +267,9 @@ func despawn_event() -> void:
 func spawn_ship(ship_state: ShipState) -> void:
 	despawn_ship()
 	
+	if ship_state == null:
+		return;
+	
 	ship = ship_state.renderer_scene.instantiate();
 	
 	if ship != null:

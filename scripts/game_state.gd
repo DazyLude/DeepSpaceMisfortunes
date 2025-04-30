@@ -12,13 +12,11 @@ signal new_phase(round_phase);
 # that picks up this reference, and then frees it when the event is over.
 signal new_event(Node2D);
 signal new_ship(ShipState);
+signal new_move_command;
 
 signal clear_tokens;
 signal new_token(TokenType, RefCounted);
 signal ping_tokens(TokenType);
-
-signal gameover(int);
-signal victory(int);
 
 
 enum RoundPhase {
@@ -65,10 +63,10 @@ func get_score() -> int:
 	return self.ingot_count * 3 - self.global_round;
 
 
-func get_speed() -> float:
+func get_speed(layer: MapState.HyperspaceDepth) -> float:
 	var speed : float;
 	
-	match self.map.layer:
+	match layer:
 		MapState.HyperspaceDepth.NONE:
 			speed = 0.1;
 		MapState.HyperspaceDepth.SHALLOW:
@@ -90,8 +88,9 @@ func get_speed() -> float:
 func reset_tokens() -> void:
 	clear_tokens.emit();
 	
-	for crewmate in ship.get_free_crewmates():
-		new_token.emit(GameState.TokenType.CREWMATE, crewmate);
+	if ship != null:
+		for crewmate in ship.get_free_crewmates():
+			new_token.emit(GameState.TokenType.CREWMATE, crewmate);
 	
 	for ingot_i in ingot_count:
 		new_token.emit(GameState.TokenType.INGOT, null);
@@ -128,6 +127,11 @@ func advance_phase() -> void:
 	new_phase.emit(current_phase);
 
 
+func prepare_new_movement_command(command: MapState.MovementCommand) -> void:
+	move_command = command;
+	new_move_command.emit();
+
+
 func add_event_to_queue(event_id: EventLoader.EventID) -> void:
 	event_queue.push_back(event_id);
 
@@ -160,6 +164,7 @@ func run_events_phase() -> void:
 		life_support_failure = true;
 	
 	var scheduled_events := map.move_and_draw_scheduled_events(self.move_command);
+	self.move_command = null;
 	
 	if not map.is_at_exit():
 		if ship.is_role_ok(ShipState.SystemRole.AUTOPILOT):
@@ -179,7 +184,7 @@ func play_event(id: EventLoader.EventID) -> void:
 
 
 func go_to_menu() -> void:
-	ship = ShipState.new();
+	new_ship.emit(null);
 	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
 	
 	current_phase = RoundPhase.PLAY_EVENTS_QUEUE;

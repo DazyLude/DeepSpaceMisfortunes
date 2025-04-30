@@ -2,12 +2,13 @@ extends TextureRect
 
 @export var predict : bool = false;
 
-@onready var start_x = self.position.x;
-const progress_bar_len = 415;
+@onready var start_pos := self.position;
+var end_pos := Vector2(415.0, 5.0)
+
 var tween = null;
 
 
-func _advance(_dummy) -> void:
+func _advance() -> void:
 	if tween != null:
 		tween.kill();
 	tween = get_tree().create_tween();
@@ -19,15 +20,18 @@ func _advance(_dummy) -> void:
 	var current = GameState.map.position;
 	
 	if predict:
-		distance = min(finish, current + GameState.get_speed());
+		var move_command = GameState.move_command;
+		if move_command != null:
+			distance = min(finish, current + move_command._speed * move_command._move_direction);
+		else:
+			distance = min(finish, current);
 	else:
 		distance = min(finish, current);
 	
 	var progress = (distance - start) / (finish - start);
-	tween.tween_property(self, "position",
-		Vector2(start_x + progress_bar_len * progress, 5), 1.0)\
-		.set_trans(Tween.TRANS_QUAD);
-
-
-func _ready() -> void:
-	GameState.new_phase.connect(_advance);
+	tween.tween_property(
+			self,
+			"position",
+			start_pos.lerp(end_pos, progress),
+			1.0
+		).set_trans(Tween.TRANS_QUAD);

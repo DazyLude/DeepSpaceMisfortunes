@@ -1,0 +1,107 @@
+[gd_scene load_steps=7 format=3 uid="uid://l6x1r2h3ia8x"]
+
+[ext_resource type="Script" uid="uid://cke2rytgjsk3u" path="res://scenes/scene_elements/map.gd" id="1_28dn1"]
+[ext_resource type="Texture2D" uid="uid://b6sldrg3xl3s2" path="res://assets/graphics/progress.png" id="1_eu8db"]
+[ext_resource type="Script" uid="uid://cxxj26vsaf1hr" path="res://scenes/scene_elements/ship_progress_icon.gd" id="2_8un81"]
+[ext_resource type="Texture2D" uid="uid://bjswjeet22mda" path="res://assets/graphics/smol spaceship.png" id="3_eu8db"]
+[ext_resource type="Shader" uid="uid://cxvp76a1v11b8" path="res://shaders/alpha_mod.gdshader" id="4_eu8db"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tumid"]
+shader = ExtResource("4_eu8db")
+shader_parameter/alpha = 2.0
+
+[node name="Map" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_28dn1")
+
+[node name="MinimizedDisplay" type="Control" parent="."]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Bar" type="TextureRect" parent="MinimizedDisplay"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = -1.0
+offset_right = 447.0
+offset_bottom = 40.0
+texture = ExtResource("1_eu8db")
+
+[node name="ShipPredictIcon" type="TextureRect" parent="MinimizedDisplay"]
+material = SubResource("ShaderMaterial_tumid")
+layout_mode = 0
+offset_top = 5.0
+offset_right = 30.0
+offset_bottom = 35.0
+texture = ExtResource("3_eu8db")
+expand_mode = 3
+script = ExtResource("2_8un81")
+predict = true
+
+[node name="ShipProgressIcon" type="TextureRect" parent="MinimizedDisplay"]
+layout_mode = 0
+offset_top = 5.0
+offset_right = 30.0
+offset_bottom = 35.0
+texture = ExtResource("3_eu8db")
+expand_mode = 3
+script = ExtResource("2_8un81")
+
+[node name="MaximizedDisplay" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="None" type="TextureRect" parent="MaximizedDisplay"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = -1.0
+offset_right = 447.0
+offset_bottom = 40.0
+texture = ExtResource("1_eu8db")
+
+[node name="Shallow" type="TextureRect" parent="MaximizedDisplay"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 31.0
+offset_right = 447.0
+offset_bottom = 72.0
+texture = ExtResource("1_eu8db")
+
+[node name="Normal" type="TextureRect" parent="MaximizedDisplay"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 64.0
+offset_right = 447.0
+offset_bottom = 105.0
+texture = ExtResource("1_eu8db")
+
+[node name="Deep" type="TextureRect" parent="MaximizedDisplay"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 96.0
+offset_right = 447.0
+offset_bottom = 137.0
+texture = ExtResource("1_eu8db")
+
+[node name="ShipPredictIcon" type="TextureRect" parent="MaximizedDisplay"]
+material = SubResource("ShaderMaterial_tumid")
+layout_mode = 0
+offset_top = 5.0
+offset_right = 30.0
+offset_bottom = 35.0
+texture = ExtResource("3_eu8db")
+expand_mode = 3
+script = ExtResource("2_8un81")
+predict = true
+
+[node name="ShipProgressIcon" type="TextureRect" parent="MaximizedDisplay"]
+layout_mode = 0
+offset_top = 5.0
+offset_right = 30.0
+offset_bottom = 35.0
+texture = ExtResource("3_eu8db")
+expand_mode = 3
+script = ExtResource("2_8un81")

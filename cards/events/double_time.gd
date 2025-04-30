@@ -2,7 +2,7 @@ extends GenericEvent
 
 
 func _action() -> void:
-	var speed : float = GameState.get_speed();
+	var speed : float = GameState.get_speed(GameState.map.layer);
 	
 	if not GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		speed = 0;

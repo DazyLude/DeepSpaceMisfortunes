@@ -20,7 +20,6 @@ func unset_token(_card) -> void:
 
 func _go_next() -> void:
 	if new_game_selected:
-		GameState.new_event.emit(null);
 		GameState.new_game();
 		GameState.clear_tokens.emit();
 	elif tutorial_selected:

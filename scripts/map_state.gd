@@ -10,14 +10,14 @@ enum HyperspaceDepth {
 	DELTA,
 };
 
+const GRACE_DISTANCE : float = 0.05;
+
 
 var round_n : int;
 var layer : HyperspaceDepth;
 var position : float;
 
 var start_to_finish_distance : float;
-
-var enter_layer : HyperspaceDepth;
 var exit_points : Array[MapMarker] = [];
 
 var layer_pools : Dictionary[HyperspaceDepth, EventPool] = {};
@@ -25,8 +25,8 @@ var layer_pools : Dictionary[HyperspaceDepth, EventPool] = {};
 var layers_event_schedule : Dictionary[HyperspaceDepth, EventSchedule] = {};
 var global_event_schedule := EventSchedule.new();
 
-# TODO
 var stationary_events : Array[MapMarker] = [];
+# TODO
 var roaming_events : Dictionary[MapMarker, float] = {};
 
 # not referencing GameStates rng directly to decouple classes.
@@ -52,11 +52,8 @@ func is_marker_encounter_based(marker: MapMarker) -> bool:
 	return marker._from == marker._to;
 
 
-func should_draw_roaming_then_roam(marker: MapMarker, by: float) -> bool:
-	marker._from += by;
-	marker._to += by;
-	
-	return false;
+func is_marker_on_the_current_layer(marker: MapMarker) -> bool:
+	return marker._layer == layer;
 
 
 func should_draw_stationary(
@@ -86,14 +83,30 @@ func move_and_draw_scheduled_events(move_by: MovementCommand) -> Array[EventLoad
 	
 	free_move(move_by);
 	
+	var exit := current_exit();
+	if exit != null:
+		events.push_back(exit.event_id);
+		return events;
+	
 	events.append_array(layers_event_schedule[layer].get_rounds_schedule(round_n));
 	events.append_array(global_event_schedule.get_rounds_schedule(round_n));
 	
 	return events;
 
 
-func is_at_finish_wrong_layer() -> bool:
-	return false;
+func is_at_exit() -> bool:
+	return current_exit() != null;
+
+
+func current_exit() -> MapMarker:
+	for marker in exit_points.filter(is_marker_on_the_current_layer):
+		var coords_range := Vector2(position - GRACE_DISTANCE, position + GRACE_DISTANCE);
+		var close_enough = Utils.is_point_within_range(marker._from, coords_range);
+		
+		if close_enough:
+			return marker;
+	
+	return null;
 
 
 func pull_random_event() -> Result:
@@ -110,13 +123,39 @@ func pull_random_event() -> Result:
 func add_pool(new_layer: HyperspaceDepth, pool: EventPool) -> MapState:
 	layer_pools[new_layer] = pool;
 	
-	return self; 
+	return self;
+
+
+func add_exit(at_layer: HyperspaceDepth, exit_event: EventLoader.EventID, at_finish: bool = true) -> void:
+	var at = start_to_finish_distance if at_finish else 0.0;
+	var marker = MapMarker.new(exit_event, at_layer, at);
+	
+	exit_points.push_back(marker);
+
+
+func place_stationary_marker(at: float, at_layer: HyperspaceDepth, event: EventLoader.EventID) -> void:
+	var marker = MapMarker.new(event, at_layer, at);
+	
+	stationary_events.push_back(marker);
+
+
+func schedule_global_event(rounds_from_now: int, event: EventLoader.EventID) -> void:
+	# we don't want to ruin causality, do we?
+	rounds_from_now = maxi(1, rounds_from_now);
+	
+	global_event_schedule.add_event(round_n + rounds_from_now, event);
+
+
+func schedule_local_event(at_layer: HyperspaceDepth, rounds_from_now: int, event: EventLoader.EventID) -> void:
+	rounds_from_now = maxi(1, rounds_from_now);
+	
+	var layer_schedule_ref = layers_event_schedule[at_layer];
+	layer_schedule_ref.add_event(round_n + rounds_from_now, event);
 
 
 func _init(starting_layer: HyperspaceDepth, run_distance: float) -> void:
 	self.round_n = 0;
 	self.layer = starting_layer;
-	self.enter_layer = starting_layer;
 	self.position = 0.0;
 	self.start_to_finish_distance = run_distance;
 	
@@ -163,7 +202,7 @@ class MapMarker extends RefCounted:
 			to : float = -1.0,
 			encounter_probability : float = 1.0
 		) -> void:
-			self._event_id = event;
+			self.event_id = event;
 			self._layer = layer;
 			self._from = from;
 			
@@ -185,11 +224,3 @@ class EventSchedule extends RefCounted:
 	
 	func add_event(round_n: int, event: EventLoader.EventID) -> void:
 		_schedule.get_or_add(round_n, []).push_back(event);
-
-
-class MapEffect extends RefCounted:
-	var event_id: EventLoader.EventID;
-	
-	var delay : int;
-	var remaining_delay : int;
-	var is_one_shot : bool;

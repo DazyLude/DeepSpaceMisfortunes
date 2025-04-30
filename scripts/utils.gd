@@ -5,9 +5,9 @@ class_name Utils
 static func _property_dict_to_name(property_dict: Dictionary) -> String:
 	return property_dict["name"];
 
-## compares two objects
-## returns "ok" result with true value if objects have equal properties
-## if objects' properties are different, returns "err" result with the reason for comparison failure
+## Compares two objects.[br]
+## Returns "ok" result with true value if objects have equal properties.[br]
+## Returns "err" result with the reason for comparison failure otherwise.
 static func expect_objects_properties_equal(object_a: Object, object_b: Object) -> Result:
 	var properties_a : Array = object_a.get_property_list().map(_property_dict_to_name);
 	var properties_b : Array = object_b.get_property_list().map(_property_dict_to_name);
@@ -45,3 +45,10 @@ static func expect_objects_properties_equal(object_a: Object, object_b: Object) 
 		
 	
 	return Result.wrap_ok(true);
+
+## Checks whether a point is between (inclusive) coords_range.x and coords_range.y
+static func is_point_within_range(point: float, coords_range: Vector2) -> bool:
+	if coords_range.y > coords_range.x:
+		return point >= coords_range.x and point <= coords_range.y;
+	else:
+		return point >= coords_range.y and point <= coords_range.x;

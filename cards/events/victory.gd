@@ -20,11 +20,9 @@ func unset_token(_card) -> void:
 
 func go_next() -> void:
 	if is_token_set:
-		GameState.new_event.emit(null);
 		GameState.new_game();
 		GameState.clear_tokens.emit();
 	elif is_token_set2:
-		GameState.new_event.emit(null);
 		GameState.go_to_menu();
 		GameState.clear_tokens.emit();
 	else:

@@ -3,6 +3,13 @@ extends Node
 
 signal new_phase(round_phase);
 
+# ATTENTION
+# current implementation may cause memory leaks in the form of orphaned nodes:
+# node is instanced here, then it's reference is signalled and released.
+# This leaves an orphan Node2D (GenericEvent) node, if it wasn't picked by table.
+# Currently there is always a singular (!) Table node
+# (multiple table nodes may cause issues as well with dangling pointers)
+# that picks up this reference, and then frees it when the event is over.
 signal new_event(Node2D);
 
 signal clear_tokens;
@@ -51,8 +58,10 @@ var score : int = 0;
 var ingot_count : int = 0;
 
 var move_command : MapState.MovementCommand = null;
+
 var event_queue : Array[EventLoader.EventID] = [];
 var callable_queue : Array[Callable] = [];
+var event_instance_queue : Array[Node2D] = [];
 
 var life_support_failure : bool = false;
 
@@ -91,11 +100,14 @@ func reset_tokens() -> void:
 
 func advance_phase() -> void:
 	match current_phase:
+		_ when not event_instance_queue.is_empty():
+			new_event.emit(event_instance_queue.pop_back());
+		
 		_ when not callable_queue.is_empty():
-			callable_queue.pop_front().call();
+			callable_queue.pop_back().call();
 		
 		_ when not event_queue.is_empty():
-			play_event(event_queue.pop_front());
+			play_event(event_queue.pop_back());
 		
 		RoundPhase.PLAY_EVENTS_QUEUE:
 			map.advance_rounds();
@@ -123,6 +135,10 @@ func add_callable_to_queue(callable: Callable) -> void:
 	callable_queue.push_back(callable);
 
 
+func add_to_event_instance_queue(event: Node2D) -> void:
+	event_instance_queue.push_back(event);
+
+
 func run_repairs_phase() -> void:
 	ship.reset_crew();
 	play_event(EventLoader.EventID.ASSIGN_REPAIRS);
@@ -138,19 +154,23 @@ func run_events_phase() -> void:
 	
 	if not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT) and life_support_failure:
 		play_event(EventLoader.EventID.GAMEOVER);
+		return;
 	elif not ship.is_role_ok(ShipState.SystemRole.LIFE_SUPPORT):
 		life_support_failure = true;
 	
 	var scheduled_events := map.move_and_draw_scheduled_events(self.move_command);
 	
-	if ship.is_role_ok(ShipState.SystemRole.AUTOPILOT):
-		add_event_to_queue(EventLoader.EventID.SHIP_ACTION);
+	if not map.is_at_exit():
+		if ship.is_role_ok(ShipState.SystemRole.AUTOPILOT):
+			add_event_to_queue(EventLoader.EventID.SHIP_ACTION);
+		
+		var random_event = map.pull_random_event();
+		if random_event.is_ok():
+			var event = random_event.unwrap();
+			add_to_event_instance_queue(event);
 	
-	var random_event = map.pull_random_event();
-	if random_event.is_ok():
-		new_event.emit(random_event.unwrap());
-	
-	self.event_queue.append(scheduled_events);
+	self.event_queue.append_array(scheduled_events);
+	advance_phase();
 
 
 func play_event(id: EventLoader.EventID) -> void:
@@ -162,7 +182,6 @@ func go_to_menu() -> void:
 	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
 	
 	current_phase = RoundPhase.PLAY_EVENTS_QUEUE;
-	
 	
 	play_event.call_deferred(EventLoader.EventID.MAIN_MENU);
 	reset_tokens.call_deferred();
@@ -179,11 +198,16 @@ func new_game() -> void:
 	map.add_pool(MapState.HyperspaceDepth.DEEP, PoolLibrary.get_event_pool_by_name("Deep"));
 	map.rng_ref = self.rng;
 	
-	current_phase = RoundPhase.GAME_START;
+	map.add_exit(MapState.HyperspaceDepth.NONE, EventLoader.EventID.VICTORY);
+	
+	current_phase = RoundPhase.PLAY_EVENTS_QUEUE;
 	global_round = 0;
 	score = 0;
 	ingot_count = 10;
 	life_support_failure = false;
+	
+	event_queue.clear();
+	callable_queue.clear();
 	
 	advance_phase.call_deferred();
 

@@ -21,6 +21,38 @@ func test_object_property_comparison() -> void:
 	assert_true(a_to_e.is_ok());
 
 
+func test_point_range_comparison() -> void:
+	var point1 : float = 1.0;
+	var point2 : float = -10.0;
+	var point_inf : float = INF;
+	var point_nan : float = NAN;
+	
+	var zero_range := Vector2(0.0, 0.0);
+	var normal_range := Vector2(0.0, 1.0);
+	var inf_range := Vector2(-INF, INF);
+	var nan_range := Vector2(NAN, NAN);
+	
+	
+	assert_false(Utils.is_point_within_range(point1, zero_range));
+	assert_false(Utils.is_point_within_range(point2, zero_range));
+	assert_false(Utils.is_point_within_range(point_inf, zero_range));
+	assert_false(Utils.is_point_within_range(point_nan, zero_range));
+	
+	assert_true(Utils.is_point_within_range(point1, normal_range));
+	assert_false(Utils.is_point_within_range(point2, normal_range));
+	assert_false(Utils.is_point_within_range(point_inf, normal_range));
+	assert_false(Utils.is_point_within_range(point_nan, normal_range));
+	
+	assert_true(Utils.is_point_within_range(point1, inf_range));
+	assert_true(Utils.is_point_within_range(point2, inf_range));
+	assert_true(Utils.is_point_within_range(point_inf, inf_range));
+	assert_false(Utils.is_point_within_range(point_nan, inf_range));
+	
+	assert_false(Utils.is_point_within_range(point1, nan_range));
+	assert_false(Utils.is_point_within_range(point2, nan_range));
+	assert_false(Utils.is_point_within_range(point_inf, nan_range));
+	assert_false(Utils.is_point_within_range(point_nan, nan_range));
+
 
 class ObjectA extends RefCounted:
 	var property : Variant = "value";

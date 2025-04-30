@@ -259,6 +259,7 @@ func despawn_event() -> void:
 			remove_active_zone(zone);
 		
 		$Events.remove_child(current_event);
+		current_event.queue_free();
 		current_event = null;
 
 

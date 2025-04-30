@@ -24,7 +24,7 @@ func _prepare() -> void:
 	
 	var are_drives_ok = GameState.ship.is_role_ok(ShipState.SystemRole.HYPERDRIVE);
 	var is_nav_ok = GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION);
-	var is_goal_reached = GameState.map.position >= GameState.TRAVEL_GOAL;
+	var is_goal_reached = GameState.map.position >= GameState.map.start_to_finish_distance;
 	
 	if not are_drives_ok:
 		event_image = preload("res://assets/graphics/events/ev_navigat_crossed.png");
@@ -59,7 +59,7 @@ func _prepare() -> void:
 				event_title = "Hyperspace";
 				
 				if is_goal_reached:
-					event_text += "\nShip's data tells you that you've reached your destination. You now have to leave the Hyperspace."
+					event_text = "\nShip's data tells you that you've reached your destination. You now have to leave the Hyperspace."
 				else:
 					event_text = "You can choose whether to change the current Hyperspace level, or to stay on this one.";
 				

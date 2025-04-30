@@ -1,7 +1,7 @@
 extends RefCounted
 class_name Result
-
 ## small helper class to throw around additional info and error messages
+
 var _ok : bool = true;
 var _value : Variant = null;
 

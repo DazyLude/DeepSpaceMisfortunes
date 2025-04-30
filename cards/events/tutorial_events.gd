@@ -11,6 +11,6 @@ func _prepare() -> void:
 	event_title = "Tutorial: Events";
 	event_text = "This window you're looking at is the event card. It contains a description of the current game event, as well as (sometimes) optional choices you can make.";
 	
-	GameState.event_queue.push_back(EventLoader.EventID.TUTORIAL_TOKENS);
+	GameState.add_event_to_queue(EventLoader.EventID.TUTORIAL_TOKENS);
 	
 	super._ready();

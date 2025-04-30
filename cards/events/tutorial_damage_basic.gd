@@ -42,6 +42,6 @@ func _prepare() -> void:
 	event_title = "Tutorial: Damage";
 	event_text = "I've thrown an asteroid at you ship, to damage it. Whatever I was aiming at, the hull blocked it. Now you can repair it.\nTo repair the system, put a crewmember in it. If the system is severely damaged, you can use more than one crew member, and they will work together.\nRepair the outer hull to full hp to continue.";
 	
-	GameState.callable_queue.push_back(go_next);
+	GameState.add_callable_to_queue(go_next);
 	
 	super._ready();

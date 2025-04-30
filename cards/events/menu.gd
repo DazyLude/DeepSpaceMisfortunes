@@ -18,6 +18,20 @@ func unset_token(_card) -> void:
 	tutorial_selected = false;
 
 
+func _go_next() -> void:
+	if new_game_selected:
+		GameState.new_event.emit(null);
+		GameState.new_game();
+		GameState.clear_tokens.emit();
+	elif tutorial_selected:
+		GameState.clear_tokens.emit();
+		GameState.add_event_to_queue(EventLoader.EventID.TUTORIAL_INTRO);
+		GameState.advance_phase();
+	else:
+		GameState.add_event_to_queue(EventLoader.EventID.MAIN_MENU);
+		GameState.advance_phase();
+
+
 func _action() -> void:
 	pass;
 
@@ -36,5 +50,7 @@ func _prepare() -> void:
 	
 	var idx2 = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "play the tutorial");
 	setup_event_signals(idx2, set_tutorial_token, unset_token);
+	
+	GameState.add_callable_to_queue(_go_next);
 	
 	super._ready();

@@ -23,7 +23,7 @@ func _prepare() -> void:
 	if GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
 		event_text += " But at least you got closer to your destination!"
 	
-	GameState.callable_queue.push_back(
+	GameState.add_callable_to_queue(
 		func():
 			var event = GameState.map.pull_random_event().unwrap();
 			GameState.new_event.emit(event);

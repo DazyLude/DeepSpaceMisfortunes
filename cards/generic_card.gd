@@ -9,17 +9,15 @@ signal dropped;
 const fly_transition : float = 0.05;
 const fly_offset := Vector2(-1.0, -1.0);
 const max_blur : float = 1.5;
-
 const shake_time : float = 0.5;
+
 var transition_tween : Tween = null;
 var shake_tween : Tween = null;
-@onready var reset_scale = scale;
 
+@onready var reset_scale = scale;
 @export var card_texture : Texture2D = null;
 
-
 var is_hovered : bool = false;
-
 
 @onready var sprite : Sprite2D = $Sprite;
 @onready var hitbox : Area2D = $Hitbox;
@@ -27,6 +25,9 @@ var is_hovered : bool = false;
 
 var can_have_shadow : bool = true;
 var shadow_sprite : Sprite2D = null;
+
+
+var owner_table : Table = null;
 
 
 func hover() -> void:

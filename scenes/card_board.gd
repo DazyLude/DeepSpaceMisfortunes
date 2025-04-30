@@ -53,11 +53,13 @@ func remove_active_zone(zone: GenericTableZone) -> void:
 
 func add_active_card(card: GenericCard, card_data: RefCounted = null) -> void:
 	active_cards[card] = card_data;
+	card.owner_table = self;
 	card.picked.connect(picked_card.bind(card));
 	card.dropped.connect(dropped_card.bind(card));
 
 
 func remove_active_card(card: GenericCard) -> void:
+	card.owner_table = null;
 	active_cards.erase(card);
 
 
@@ -260,20 +262,6 @@ func despawn_event() -> void:
 		current_event = null;
 
 
-var hint_counter : int = 0;
-
-func display_hint() -> void:
-	if hint_counter > 2:
-		GameState.current_phase = GameState.RoundPhase.TUTORIAL;
-		GameState.play_event(EventLoader.EventID.TUTORIAL_INTRO);
-		hint_counter = 0;
-		return;
-	
-	hint_counter += 1;
-	shake_tokens.call_deferred(GameState.TokenType.SHIP_NAVIGATION);
-
-
-
 func try_to_advance_phase() -> void:
 	if not grace:
 		GameState.advance_phase();
@@ -288,7 +276,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _ready() -> void:
-	GameState.go_to_menu(self);
+	GameState.go_to_menu();
 	
 	var ship : Ship = $Ship;
 	for zone in ship.get_active_zones():

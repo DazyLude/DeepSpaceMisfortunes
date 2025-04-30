@@ -15,6 +15,6 @@ func _prepare() -> void:
 		+ "First of all, at any stage of the game, you need to press the button in the bottom right corner of the screen to progress.\n"\
 		+ "Do it right now! :)";
 	
-	GameState.event_queue.push_back(EventLoader.EventID.TUTORIAL_EVENTS);
+	GameState.add_event_to_queue(EventLoader.EventID.TUTORIAL_EVENTS);
 	
 	super._ready();

@@ -18,6 +18,21 @@ func unset_token(_card) -> void:
 	is_token_set2 = false;
 
 
+func go_next() -> void:
+	if is_token_set:
+		GameState.new_event.emit(null);
+		GameState.new_game();
+		GameState.clear_tokens.emit();
+	elif is_token_set2:
+		GameState.new_event.emit(null);
+		GameState.go_to_menu();
+		GameState.clear_tokens.emit();
+	else:
+		GameState.add_event_to_queue(EventLoader.EventID.VICTORY);
+		GameState.advance_phase();
+
+
+
 func _action() -> void:
 	pass;
 
@@ -34,12 +49,12 @@ func _prepare() -> void:
 	event_text += "Score increases with the ingot count, and decreases with rounds spent. Maybe another try? :)"
 	event_text += "\n\nThank you for playing!"
 	
-	GameState.current_phase = GameState.RoundPhase.ENDGAME;
-	
 	var idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "start new game");
 	setup_event_signals(idx, set_token, unset_token);
 	
 	var idx2 = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "to the menu");
 	setup_event_signals(idx2, set_token2, unset_token);
+	
+	GameState.add_callable_to_queue(go_next);
 	
 	super._ready();

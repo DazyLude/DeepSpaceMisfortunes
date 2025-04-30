@@ -20,11 +20,6 @@ signal victory(int);
 
 
 enum RoundPhase {
-	STARTUP,
-	TUTORIAL,
-	ENDGAME,
-	GAME_START,
-	
 	REPAIRS,
 	NAVIGATION,
 	PLAY_EVENTS_QUEUE,
@@ -54,8 +49,6 @@ var current_phase : RoundPhase;
 
 var score : int = 0;
 var ingot_count : int = 0;
-
-var active_table : Table = null;
 
 var move_command : MapState.MovementCommand = null;
 var event_queue : Array[EventLoader.EventID] = [];
@@ -104,31 +97,7 @@ func advance_phase() -> void:
 		_ when not event_queue.is_empty():
 			play_event(event_queue.pop_front());
 		
-		RoundPhase.STARTUP when active_table.current_event.new_game_selected:
-			new_game();
-			new_event.emit(null);
-			clear_tokens.emit();
-		
-		RoundPhase.STARTUP when active_table.current_event.tutorial_selected:
-			current_phase = RoundPhase.TUTORIAL;
-			new_event.emit(null);
-			play_event(EventLoader.EventID.TUTORIAL_INTRO);
-		
-		RoundPhase.STARTUP:
-			active_table.display_hint();
-			return;
-		
-		RoundPhase.ENDGAME when active_table and active_table.current_event and active_table.current_event.is_token_set:
-			new_game();
-			new_event.emit(null);
-			clear_tokens.emit();
-		
-		RoundPhase.ENDGAME when active_table and active_table.current_event and active_table.current_event.is_token_set2:
-			go_to_menu(active_table);
-			new_event.emit(null);
-			clear_tokens.emit();
-		
-		RoundPhase.PLAY_EVENTS_QUEUE, RoundPhase.GAME_START:
+		RoundPhase.PLAY_EVENTS_QUEUE:
 			map.advance_rounds();
 			global_round += 1;
 			current_phase = RoundPhase.REPAIRS;
@@ -144,6 +113,14 @@ func advance_phase() -> void:
 	
 	reset_tokens.call_deferred();
 	new_phase.emit(current_phase);
+
+
+func add_event_to_queue(event_id: EventLoader.EventID) -> void:
+	event_queue.push_back(event_id);
+
+
+func add_callable_to_queue(callable: Callable) -> void:
+	callable_queue.push_back(callable);
 
 
 func run_repairs_phase() -> void:
@@ -167,23 +144,25 @@ func run_events_phase() -> void:
 	var scheduled_events := map.move_and_draw_scheduled_events(self.move_command);
 	
 	if ship.is_role_ok(ShipState.SystemRole.AUTOPILOT):
-		scheduled_events.push_front(EventLoader.EventID.SHIP_ACTION);
+		add_event_to_queue(EventLoader.EventID.SHIP_ACTION);
 	
 	var random_event = map.pull_random_event();
 	if random_event.is_ok():
 		new_event.emit(random_event.unwrap());
+	
+	self.event_queue.append(scheduled_events);
 
 
 func play_event(id: EventLoader.EventID) -> void:
 	new_event.emit(EventLoader.get_event_instance(id));
 
 
-func go_to_menu(table: Table) -> void:
+func go_to_menu() -> void:
 	ship = ShipState.new();
 	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
 	
-	active_table = table;
-	current_phase = RoundPhase.STARTUP;
+	current_phase = RoundPhase.PLAY_EVENTS_QUEUE;
+	
 	
 	play_event.call_deferred(EventLoader.EventID.MAIN_MENU);
 	reset_tokens.call_deferred();

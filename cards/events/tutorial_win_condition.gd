@@ -14,6 +14,6 @@ func _prepare() -> void:
 	event_title = "Tutorial: Winning";
 	event_text = "To win you need to:\n1) Reach 100% travel progress. The progress is tracked by the bar above.\n2) Be on the first layer of the Hyperspace.\nThe deeper you go into the Hyperspace, the faster you travel. At the end of the game, you get a score, based on how many Adamantine you have and how fast you reached the finish line.";
 	
-	GameState.event_queue.push_back(EventLoader.EventID.TUTORIAL_MANNING);
+	GameState.add_event_to_queue(EventLoader.EventID.TUTORIAL_MANNING);
 	
 	super._ready();

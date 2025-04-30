@@ -14,6 +14,6 @@ func _prepare() -> void:
 	event_title = "Tutorial: End";
 	event_text = "That's it for the main stuff. Have fun :)";
 	
-	GameState.callable_queue.push_back(GameState.go_to_menu.bind(GameState.active_table));
+	GameState.add_callable_to_queue(GameState.go_to_menu);
 	
 	super._ready();

@@ -87,13 +87,15 @@ func update_warning_icon(_p) -> void:
 
 
 func _add_crewmate_to_system(card: GenericCard, zone: GenericTableZone) -> void:
-	GameState.ship.man_system(
-		GameState.active_table.active_cards[card], zone_to_system_slot[zone]
-	);
+	var table_ref = card.owner_table;
+	if table_ref != null:
+		GameState.ship.man_system(table_ref.active_cards[card], zone_to_system_slot[zone]);
 
 
 func _remove_crewmate_from_system(card: GenericCard) -> void:
-	GameState.ship.stop_manning(GameState.active_table.active_cards[card]);
+	var table_ref = card.owner_table;
+	if table_ref != null:
+		GameState.ship.stop_manning(table_ref.active_cards[card]);
 
 
 func flare_red(icon: Sprite2D) -> void:

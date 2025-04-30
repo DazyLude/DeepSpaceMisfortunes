@@ -14,6 +14,6 @@ func _prepare() -> void:
 		+ "You share a couple of stories with a bottle of space-rum. He's just finished a successful haul.";
 	event_image = preload("res://assets/graphics/events/ev_pirate.png");
 	
-	GameState.event_queue.push_back(EventLoader.EventID.FRIEND2);
+	GameState.add_event_to_queue(EventLoader.EventID.FRIEND2);
 	
 	super._ready();

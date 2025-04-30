@@ -83,6 +83,12 @@ func get_speed() -> float:
 		MapState.HyperspaceDepth.DEEP:
 			speed = 5.0;
 	
+	if not GameState.ship.is_role_ok(ShipState.SystemRole.ENGINES):
+		speed = 0;
+	
+	if not GameState.ship.is_role_ok(ShipState.SystemRole.NAVIGATION):
+		speed /= 2;
+	
 	return speed;
 
 

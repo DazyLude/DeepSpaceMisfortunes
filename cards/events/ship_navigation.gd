@@ -8,7 +8,9 @@ func course_chosen(_card, which: int) -> void:
 	var depth_value := GameState.map.layer as int + which - 1;
 	depth_value = clampi(depth_value, 0, 3);
 	
-	GameState.move_command = MapState.MovementCommand.new(GameState.get_speed(), 1, depth_value);
+	var speed = GameState.get_speed();
+	
+	GameState.move_command = MapState.MovementCommand.new(speed, 1, depth_value);
 
 
 func course_unchosen(_card) -> void:

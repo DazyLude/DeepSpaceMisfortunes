@@ -1,0 +1,2 @@
+extends GenericEvent
+class_name StationEvent

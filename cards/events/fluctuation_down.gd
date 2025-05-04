@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 
 var did : bool = false;

@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 
 var is_token_set : bool = false;

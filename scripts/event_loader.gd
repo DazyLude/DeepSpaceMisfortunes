@@ -139,7 +139,17 @@ static func load_from_packed_scene(event_scene: PackedScene) -> Node2D:
 
 
 static func load_from_script(event_script: Script) -> Node2D:
-	var scene : Node2D = ResourceLoader.load("res://cards/generic_event.tscn").instantiate();
+	var base_script = event_script.get_base_script();
+	var scene = Node2D;
+	
+	match base_script.get_global_name():
+		&"", &"GenericEvent":
+			scene = Node2D.new();
+		&"FlyEvent":
+			scene = ResourceLoader.load("res://cards/generic_event.tscn").instantiate();
+		&"StationEvent":
+			scene = ResourceLoader.load("res://cards/generic_station.tscn").instantiate();
+	
 	scene.set_script(event_script);
 	
 	return scene;

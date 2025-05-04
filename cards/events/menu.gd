@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 
 var new_game_selected : bool = false;

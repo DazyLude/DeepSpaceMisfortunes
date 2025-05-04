@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 
 func course_chosen(_card, which: int) -> void:

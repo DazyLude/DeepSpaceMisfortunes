@@ -49,7 +49,7 @@ func test_load_all() -> void:
 		#var event = all_static_events[event_id];
 		#var test_inputs_iterator : Array[Dictionary];
 		#
-		#if event != null:
+		#if event is FlyEvent:
 			#test_inputs_iterator = event.get_inputs_test_iterator();
 			#event.free();
 		#else:
@@ -76,7 +76,8 @@ func test_load_all() -> void:
 				#fresh_event._action();
 			#
 			#fresh_event.free();
-			#assert_no_new_orphans();
+	#
+	#assert_no_new_orphans();
 
 
 func test_event_pool_add_event() -> void:

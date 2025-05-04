@@ -79,7 +79,6 @@ func change_layer_track(_dummy_arg = null) -> void:
 	np_tween.tween_property(new_player, ^"volume_linear", 1.0, TRANSITION_TIME);
 	
 	new_player.play(play_from);
-	print(play_from)
 
 
 func _ready() -> void:

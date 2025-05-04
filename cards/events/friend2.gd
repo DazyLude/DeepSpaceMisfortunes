@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 
 const damage_threshold : int = 10;

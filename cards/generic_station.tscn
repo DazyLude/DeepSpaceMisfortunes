@@ -1,0 +1,179 @@
+[gd_scene load_steps=9 format=3 uid="uid://ceq73fig6eqn1"]
+
+[ext_resource type="Script" uid="uid://6tfy5iyy3q6m" path="res://cards/generic_event.gd" id="1_nvbux"]
+[ext_resource type="Texture2D" uid="uid://50w465avag12" path="res://assets/graphics/event.png" id="2_2jxw8"]
+[ext_resource type="Texture2D" uid="uid://6udstmc8stue" path="res://assets/graphics/events/ev_nothing.png" id="3_qjx37"]
+[ext_resource type="FontFile" uid="uid://b23ae6hsm3jrp" path="res://assets/fonts/Gidole-Regular.ttf" id="4_y28e1"]
+[ext_resource type="FontFile" uid="uid://ckdgjyud8oh4r" path="res://assets/fonts/Teko-SemiBold.ttf" id="5_x4y64"]
+[ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="6_rc7i4"]
+[ext_resource type="Texture2D" uid="uid://cevwwjb3q5s18" path="res://assets/graphics/nav.png" id="7_xmrbl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h7fig"]
+size = Vector2(23, 31)
+
+[node name="GenericEvent" type="Node2D"]
+script = ExtResource("1_nvbux")
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="HitboxRect" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_h7fig")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_2jxw8")
+
+[node name="EventImage" type="Sprite2D" parent="."]
+texture = ExtResource("3_qjx37")
+
+[node name="LevelHint" type="Label" parent="."]
+offset_left = -299.0
+offset_top = 177.0
+offset_right = -18.0
+offset_bottom = 207.0
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -4
+theme_override_constants/paragraph_spacing = 0
+theme_override_fonts/font = ExtResource("4_y28e1")
+theme_override_font_sizes/font_size = 24
+text = "Lorem ipsum dolor"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = -188.0
+offset_right = 319.0
+offset_bottom = 190.0
+mouse_filter = 2
+theme_override_constants/separation = 1
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(250, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_fonts/font = ExtResource("5_x4y64")
+theme_override_font_sizes/font_size = 30
+text = "LOREM IPSUM DOLOR SIT"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(250, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -2
+theme_override_constants/paragraph_spacing = 4
+theme_override_fonts/font = ExtResource("4_y28e1")
+theme_override_font_sizes/font_size = 20
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
+ut labore et dolore magna "
+autowrap_mode = 3
+
+[node name="EventInputRow1" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EventZone" type="Area2D" parent="VBoxContainer/EventInputRow1"]
+position = Vector2(28, 43)
+script = ExtResource("6_rc7i4")
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="CardSlotImage" type="Sprite2D" parent="VBoxContainer/EventInputRow1/EventZone"]
+position = Vector2(0, 1)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("7_xmrbl")
+
+[node name="HitboxRect" type="CollisionShape2D" parent="VBoxContainer/EventInputRow1/EventZone"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_h7fig")
+
+[node name="Label" type="Label" parent="VBoxContainer/EventInputRow1"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 61.0
+offset_top = -24.0
+offset_right = 248.0
+offset_bottom = 19.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -4
+theme_override_constants/paragraph_spacing = 0
+theme_override_fonts/font = ExtResource("4_y28e1")
+theme_override_font_sizes/font_size = 20
+text = "dolor sit amet"
+vertical_alignment = 1
+
+[node name="EventInputRow2" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EventZone" type="Area2D" parent="VBoxContainer/EventInputRow2"]
+position = Vector2(28, 43)
+script = ExtResource("6_rc7i4")
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="CardSlotImage" type="Sprite2D" parent="VBoxContainer/EventInputRow2/EventZone"]
+position = Vector2(0, 1)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("7_xmrbl")
+
+[node name="HitboxRect" type="CollisionShape2D" parent="VBoxContainer/EventInputRow2/EventZone"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_h7fig")
+
+[node name="Label" type="Label" parent="VBoxContainer/EventInputRow2"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 61.0
+offset_top = -24.0
+offset_right = 248.0
+offset_bottom = 19.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -4
+theme_override_constants/paragraph_spacing = 0
+theme_override_fonts/font = ExtResource("4_y28e1")
+theme_override_font_sizes/font_size = 20
+text = "dolor sit amet"
+vertical_alignment = 1
+
+[node name="EventInputRow3" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EventZone" type="Area2D" parent="VBoxContainer/EventInputRow3"]
+position = Vector2(28, 43)
+script = ExtResource("6_rc7i4")
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="CardSlotImage" type="Sprite2D" parent="VBoxContainer/EventInputRow3/EventZone"]
+position = Vector2(0, 1)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("7_xmrbl")
+
+[node name="HitboxRect" type="CollisionShape2D" parent="VBoxContainer/EventInputRow3/EventZone"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_h7fig")
+
+[node name="Label" type="Label" parent="VBoxContainer/EventInputRow3"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 61.0
+offset_top = -24.0
+offset_right = 248.0
+offset_bottom = 19.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -4
+theme_override_constants/paragraph_spacing = 0
+theme_override_fonts/font = ExtResource("4_y28e1")
+theme_override_font_sizes/font_size = 20
+text = "dolor sit amet"
+vertical_alignment = 1

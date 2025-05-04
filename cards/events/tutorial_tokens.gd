@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 var ingot_set : bool = false;
 var nav_set : bool = false;

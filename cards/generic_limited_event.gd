@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 
 func _init() -> void:

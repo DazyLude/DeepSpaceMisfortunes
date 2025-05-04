@@ -1,4 +1,4 @@
-extends GenericEvent
+extends FlyEvent
 
 
 var gave_bribe : bool = false;

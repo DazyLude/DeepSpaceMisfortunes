@@ -9,6 +9,12 @@ var maximized_ship := $MaximizedDisplay/Ship/ProgressIcon;
 @onready
 var maximized_predictor := $MaximizedDisplay/Ship/PredictIcon;
 
+@onready
+var markers_parent = $MaximizedDisplay/Markers;
+
+const DELTA_Y : float = 31.0;
+const MARKER_SIZE := Vector2(32.0, 32.0);
+
 var positions_per_layer : Dictionary = {
 	MapState.HyperspaceDepth.NONE: [Vector2(0.0, 5.0), Vector2(415.0, 5.0)],
 	MapState.HyperspaceDepth.SHALLOW: [Vector2(0.0, 37.0), Vector2(415.0, 37.0)],
@@ -18,9 +24,32 @@ var positions_per_layer : Dictionary = {
 }
 
 
+func get_map_position(at: float, layer: MapState.HyperspaceDepth = MapState.HyperspaceDepth.NONE) -> Vector2:
+	var vectors = positions_per_layer[layer];
+	return vectors[0].lerp(vectors[1], at);
+
+
 func render_exit_markers() -> void:
+	for child in markers_parent.get_children():
+		markers_parent.remove_child(child);
+		child.queue_free();
+	
+	if GameState.map == null:
+		return;
+	
 	for marker in GameState.map.exit_points:
-		marker.sprite
+		var texture = marker.sprite;
+		if texture != null and marker.is_visible:
+			var texture_rect := TextureRect.new();
+			
+			texture_rect.size = MARKER_SIZE;
+			texture_rect.texture = texture;
+			texture_rect.expand_mode = TextureRect.ExpandMode.EXPAND_IGNORE_SIZE;
+			
+			var progress = marker._from / GameState.map.start_to_finish_distance;
+			texture_rect.position = get_map_position(progress, marker._layer);
+			
+			markers_parent.add_child(texture_rect);
 
 
 func update_ship_markers(_dummy = null) -> void:
@@ -50,3 +79,4 @@ func _ready() -> void:
 	GameState.new_move_command.connect(update_ship_markers);
 	GameState.new_phase.connect(update_ship_markers);
 	GameState.new_map.connect(update_ship_markers);
+	GameState.new_map.connect(render_exit_markers);

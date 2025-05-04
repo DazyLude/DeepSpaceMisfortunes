@@ -130,6 +130,9 @@ func add_exit(at_layer: HyperspaceDepth, exit_event: EventLoader.EventID, at_fin
 	var at = start_to_finish_distance if at_finish else 0.0;
 	var marker = MapMarker.new(exit_event, at_layer, at);
 	
+	marker.set_sprite(load("res://assets/compass.png"));
+	marker.is_visible = true;
+	
 	exit_points.push_back(marker);
 
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cjfjsxsu1ecg2"]
+[gd_scene load_steps=9 format=3 uid="uid://cjfjsxsu1ecg2"]
 
 [ext_resource type="Script" uid="uid://bygc27tiilr0t" path="res://scenes/card_board.gd" id="1_qs8yt"]
 [ext_resource type="Texture2D" uid="uid://b5h4gcq38ua8j" path="res://assets/graphics/CONTINUE1.png" id="3_7wiys"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cy3qtxhsudcd7" path="res://scenes/scene_elements/background.tscn" id="5_3tt6t"]
 [ext_resource type="Texture2D" uid="uid://pdmlg2u3ux1s" path="res://assets/graphics/CONTINUE4.png" id="5_5u1fr"]
 [ext_resource type="Texture2D" uid="uid://p6h6va0nqqlx" path="res://assets/graphics/CONTINUE3.png" id="6_7kihr"]
+[ext_resource type="Script" uid="uid://beymlx0i1uboj" path="res://scenes/scene_elements/bgm_player.gd" id="8_g7oyu"]
 
 [node name="CardBoard" type="Node2D"]
 script = ExtResource("1_qs8yt")
@@ -37,3 +38,6 @@ offset_bottom = 25.0
 
 [node name="Background" parent="." instance=ExtResource("5_3tt6t")]
 z_index = -5
+
+[node name="BGMPlayer" type="Node" parent="."]
+script = ExtResource("8_g7oyu")

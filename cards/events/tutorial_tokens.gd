@@ -53,5 +53,3 @@ func _prepare() -> void:
 	setup_event_signals(idx2, set_ingot, unset_ingot);
 	
 	GameState.add_callable_to_queue(go_next);
-	
-	super._ready();

@@ -15,5 +15,3 @@ func _prepare() -> void:
 	event_text = "That's it for the main stuff. Have fun :)";
 	
 	GameState.add_callable_to_queue(GameState.go_to_menu);
-	
-	super._ready();

@@ -12,5 +12,3 @@ func _prepare() -> void:
 	event_title = "The Good Will";
 	event_text = "You bask in the light of brilliance, neverending warmth fills you. You can do it. You have it in you.";
 	event_image = preload("res://assets/graphics/events/ev_will.png");
-	
-	super._ready();

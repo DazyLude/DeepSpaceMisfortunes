@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://cjgowuw7teruc"]
+
+[ext_resource type="Script" uid="uid://751up5bfgiqa" path="res://scripts/zones/event_zone.gd" id="1_qctot"]
+[ext_resource type="Texture2D" uid="uid://cevwwjb3q5s18" path="res://assets/graphics/nav.png" id="2_uh5va"]
+[ext_resource type="FontFile" uid="uid://b23ae6hsm3jrp" path="res://assets/fonts/Gidole-Regular.ttf" id="3_hghm7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h7fig"]
+size = Vector2(23, 31)
+
+[node name="EventInputRow1" type="Control"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+
+[node name="EventZone" type="Area2D" parent="."]
+position = Vector2(28, 43)
+script = ExtResource("1_qctot")
+metadata/_custom_type_script = "uid://751up5bfgiqa"
+
+[node name="CardSlotImage" type="Sprite2D" parent="EventZone"]
+position = Vector2(0, 1)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_uh5va")
+
+[node name="HitboxRect" type="CollisionShape2D" parent="EventZone"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_h7fig")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -193.0
+offset_top = -24.0
+offset_right = -6.0
+offset_bottom = 19.0
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -4
+theme_override_constants/paragraph_spacing = 0
+theme_override_fonts/font = ExtResource("3_hghm7")
+theme_override_font_sizes/font_size = 20
+text = "dolor sit amet"
+horizontal_alignment = 2
+vertical_alignment = 1

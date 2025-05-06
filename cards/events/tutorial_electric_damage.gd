@@ -15,5 +15,3 @@ func _prepare() -> void:
 	event_text = "I called my buddy, Zeus, to throw a lighting at your ship. He targeted engines and navigation. Electric damage bypasses the ship's Outer Hull, but the Inner Hull absorbs it, if it's HP is more than zero. Navigation and Life Support are protected by the Inner Hull.";
 	
 	GameState.add_event_to_queue(EventLoader.EventID.TUTORIAL_DAMAGE_NORMAL);
-	
-	super._ready();

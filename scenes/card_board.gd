@@ -2,13 +2,12 @@ extends Node2D
 class_name Table
 
 
-
-
 const nav_token_spawn_location := Vector2(910.0, 665.0);
 const crew_token_spawn_location := Vector2(375.0, 560.0);
 const ingot_token_spawn_location := Vector2(375.0, 230.0);
 
-const EVENT_POSITION := Vector2(1200, 400)
+const EVENT_POSITION := Vector2(1200, 400);
+const STATION_POSITION := Vector2(250, 50);
 
 var active_cards : Dictionary[GenericCard, RefCounted] = {};
 var active_zones : Dictionary[GenericTableZone, GenericCard] = {};
@@ -244,10 +243,16 @@ func spawn_event(event_instance: GenericEvent) -> void:
 	
 	$Events.add_child(event_instance);
 	
-	for zone in event_instance.event_zones:
-		add_active_zone(zone);
+	if event_instance is FlyEvent:
+		event_instance.position = EVENT_POSITION;
+		
+		for zone in event_instance.get_event_zones():
+			add_active_zone(zone);
 	
-	event_instance.position = EVENT_POSITION;
+	if event_instance is StationEvent:
+		event_instance.position = STATION_POSITION;
+		
+		prepare_station();
 	
 	current_event = event_instance;
 
@@ -256,8 +261,9 @@ func despawn_event() -> void:
 	if current_event != null:
 		current_event._action();
 		
-		for zone in current_event.event_zones:
-			remove_active_zone(zone);
+		if current_event is FlyEvent:
+			for zone in current_event.get_event_zones():
+				remove_active_zone(zone);
 		
 		$Events.remove_child(current_event);
 		current_event.queue_free();
@@ -285,6 +291,22 @@ func despawn_ship() -> void:
 		ship.queue_free();
 
 
+func prepare_station() -> void:
+	$ProgressBar.hide();
+	$Button.hide();
+	$Ship.hide();
+	$Tokens.hide();
+	$Stacks.hide();
+
+
+func prepare_map() -> void:
+	$ProgressBar.show();
+	$Button.show();
+	$Ship.show();
+	$Tokens.show();
+	$Stacks.show();
+
+
 func try_to_advance_phase() -> void:
 	if not grace:
 		GameState.advance_phase();
@@ -302,6 +324,8 @@ func _ready() -> void:
 	GameState.go_to_menu();
 	
 	$Button.pressed.connect(try_to_advance_phase);
+	
+	GameState.new_map.connect(prepare_map);
 	
 	GameState.new_event.connect(spawn_event);
 	GameState.new_ship.connect(spawn_ship);

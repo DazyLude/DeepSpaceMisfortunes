@@ -16,7 +16,7 @@ var screen_size : Vector2;
 
 
 func transition(_d) -> void:
-	if displayed_depth == GameState.map.layer:
+	if not GameState.map or displayed_depth == GameState.map.layer:
 		return;
 	
 	if transition_tween:

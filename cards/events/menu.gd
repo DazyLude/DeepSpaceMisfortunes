@@ -51,5 +51,3 @@ func _prepare() -> void:
 	setup_event_signals(idx2, set_tutorial_token, unset_token);
 	
 	GameState.add_callable_to_queue(_go_next);
-	
-	super._ready();

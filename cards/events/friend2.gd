@@ -27,5 +27,3 @@ func _prepare() -> void:
 		event_text = "He decides to help you by fixing your ship.";
 	else:
 		event_text = "He decides to share some of his adamantine with you.";
-	
-	super._ready();

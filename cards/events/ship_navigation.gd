@@ -87,5 +87,3 @@ func _prepare() -> void:
 				
 				var stay_idx = setup_event_input(GameState.TokenType.SHIP_NAVIGATION, "Stay on this level");
 				setup_event_signals(stay_idx, course_chosen.bind(1), course_unchosen);
-	
-	super._ready();

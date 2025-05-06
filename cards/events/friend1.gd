@@ -15,5 +15,3 @@ func _prepare() -> void:
 	event_image = preload("res://assets/graphics/events/ev_pirate.png");
 	
 	GameState.add_event_to_queue(EventLoader.EventID.FRIEND2);
-	
-	super._ready();

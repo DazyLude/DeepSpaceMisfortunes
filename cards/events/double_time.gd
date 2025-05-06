@@ -28,5 +28,3 @@ func _prepare() -> void:
 			var event = GameState.map.pull_random_event().unwrap();
 			GameState.new_event.emit(event);
 	);
-	
-	super._ready();

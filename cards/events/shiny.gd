@@ -33,5 +33,3 @@ func _prepare() -> void:
 	setup_event_signals(idx, do, dond);
 	
 	event_image = preload("res://assets/graphics/events/ev_rich_aster.png");
-	
-	super._ready();

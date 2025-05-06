@@ -65,11 +65,11 @@ func test_load_all() -> void:
 			#fresh_event._prepare();
 			#
 			#for i in iterable["prep_times"]:
-				#fresh_event.event_callables[iterable["before_idx"]].call();
+				#fresh_event.event_callables_in[iterable["before_idx"]].call();
 			#
 			## reset
 			#for i in iterable["prep_times"]:
-				#fresh_event.event_callables[iterable["after_idx"]].call();
+				#fresh_event.event_callables_out[iterable["after_idx"]].call();
 			#
 			## run
 			#if fresh_event._can_play():

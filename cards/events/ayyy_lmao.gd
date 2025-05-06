@@ -35,5 +35,3 @@ func _prepare() -> void:
 	
 	var idx = setup_event_input(GameState.TokenType.INGOT, "please don't");
 	setup_event_signals(idx, bribed, unbribed);
-	
-	super._ready();

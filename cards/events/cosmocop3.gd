@@ -15,6 +15,3 @@ func _prepare() -> void:
 	event_title = "Space Police";
 	event_image = preload("res://assets/graphics/events/ev_progress.png");
 	event_text = "You get escorted a bit to where you came from, but make a lucky break and escape.";
-	
-	
-	super._ready();

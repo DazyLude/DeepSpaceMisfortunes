@@ -17,5 +17,3 @@ func _prepare() -> void:
 	event_text = "The game is divided in rounds. Rounds advance through 4 phases: Navigation phase, Progress phase, Event phase and Autopilot phase. Working crew members keep manning their systems until the end of the round. Only the systems manned during the Navigation phase are repaired.";
 	
 	GameState.add_event_to_queue(EventLoader.EventID.TUTORIAL_LOSE_CONDITION);
-	
-	super._ready();

@@ -16,5 +16,3 @@ func _prepare() -> void:
 		+ "Do it right now! :)";
 	
 	GameState.add_event_to_queue(EventLoader.EventID.TUTORIAL_EVENTS);
-	
-	super._ready();

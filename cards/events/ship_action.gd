@@ -65,5 +65,3 @@ func _prepare() -> void:
 					+ " Diverting power to engines to get you out of here, Captain!\"";
 			[false, false]:
 				event_text += ", - \"Nevermind that! Everything is on fire! Diverting power to fix the engines, Captain!\"";
-	
-	super._ready();

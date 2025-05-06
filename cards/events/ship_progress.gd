@@ -15,5 +15,3 @@ func _prepare() -> void:
 	
 	event_title = "Another Day";
 	event_text = "It's time to schedule repairs and plan ahead.";
-	
-	super._ready();

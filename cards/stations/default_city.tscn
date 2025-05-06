@@ -1,0 +1,67 @@
+[gd_scene load_steps=10 format=3 uid="uid://t2qoo53y2b3y"]
+
+[ext_resource type="Script" uid="uid://b7lkntfulwo8d" path="res://cards/event_types/station_event.gd" id="1_qsjpn"]
+[ext_resource type="Texture2D" uid="uid://50w465avag12" path="res://assets/graphics/event.png" id="2_vys3u"]
+[ext_resource type="Texture2D" uid="uid://b5h4gcq38ua8j" path="res://assets/graphics/CONTINUE1.png" id="3_q1d7e"]
+[ext_resource type="Texture2D" uid="uid://drnpvp8rxg2tu" path="res://assets/graphics/CONTINUE2.png" id="4_j8323"]
+[ext_resource type="Texture2D" uid="uid://pdmlg2u3ux1s" path="res://assets/graphics/CONTINUE4.png" id="5_ie21g"]
+[ext_resource type="Texture2D" uid="uid://p6h6va0nqqlx" path="res://assets/graphics/CONTINUE3.png" id="6_to2uc"]
+[ext_resource type="FontFile" uid="uid://ckdgjyud8oh4r" path="res://assets/fonts/Teko-SemiBold.ttf" id="7_ie21g"]
+[ext_resource type="FontFile" uid="uid://b23ae6hsm3jrp" path="res://assets/fonts/Gidole-Regular.ttf" id="8_to2uc"]
+[ext_resource type="Texture2D" uid="uid://cfgd3mfe6oa7t" path="res://assets/graphics/station.jpg" id="9_to2uc"]
+
+[node name="DefaultCity" type="Node2D"]
+script = ExtResource("1_qsjpn")
+metadata/_custom_type_script = "uid://b7lkntfulwo8d"
+
+[node name="Background" type="NinePatchRect" parent="."]
+offset_right = 1079.0
+offset_bottom = 728.0
+texture = ExtResource("2_vys3u")
+region_rect = Rect2(0, 0, 687, 431)
+patch_margin_left = 40
+patch_margin_top = 40
+patch_margin_right = 40
+patch_margin_bottom = 39
+
+[node name="Button" type="TextureButton" parent="."]
+offset_left = 845.0
+offset_top = 622.0
+offset_right = 1049.0
+offset_bottom = 701.0
+texture_normal = ExtResource("3_q1d7e")
+texture_pressed = ExtResource("4_j8323")
+texture_hover = ExtResource("5_ie21g")
+texture_disabled = ExtResource("6_to2uc")
+
+[node name="Title" type="Label" parent="."]
+custom_minimum_size = Vector2(250, 10)
+offset_left = 691.0
+offset_top = 39.0
+offset_right = 943.0
+offset_bottom = 83.0
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_fonts/font = ExtResource("7_ie21g")
+theme_override_font_sizes/font_size = 30
+text = "LOREM IPSUM DOLOR SIT"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+custom_minimum_size = Vector2(250, 10)
+offset_left = 593.0
+offset_top = 103.0
+offset_right = 1030.0
+offset_bottom = 253.0
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -2
+theme_override_constants/paragraph_spacing = 4
+theme_override_fonts/font = ExtResource("8_to2uc")
+theme_override_font_sizes/font_size = 20
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
+ut labore et dolore magna "
+autowrap_mode = 3
+
+[node name="Station" type="Sprite2D" parent="."]
+position = Vector2(263, 366)
+scale = Vector2(0.78, 0.774466)
+texture = ExtResource("9_to2uc")

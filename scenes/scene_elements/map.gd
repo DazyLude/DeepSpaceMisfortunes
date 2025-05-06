@@ -53,7 +53,7 @@ func render_exit_markers() -> void:
 
 
 func update_ship_markers(_dummy = null) -> void:
-	self.visible = not GameState.map == null;
+	$MaximizedDisplay.visible = not GameState.map == null;
 	if GameState.map == null:
 		return;
 	

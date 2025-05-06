@@ -5,6 +5,7 @@ enum EventID {
 	GENERIC,
 	GENERIC_LIMITED,
 	
+	DEFAULT_CITY,
 	# special
 	MAIN_MENU,
 	TUTORIAL_INTRO,
@@ -59,6 +60,8 @@ enum EventID {
 const event_load_params : Dictionary[EventID, String] = {
 	EventID.GENERIC: "res://cards/generic_event.tscn",
 	EventID.GENERIC_LIMITED: "res://cards/generic_limited_event.gd",
+	
+	EventID.DEFAULT_CITY: "res://cards/stations/default_city.tscn",
 	
 	EventID.MAIN_MENU: "res://cards/events/menu.gd",
 	
@@ -143,12 +146,18 @@ static func load_from_script(event_script: Script) -> Node2D:
 	var scene = Node2D;
 	
 	match base_script.get_global_name():
-		&"", &"GenericEvent":
+		&"GenericEvent":
 			scene = Node2D.new();
 		&"FlyEvent":
 			scene = ResourceLoader.load("res://cards/generic_event.tscn").instantiate();
 		&"StationEvent":
-			scene = ResourceLoader.load("res://cards/generic_station.tscn").instantiate();
+			scene = ResourceLoader.load("res://cards/stations/default_city.tscn").instantiate();
+		&"":
+			push_error(
+				"Unexpected event script inheritance. " +
+				"Extend event script from GenericEvent, FlyEvent or StationEvent"
+			);
+			scene = Node2D.new();
 	
 	scene.set_script(event_script);
 	

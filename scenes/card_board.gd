@@ -248,6 +248,8 @@ func spawn_event(event_instance: GenericEvent) -> void:
 		
 		for zone in event_instance.get_event_zones():
 			add_active_zone(zone);
+		
+		prepare_fly_event();
 	
 	if event_instance is StationEvent:
 		event_instance.position = STATION_POSITION;
@@ -299,7 +301,7 @@ func prepare_station() -> void:
 	$Stacks.hide();
 
 
-func prepare_map() -> void:
+func prepare_fly_event() -> void:
 	$ProgressBar.show();
 	$Button.show();
 	$Ship.show();
@@ -324,8 +326,6 @@ func _ready() -> void:
 	GameState.go_to_menu();
 	
 	$Button.pressed.connect(try_to_advance_phase);
-	
-	GameState.new_map.connect(prepare_map);
 	
 	GameState.new_event.connect(spawn_event);
 	GameState.new_ship.connect(spawn_ship);

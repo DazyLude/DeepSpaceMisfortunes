@@ -184,6 +184,20 @@ func play_event(id: EventLoader.EventID) -> void:
 	new_event.emit(EventLoader.get_event_instance(id));
 
 
+func load_map() -> void:
+	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
+	map.add_pool(MapState.HyperspaceDepth.NONE, PoolLibrary.get_event_pool_by_name("Space"));
+	map.add_pool(MapState.HyperspaceDepth.SHALLOW, PoolLibrary.get_event_pool_by_name("Shallow"));
+	map.add_pool(MapState.HyperspaceDepth.NORMAL, PoolLibrary.get_event_pool_by_name("Normal"));
+	map.add_pool(MapState.HyperspaceDepth.DEEP, PoolLibrary.get_event_pool_by_name("Deep"));
+	map.rng_ref = self.rng;
+	
+	map.add_exit(MapState.HyperspaceDepth.NONE, EventLoader.EventID.DEFAULT_CITY);
+	map.add_exit(MapState.HyperspaceDepth.NONE, EventLoader.EventID.DEFAULT_CITY, false);
+	
+	new_map.emit();
+
+
 func go_to_menu() -> void:
 	new_ship.emit(null);
 	new_map.emit();
@@ -199,16 +213,7 @@ func new_game() -> void:
 	ship.rng_ref = self.rng;
 	new_ship.emit(ship);
 	
-	map = MapState.new(MapState.HyperspaceDepth.NONE, TRAVEL_GOAL);
-	map.add_pool(MapState.HyperspaceDepth.NONE, PoolLibrary.get_event_pool_by_name("Space"));
-	map.add_pool(MapState.HyperspaceDepth.SHALLOW, PoolLibrary.get_event_pool_by_name("Shallow"));
-	map.add_pool(MapState.HyperspaceDepth.NORMAL, PoolLibrary.get_event_pool_by_name("Normal"));
-	map.add_pool(MapState.HyperspaceDepth.DEEP, PoolLibrary.get_event_pool_by_name("Deep"));
-	map.rng_ref = self.rng;
-	map.add_exit(MapState.HyperspaceDepth.NONE, EventLoader.EventID.VICTORY);
-	
-	new_map.emit();
-	
+	load_map();
 	
 	current_phase = RoundPhase.PLAY_EVENTS_QUEUE;
 	global_round = 0;

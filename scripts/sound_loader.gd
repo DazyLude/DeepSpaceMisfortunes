@@ -5,6 +5,8 @@ class_name SoundLoader
 enum SoundID {
 	PH1,
 	PH2,
+	PH3,
+	PH4,
 	
 	ALERT,
 	ALERT_BAD,
@@ -14,8 +16,10 @@ enum SoundID {
 
 
 const uid_per_sound_id : Dictionary[SoundID, String] = {
-	SoundID.PH1: "uid://dbdpgeh8nyrhc",
-	SoundID.PH2: "uid://c2k2gl1ak8lv6",
+	SoundID.PH1: "uid://bcqvh8ysoioc2",
+	SoundID.PH2: "uid://c57175uw7ncv0",
+	SoundID.PH3: "uid://dxv0ml1ywf367",
+	SoundID.PH4: "uid://o46vg5hvke1t",
 	
 	SoundID.ALERT: "uid://d0kgab5coxsgg",
 	SoundID.ALERT_BAD: "uid://b41ooxapmiuxp",

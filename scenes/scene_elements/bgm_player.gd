@@ -4,8 +4,8 @@ extends Node
 const sound_id_per_layer : Dictionary[MapState.HyperspaceDepth, SoundLoader.SoundID] = {
 	MapState.HyperspaceDepth.NONE: SoundLoader.SoundID.PH1,
 	MapState.HyperspaceDepth.SHALLOW: SoundLoader.SoundID.PH2,
-	MapState.HyperspaceDepth.NORMAL: SoundLoader.SoundID.PH1,
-	MapState.HyperspaceDepth.DEEP: SoundLoader.SoundID.PH2,
+	MapState.HyperspaceDepth.NORMAL: SoundLoader.SoundID.PH3,
+	MapState.HyperspaceDepth.DEEP: SoundLoader.SoundID.PH4,
 	MapState.HyperspaceDepth.DELTA: SoundLoader.SoundID.PH1,
 };
 

@@ -22,14 +22,8 @@ var slots : Dictionary = {
 
 var input_row_scene : PackedScene = load("res://scenes/scene_elements/event_input_row.tscn");
 
-@export var event_rows : Array[Node] = [];
-@export var event_zone_types : Array[GameState.TokenType] = [];
-@export var event_zone_stacks : Array[bool] = [];
-@export var event_zone_limits : Array[int] = [];
-@export var event_zone_labels : Array[String] = [];
-
-var event_callables_in : Array = [];
-var event_callables_out : Array = [];
+var event_rows : Array[Node] = [];
+var input_data : Array[GenericInputPanel.InputRowData] = [];
 
 var callable_reset : Array = [];
 
@@ -37,13 +31,7 @@ var is_consumed : EventPool.EventLimitType = EventPool.EventLimitType.NOT_LIMITE
 
 
 func spawn_input_rows() -> void:
-	if event_zone_types.size() != event_zone_stacks.size() or\
-		event_zone_stacks.size() != event_zone_limits.size() or\
-		event_zone_limits.size() != event_callables_in.size() or\
-		event_callables_in.size() != event_callables_out.size():
-			push_error("incorrect event setup: input parameters count not equal");
-	
-	for zone_idx in event_zone_types.size():
+	for zone_idx in input_data.size():
 		if event_rows.size() <= zone_idx:
 			_spawn_input_row();
 		_setup_input_row(zone_idx);
@@ -60,21 +48,17 @@ func _spawn_input_row() -> void:
 
 
 func _setup_input_row(i: int) -> void:
-	var row = event_rows[i];
-	
-	if i >= event_zone_types.size() or row == null:
-		row.hide();
-		return;
-	
+	var row := event_rows[i];
+	var data := input_data[i];
 	row.show();
 	
 	var input = row.get_node("EventZone") as EventZone;
 	assert(input != null, "input is null, won't be usable");
 	
 	input.accepted_card_types.clear();
-	input.accepted_card_types.push_back(event_zone_types[i]);
-	input.accepts_stacks = event_zone_stacks[i];
-	input.stack_limit = event_zone_limits[i];
+	input.accepted_card_types.push_back(data.type);
+	input.accepts_stacks = data.is_stacking;
+	input.stack_limit = data.stack_limit;
 	
 	var label = row.get_node("Label") as Label;
 	assert(label != null, "label is null, won't display text");
@@ -82,49 +66,50 @@ func _setup_input_row(i: int) -> void:
 	var img = input.get_node("CardSlotImage") as Sprite2D;
 	assert(label != null, "img is null, won't display slot graphic");
 	
-	var on_insert = event_callables_in[i];
-	var on_takeout = event_callables_out[i];
+	var on_insert := data.callable_insert;
+	var on_takeout := data.callable_takeout;
 	
-	if on_insert != null:
+	if not on_insert.is_null():
 		input.card_recieved.connect(on_insert);
 		callable_reset.push_back([on_insert, input.card_recieved]);
 	
-	if on_takeout != null:
+	if not on_takeout.is_null():
 		input.card_lost.connect(on_takeout);
 		callable_reset.push_back([on_takeout, input.card_lost]);
 	
-	img.texture = slots[event_zone_types[i]];
-	label.text = event_zone_labels[i];
+	img.texture = slots[data.type];
+	label.text = data.label;
 
 
 
 func reset_event_inputs() -> void:
-	event_zone_types.clear();
+	input_data.clear();
 
 
 func setup_event_input(token: GameState.TokenType, label: String, stacks := false, limit := 10) -> int:
-	var i = event_zone_types.size();
+	var i := input_data.size();
+	var data := GenericInputPanel.InputRowData.new();
 	
-	event_zone_types.push_back(token);
-	event_zone_stacks.push_back(stacks);
-	event_zone_limits.push_back(limit);
-	event_zone_labels.push_back(label);
+	data.type = token;
+	data.is_stacking = stacks;
+	data.stack_limit = limit;
+	data.label = label;
 	
+	input_data.push_back(data);
 	return i;
 
 
-func setup_event_signals(i: int, card_insert = null, card_takeout = null) -> void:
-	if i >= event_callables_in.size():
-		var is_ok_in = event_callables_in.resize(i + 1);
-		if is_ok_in != OK:
-			push_error(error_string(is_ok_in));
+func setup_event_signals(
+		i: int,
+		card_insert : Callable = Callable(),
+		card_takeout  : Callable = Callable(),
+	) -> void:
+		if i >= input_data.size():
+			push_error("setting event inputs for an unexisting input");
+			return;
 		
-		var is_ok_out = event_callables_out.resize(i + 1);
-		if is_ok_out != OK:
-			push_error(error_string(is_ok_out));
-	
-	event_callables_in[i] = card_insert;
-	event_callables_out[i] = card_takeout;
+		input_data[i].callable_insert = card_insert;
+		input_data[i].callable_takeout = card_takeout;
 
 
 func get_inputs_test_iterator() -> Array[Dictionary]:
@@ -133,8 +118,8 @@ func get_inputs_test_iterator() -> Array[Dictionary]:
 	# empty inputs
 	iterator.push_back({"prep_times": 0, "before_idx": -1, "after_idx": -1});
 	
-	for idx in event_zone_types.size():
-		var stack_limit = event_zone_limits[idx] if event_zone_stacks[idx] else 1;
+	for idx in input_data.size():
+		var stack_limit = input_data[idx].stack_limit if input_data[idx].is_stacking else 1;
 		for count in stack_limit:
 			iterator.push_back(
 				{"prep_times": count + 1, "before_idx": idx, "after_idx": idx}

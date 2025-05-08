@@ -35,10 +35,23 @@ func spawn_input_rows() -> void:
 		if event_rows.size() <= zone_idx:
 			_spawn_input_row();
 		_setup_input_row(zone_idx);
+	
+	if $InputContainer != null:
+		if input_data.size() == 0:
+			$InputContainer.hide();
+		else:
+			var final_pos = $InputContainer.position;
+			$InputContainer.position += $InputContainer.hide_delta;
+			var tween = create_tween();
+			tween.tween_property($InputContainer, ^"position", final_pos, 0.2);
 
 
 func get_event_zones() -> Array:
-	return event_rows.map(func(row: Node) -> EventZone: return row.get_zone());
+	return event_rows.map(
+		func(row: Node) -> EventZone: return row.get_zone();
+	).filter(
+		func(zone: EventZone) -> bool: return zone != null;
+	);
 
 
 func _spawn_input_row() -> void:

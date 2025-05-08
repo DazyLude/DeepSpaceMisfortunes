@@ -27,6 +27,7 @@ offset_right = 17.0
 offset_bottom = 21.0
 mouse_filter = 2
 script = ExtResource("6_riqu1")
+hide_delta = Vector2(0, -100)
 
 [node name="NinePatchRect" type="NinePatchRect" parent="InputContainer"]
 layout_mode = 0

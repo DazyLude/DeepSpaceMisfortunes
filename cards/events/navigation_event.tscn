@@ -1,0 +1,91 @@
+[gd_scene load_steps=8 format=3 uid="uid://bgx4efumrvejq"]
+
+[ext_resource type="Script" uid="uid://cqbb73etkiltx" path="res://cards/events/ship_navigation.gd" id="1_bm8ci"]
+[ext_resource type="Texture2D" uid="uid://50w465avag12" path="res://assets/graphics/event.png" id="3_87twc"]
+[ext_resource type="Texture2D" uid="uid://6udstmc8stue" path="res://assets/graphics/events/ev_nothing.png" id="4_cvxij"]
+[ext_resource type="FontFile" uid="uid://b23ae6hsm3jrp" path="res://assets/fonts/Gidole-Regular.ttf" id="5_ruqwd"]
+[ext_resource type="FontFile" uid="uid://ckdgjyud8oh4r" path="res://assets/fonts/Teko-SemiBold.ttf" id="6_afgm0"]
+[ext_resource type="PackedScene" uid="uid://cjgowuw7teruc" path="res://scenes/scene_elements/event_input_row.tscn" id="6_bm8ci"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h7fig"]
+size = Vector2(23, 31)
+
+[node name="NavigationEvent" type="Node2D"]
+script = ExtResource("1_bm8ci")
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="HitboxRect" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_h7fig")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("3_87twc")
+
+[node name="EventImage" type="Sprite2D" parent="."]
+texture = ExtResource("4_cvxij")
+
+[node name="LevelHint" type="Label" parent="."]
+offset_left = -299.0
+offset_top = 177.0
+offset_right = -18.0
+offset_bottom = 207.0
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -4
+theme_override_constants/paragraph_spacing = 0
+theme_override_fonts/font = ExtResource("5_ruqwd")
+theme_override_font_sizes/font_size = 24
+text = "Lorem ipsum dolor"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = -188.0
+offset_right = 319.0
+offset_bottom = 190.0
+mouse_filter = 2
+theme_override_constants/separation = 1
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(250, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_fonts/font = ExtResource("6_afgm0")
+theme_override_font_sizes/font_size = 30
+text = "LOREM IPSUM DOLOR SIT"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(250, 10)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878431, 0.937255, 1, 1)
+theme_override_constants/line_spacing = -2
+theme_override_constants/paragraph_spacing = 4
+theme_override_fonts/font = ExtResource("5_ruqwd")
+theme_override_font_sizes/font_size = 20
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna 
+ut labore et dolore magna "
+autowrap_mode = 3
+
+[node name="Up" parent="." instance=ExtResource("6_bm8ci")]
+offset_left = 119.0
+offset_top = -55.0
+offset_right = 294.0
+offset_bottom = 27.0
+
+[node name="Forward" parent="." instance=ExtResource("6_bm8ci")]
+offset_left = 183.0
+offset_top = 28.0
+offset_right = 358.0
+offset_bottom = 110.0
+
+[node name="Backward" parent="." instance=ExtResource("6_bm8ci")]
+offset_left = 60.0
+offset_top = 31.0
+offset_right = 235.0
+offset_bottom = 113.0
+
+[node name="Down" parent="." instance=ExtResource("6_bm8ci")]
+offset_left = 124.0
+offset_top = 118.0
+offset_right = 299.0
+offset_bottom = 200.0

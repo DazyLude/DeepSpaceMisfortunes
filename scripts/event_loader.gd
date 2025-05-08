@@ -78,7 +78,7 @@ const event_load_params : Dictionary[EventID, String] = {
 	EventID.TUTORIAL_DAMAGE_NORMAL: "res://cards/events/tutorial_physical_damage.gd",
 	EventID.TUTORIAL_END: "res://cards/events/tutorial_wrap_up.gd",
 	
-	EventID.SHIP_NAVIGATION: "res://cards/events/ship_navigation.gd",
+	EventID.SHIP_NAVIGATION: "res://cards/events/navigation_event.tscn",
 	EventID.ASSIGN_REPAIRS: "res://cards/events/ship_progress.gd",
 	
 	EventID.SHIP_ACTION: "res://cards/events/ship_action.gd",

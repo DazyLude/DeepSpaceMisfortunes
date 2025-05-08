@@ -9,7 +9,7 @@ var event_bg_per_layer : Dictionary = {
 	MapState.HyperspaceDepth.DEEP : preload("res://assets/graphics/event4.png"),
 };
 
-var slots : Dictionary = {
+var slots : Dictionary[GameState.TokenType, Texture2D] = {
 	GameState.TokenType.CREWMATE: preload("res://assets/graphics/human.png"),
 	GameState.TokenType.SHIP_NAVIGATION: preload("res://assets/graphics/nav.png"),
 	GameState.TokenType.INGOT: preload("res://assets/graphics/metal.png"),
@@ -22,7 +22,7 @@ var slots : Dictionary = {
 
 var input_row_scene : PackedScene = load("res://scenes/scene_elements/event_input_row.tscn");
 
-var event_rows : Array[Node] = [];
+var event_rows : Array[EventInputRow] = [];
 var input_data : Array[GenericInputPanel.InputRowData] = [];
 
 var callable_reset : Array = [];
@@ -38,13 +38,13 @@ func spawn_input_rows() -> void:
 
 
 func get_event_zones() -> Array:
-	return event_rows.map(func(row: Node) -> EventZone: return row.get_node(^"EventZone"));
+	return event_rows.map(func(row: Node) -> EventZone: return row.get_zone());
 
 
 func _spawn_input_row() -> void:
 	var row = input_row_scene.instantiate();
 	event_rows.push_back(row);
-	$InputRowsContainer.add_child(row);
+	$InputContainer/InputRowsContainer.add_child(row);
 
 
 func _setup_input_row(i: int) -> void:
@@ -52,7 +52,7 @@ func _setup_input_row(i: int) -> void:
 	var data := input_data[i];
 	row.show();
 	
-	var input = row.get_node("EventZone") as EventZone;
+	var input := row.get_zone();
 	assert(input != null, "input is null, won't be usable");
 	
 	input.accepted_card_types.clear();
@@ -60,11 +60,11 @@ func _setup_input_row(i: int) -> void:
 	input.accepts_stacks = data.is_stacking;
 	input.stack_limit = data.stack_limit;
 	
-	var label = row.get_node("Label") as Label;
+	var label := row.get_label();
 	assert(label != null, "label is null, won't display text");
 	
-	var img = input.get_node("CardSlotImage") as Sprite2D;
-	assert(label != null, "img is null, won't display slot graphic");
+	var img := row.get_sprite();
+	assert(img != null, "img is null, won't display slot graphic");
 	
 	var on_insert := data.callable_insert;
 	var on_takeout := data.callable_takeout;
@@ -79,7 +79,6 @@ func _setup_input_row(i: int) -> void:
 	
 	img.texture = slots[data.type];
 	label.text = data.label;
-
 
 
 func reset_event_inputs() -> void:

@@ -8,7 +8,7 @@ class_name GenericInputPanel
 
 
 class InputRowData extends RefCounted:
-	var type = GameState.TokenType;
+	var type : GameState.TokenType;
 	var is_stacking : bool;
 	var stack_limit : int;
 	var label : String;

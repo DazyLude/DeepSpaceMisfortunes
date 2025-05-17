@@ -48,6 +48,7 @@ func spawn_input_rows() -> void:
 
 func get_event_zones() -> Array:
 	return event_rows.map(
+		# Error "nonexistent function get_zone in base Nil" if click continue a lot
 		func(row: Node) -> EventZone: return row.get_zone();
 	).filter(
 		func(zone: EventZone) -> bool: return zone != null;
@@ -142,6 +143,7 @@ func get_inputs_test_iterator() -> Array[Dictionary]:
 
 func _ready() -> void:
 	if event_text != "" and $VBoxContainer/Label != null:
+		super.text_anim($VBoxContainer/Label);
 		$VBoxContainer/Label.text = event_text;
 	
 	if event_title != "" and $VBoxContainer/Title != null:

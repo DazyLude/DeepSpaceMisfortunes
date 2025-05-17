@@ -18,3 +18,5 @@ func _ready() -> void:
 	if $Button != null and GameState != null:
 		$Button.pressed.connect(GameState.advance_phase);
 		GameState.load_map();
+		
+	super.text_anim($Label2);
